@@ -1,0 +1,22 @@
+import FormGenerator from '@components/organisms/formGenerator';
+import {
+  getById,
+  getFormConfigByEntityName,
+} from '@lib/getAll';
+
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+export const dynamic = "force-dynamic";
+
+export default async function Page({
+  params,
+}: {
+  params: { field: string; id: string };
+}) {
+  const { field, id } = await Promise.resolve(params);
+  const defaultValues:Record<string, any> = await getById( field, id );
+  console.log(defaultValues)
+  const res = await getFormConfigByEntityName(field)
+   return (
+   <FormGenerator entityFormConfig={res} defaultValues={defaultValues}/>
+  );
+}

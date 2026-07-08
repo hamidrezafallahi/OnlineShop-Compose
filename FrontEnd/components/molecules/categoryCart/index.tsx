@@ -1,0 +1,45 @@
+import React from 'react';
+
+import { getLocale } from 'next-intl/server';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { ICategory } from '@models/category';
+
+export default async function CategoryCard({ category }: { category: ICategory}) {
+  const {
+    id,
+    categoryCover,
+    persianName,
+    englishName,
+    categoryPersianDesc,
+    categoryEnglishDesc,
+  } = category;
+  const locale = await getLocale()
+   return (
+    <Link
+      href={`/${locale}/categories/${id}`}
+      className="group relative shadow-sm rounded-2xl h-44 md:h-52 overflow-hidden"
+    >
+      <Image
+        src={categoryCover}
+        alt={locale == "fa" ? persianName : englishName}
+        width={400}
+        height={400}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform transform"
+        loading={id < 5 ? "eager" : "lazy"}
+        priority={id < 5}
+      />
+      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/40 to-transparent p-4">
+        <div>
+          <h3 className="font-semibold text-white">
+            {locale == "fa" ? persianName : englishName}
+          </h3>
+          <p className="text-gray-200 text-xs">
+            {locale == "fa" ? categoryPersianDesc : categoryEnglishDesc}
+          </p>
+        </div>
+      </div>
+    </Link>
+  );
+}

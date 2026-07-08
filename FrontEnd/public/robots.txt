@@ -1,0 +1,9 @@
+User-agent: Googlebot
+Disallow: /private/
+Allow: /private/preview/
+
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://example.com/sitemap.xml

@@ -1,0 +1,36 @@
+ 
+# FrontEnd
+FrontEnd/node_modules
+FrontEnd/yarn.lock
+FrontEnd/.next
+FrontEnd/.env
+
+# BackEnd
+BackEnd/Api/wwwroot/
+BackEnd/Infrastructure/Migrations/
+BackEnd/.vs/
+# Build Outputs
+BackEnd/**/bin/
+BackEnd/**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+# NuGet
+*.nupkg
+*.snupkg
+
+# Logs
+*.log
+BackEnd/**/.env
+BackEnd/**/appsettings.json
+# Publish
+BackEnd/**/publish/
+# OS Files
+.DS_Store
+Thumbs.db
+# Docker
+**/.dockerignore
+
+# OS
+Thumbs.db

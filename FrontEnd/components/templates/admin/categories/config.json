@@ -1,0 +1,580 @@
+[
+    {"Name":"persianName", "Caption":"نام دسته‌بندی فارسی","Type" : "text","PlaceHolder":"مثلاً: تلویزیون","Help" :"نام دسته را وارد کنید","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true", "Message":"نام دسته‌بندی الزامی است"},
+    {"Rule":"minLength","Condition":"2","Message" : "حداقل دو کاراکتر وارد کنید"}]},
+    {"Name":"englishName","Caption" : "English category name","Type" : "text","PlaceHolder" : "example: cars","Help" : "insert english category name","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"english name is required"},
+    {"Rule":"minLength","Condition":"2","Message":"at least insert two characters"}]},
+    {"Name":"categoryCover", "Caption" : "تصویر دسته بندی","Type" : "file","PlaceHolder" : "example: car.jpg","Help" : "add an image","Order":0,"Options":null,"Rules":[]},
+    {"Name":"categoryPersianDesc", "Caption" : "توضیحات این دسته بندی","Type" : "text","PlaceHolder" : "مثال:این دسته بندی برای...","Help" : "توضیحاتی در خصوص این دسته بندی بنویسید","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"توضیحات دسته بندی الزامی میباشد."},
+    {"Rule":"minLength","Condition":"2","Message":"حداقل دو کاراکتر بنویسید"}]},
+    {"Name":"categoryEnglishDesc","Caption" : "description about this category","Type" : "text","PlaceHolder" : "example : this is category of ...","Help" : "add some info about this category","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"category description is required"},
+    {"Rule":"minLength","Condition":"2","Message":"at least insert two characters"}]},
+    {"Name":"isShowInLanding","Caption":"نمایش در صفحه اصلی","Type":"checkbox","PlaceHolder":"","Help":"در صورت غیرفعال بودن، دسته‌بندی در صفحه اصلی نمایش داده نمی‌شود","Order":0,"Options":null,"Rules":[]},
+    {"Name":"isActive","Caption":"وضعیت","Type":"checkbox","PlaceHolder":null,"Help":"در صورت غیرفعال بودن، دسته‌بندی در لیست نمایش داده نمی‌شود","Order":0,"Options":null,"Rules":[]},
+    {"Name":"parentCategoryId", "FetchConfig" :{"api":"api/Categories/selectOption","fetchFilters":["id"]},"Caption":"دسته والد","Type":"dynamicSelect","PlaceHolder":"در صورت وجود، دسته والد را انتخاب کنید","Help":"می‌توانید این دسته را به عنوان زیرمجموعه یک دسته دیگر تعیین کنید","Order":0,"Options":null,"Rules":[]}
+]
+
+ [
+  {"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":"یک محصول را انتخاب کنید","Help":"انتخاب محصول برای سفارش خرید","Order":0,"FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب محصول الزامی است"}]},
+  {"Name":"productOfferId","Caption":"انتخاب سفارش فروش","Type":"dynamicSelect","PlaceHolder":"یک سفارش فروش را انتخاب کنید","Help":"انتخاب یکی از سفارش های فروش","Order":0,"FetchConfig":{"api":"api/productOffers/selectOption","fetchFilters":["productId"]},"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب سفارش فروش الزامی است "}]},
+  {"Name":"quantity","Caption":"تعداد","Type":"number","PlaceHolder":"تعداد مورد نیازتان را وارد کنید","Help":"انتخاب تعداد مورد نظر از محصول","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب تعداد الزامی است"}]}
+]
+[{"Name":"userId","Caption":"\u06A9\u0627\u0631\u0628\u0631","Type":"dynamicSelect","PlaceHolder":"\u06A9\u0627\u0631\u0628\u0631 \u0645\u062F \u0646\u0638\u0631","Help":"\u0645\u062B\u0644\u0627\u064B:\u0639\u0644\u06CC \u0627\u06CC\u0646 \u0646\u0638\u0631 \u0631\u0627 \u062F\u0627\u062F\u0647","Order":1,"FetchConfig":{"api":"api/Users/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":"\u06A9\u0627\u0631\u0628\u0631 \u0627\u0644\u0632\u0627\u0645\u06CC \u0627\u0633\u062A"}]},
+{"Name":"targetId","Caption":"\u0622\u06CC\u062F\u06CC \u0645\u0648\u0631\u062F \u0646\u0638\u0631","Type":"number","PlaceHolder":"\u0645\u062B\u0644\u0627\u064B: \u0627\u0632 \u062A\u0627\u06CC\u067E x \u0645\u0646\u0638\u0648\u0631 \u0622\u06CC\u062F\u06CC y \u0647\u0633\u062A","Help":"\u0628\u0627 \u062A\u0631\u06A9\u06CC\u0628 \u0622\u06CC\u062F\u06CC \u0648 \u062A\u0627\u06CC\u067E \u0645\u0634\u062E\u0635 \u0645\u06CC\u06A9\u0646\u06CC\u0645 \u0627\u0632 \u06A9\u062F\u0648\u0645 \u062F\u0633\u062A\u0647 \u0628\u0646\u062F\u06CC \u0628\u0647 \u06A9\u062F\u0648\u0645 \u0622\u06CC\u062F\u06CC \u062F\u0627\u0631\u06CC\u0645 \u0627\u0634\u0627\u0631\u0647 \u0645\u06CC \u06A9\u0646\u06CC\u0645 ","Order":2,"FetchConfig":null,"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":"\u0622\u06CC\u062F\u06CC \u0627\u0644\u0632\u0627\u0645\u06CC \u0627\u0633\u062A"}]},
+{"Name":"targetType","Caption":"\u062F\u0633\u062A\u0647\u200C\u0628\u0646\u062F\u06CC \u0645\u0648\u0631\u062F \u0646\u0638\u0631","Type":"","PlaceHolder":"\u062F\u0633\u062A\u0647 \u0631\u0627 \u0627\u0646\u062A\u062E\u0627\u0628 \u06A9\u0646\u06CC\u062F","Help":"","Order":3,"FetchConfig":null,"Options":["\u0627\u062E\u0628\u0627\u0631","\u0631\u0627\u0647\u0646\u0645\u0627\u06CC \u062E\u0631\u06CC\u062F","\u0622\u0645\u0648\u0632\u0634","\u0646\u0642\u062F \u0648 \u0628\u0631\u0631\u0633\u06CC"],"Rules":[]},
+{"Name":"content","Caption":"\u0645\u062D\u062A\u0648\u0627","Type":"textarea","PlaceHolder":"\u0646\u0638\u0631 \u0631\u0627 \u0628\u0646\u0648\u06CC\u0633\u06CC\u062F...","Help":"","Order":4,"FetchConfig":null,"Options":[],"Rules":[{"Rule":"minLength","Condition":"50","Message":"\u0645\u062D\u062A\u0648\u0627 \u0628\u0627\u06CC\u062F \u062D\u062F\u0627\u0642\u0644 \u06F5\u06F0 \u06A9\u0627\u0631\u0627\u06A9\u062A\u0631 \u0628\u0627\u0634\u062F"}]},
+{"Name":"isApproved","Caption":"\u0642\u0627\u0628\u0644 \u0646\u0645\u0627\u06CC\u0634","Type":"checkbox","PlaceHolder":"","Help":"","Order":5,"FetchConfig":null,"Options":[],"Rules":[]},{"Name":"parentId","Caption":"\u0631\u06CC\u067E\u0644\u0627\u06CC \u0628\u0647","Type":"","PlaceHolder":"\u0628\u0627\u0632\u062E\u0648\u0631\u062F \u0628\u0647 \u0646\u0638\u0631 \u0631\u0627 \u0627\u0646\u062A\u062E\u0627\u0628 \u06A9\u0646\u06CC\u062F","Help":"","Order":3,"FetchConfig":null,"Options":[],"Rules":[]}]
+ {
+"id": 18,
+   "entityName": "comments",
+   "persianDisplayName": "نظرات",
+   "englishDisplayName": "comment",
+   "endPoint": "comments",
+   "entityIconBase64": "<svg width=\"13\" height=\"13\" viewBox=\"0 0 13 13\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.49967 4.33337C5.30306 4.33337 4.33301 5.30342 4.33301 6.50004C4.33301 7.69666 5.30306 8.66671 6.49967 8.66671C7.69629 8.66671 8.66634 7.69666 8.66634 6.50004C8.66634 5.30342 7.69629 4.33337 6.49967 4.33337Z\" stroke=\"#B1B1B1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+   "columns": [
+     { "Header": "شناسه", "Accessor": "id", "Type": "number"},
+     { "Header": "کاربر", "Accessor": "userName", "Type": "text"},
+     { "Header": " مورد نظر", "Accessor": "targetTitle", "Type": "text"},
+     { "Header": "نظر به", "Accessor": "targetType", "Type": "text"},
+     { "Header": "محتوا", "Accessor": "content", "Type": "textarea"},
+     { "Header": "قابل نمایش", "Accessor": "isApproved", "Type": "bool"},
+     { "Header": "اشاره به نظر", "Accessor": "parentName", "Type": "text"}
+    ],
+   "actions": ["active", "edit", "delete"],
+   "isActive": true,
+ "formFields": [
+     {
+       "name": "userId",
+       "caption": "کاربر",
+       "type": "dynamicSelect",
+       "FetchConfig" :{"api":"api/Users/getUsers4selectOption","fetchFilters":[]},
+       "placeHolder": "کاربر مد نظر",
+       "help": "مثلاً:علی این نظر را داده",
+       "order": 1,
+       "options": [],
+       "rules": [
+         { "rule": "required", "condition": "true", "message": "کاربر الزامی است" }
+       ]
+     },
+     {
+       "name": "targetId",
+       "caption": "آیدی مورد نظر",
+       "type": "number",
+       "placeHolder": "مثلاً: از تایپ x منظور آیدی y هست",
+       "help": "با ترکیب آیدی و تایپ مشخص میکنیم از کدوم دسته بندی به کدوم آیدی داریم اشاره می کنیم ",
+       "order": 2,
+       "options": [],
+       "rules": [
+         { "rule": "required", "condition": "true", "message": "آیدی الزامی است" }
+       ]
+     },
+     {
+       "name": "targetType",
+       "caption": "دسته‌بندی مورد نظر",
+       "type": "select",
+       "placeHolder": "دسته را انتخاب کنید",
+       "help": "",
+       "order": 3,
+       "options": ["اخبار", "راهنمای خرید", "آموزش", "نقد و بررسی"],
+       "rules": []
+     },
+     {
+       "name": "content",
+       "caption": "محتوا",
+       "type": "textarea",
+       "placeHolder": "نظر را بنویسید...",
+       "help": "",
+       "order": 4,
+       "options": [],
+       "rules": [
+         { "rule": "minLength", "condition": "50", "message": "محتوا باید حداقل ۵۰ کاراکتر باشد" }
+       ]
+     },
+     {
+       "name": "isApproved",
+       "caption": "قابل نمایش",
+       "type": "checkbox",
+       "placeHolder": "",
+       "help": "",
+       "order": 5,
+       "options": [],
+       "rules": []
+     },
+          {
+       "name": "parentId",
+       "caption": "ریپلای به",
+       "type": "",
+       "placeHolder": "بازخورد به نظر را انتخاب کنید",
+       "help": "",
+       "order": 3,
+       "options": [],
+       "rules": []
+     }
+   ]
+ }
+ 
+
+{
+   "id": 20,
+   "entityName": "productOffers",
+   "persianDisplayName": "سفارش فروش",
+   "englishDisplayName": "Product offers",
+   "endPoint": "productOffers",
+   "entityIconBase64": "<svg width=\"13\" height=\"13\" viewBox=\"0 0 13 13\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.49967 4.33337C5.30306 4.33337 4.33301 5.30342 4.33301 6.50004C4.33301 7.69666 5.30306 8.66671 6.49967 8.66671C7.69629 8.66671 8.66634 7.69666 8.66634 6.50004C8.66634 5.30342 7.69629 4.33337 6.49967 4.33337Z\" stroke=\"#B1B1B1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+   "columns": [
+     { "Header" : "شناسه", "Accessor" : "id", "Type" : "number", "Sortable" : false, "Filterable" : false  },
+     { "Header" : "نام محصول", "Accessor" : "productName", "Type" : "text", "Sortable" : false, "Filterable" : false },
+     { "Header" : "نام تامین کننده", "Accessor" : "supplierName", "Type" : "text", "Sortable" : false, "Filterable" : false},
+     { "Header" : "تصویر تامین کننده", "Accessor" : "supplierImage", "Type" : "image", "Sortable" : false, "Filterable" : false},
+     { "Header" : "قیمت پایه", "Accessor" : "basePrice", "Type" : "price", "Sortable" : false, "Filterable" : false},
+     { "Header" : "قیمت نهایی", "Accessor" : "finalPrice", "Type" : "price", "Sortable" : false, "Filterable" : false },
+     { "Header" : "موجودی", "Accessor" : "inventory", "Type" : "number", "Sortable" : false, "Filterable" : false },
+     { "Header" : "تاریخ ایجاد", "Accessor" : "createdAt", "Type" : "date", "Sortable" : false, "Filterable" : false },
+    ],
+   "actions": ["active", "edit", "delete"],
+   "isActive": true,
+ "formFields": [
+     {
+       "name": "productId",
+       "caption": "انتخاب محصول",
+       "type": "dynamicSelect",
+       "FetchConfig" :{"api":"api/Products/selectOption","fetchFilters":[]},
+       "placeHolder": " محصول را انتخاب کنید",
+       "help":"مثلاً: تلویزیون سامسونگ 55 اینچ",
+       "options": [],
+       "order": 1,
+       "rules": [
+         { "rule": "required", "condition": "true", "message": "محصول الزامی است" }
+       ]
+     },
+     {
+       "name": "basePrice",
+       "caption": "قیمت پایه",
+       "type": "price",
+       "placeHolder": "قیمت پایه محصول را وارد کنید",
+       "help": "قیمت محصول را بنویسید",
+       "order": 2,
+        "rules": [
+         { "rule": "required", "condition": "true", "message": "قیمت پایه الزامی است" }
+       ]
+     },
+     {
+       "name": "inventory",
+       "caption": "موجودی",
+       "type": "number",
+       "placeHolder": "تعداد موجودی را وارد کنید",
+       "help": "تعداد محصول در انبار",
+       "order": 3,
+   "rules": [
+         { "rule": "required", "condition": "true", "message": "موجودی الزامی است" }
+       ]
+     }
+   ]
+ }
+ [{"Header":"\u0634\u0646\u0627\u0633\u0647","Accessor":"id","Type":"number","Sortable":false,"Filterable":false },
+ {"Header":"\u0634\u0646\u0627\u0633\u0647 \u06A9\u0627\u0631\u0628\u0631","Accessor":"userId","Type":"number","Sortable":false,"Filterable":false },
+ {"Header":"\u0648\u0636\u0639\u06CC\u062A","Accessor":"status","Type":"select","Sortable":false,"Filterable":false },
+ {"Header":"\u062A\u0639\u062F\u0627\u062F \u0622\u06CC\u062A\u0645\u200C\u0647\u0627","Accessor":"itemsCount","Type":"number","Sortable":false,"Filterable":false},
+ {"Header":"\u0642\u06CC\u0645\u062A \u06A9\u0644","Accessor":"totalPrice","Type":"decimal","Sortable":false,"Filterable":false]
+
+[
+  { "Header": "شناسه", "Accessor" : "id", "Type": "number", "Sortable": false, "Filterable": false },
+{ "Header": "شناسه سبد خرید", "Accessor" : "cartId", "Type": "number", "Sortable": false, "Filterable": false },
+{ "Header": "محصول", "Accessor" : "productName", "Type": "text", "Sortable": false, "Filterable": false },
+{ "Header": "عکس محصول", "Accessor" : "productImage", "Type": "image", "Sortable": false, "Filterable": false },
+{ "Header": "کاربر", "Accessor" : "userName", "Type": "text", "Sortable": false, "Filterable": false },
+{ "Header": "قیمت پایه", "Accessor" : "basePrice", "Type": "number", "Sortable": false, "Filterable": false },
+{ "Header": "قیمت کل", "Accessor" : "finalPrice", "Type": "number", "Sortable": false, "Filterable": false },
+{ "Header": "تعداد", "Accessor" : "quantity", "Type": "number", "Sortable": false, "Filterable": false }
+]
+
+[
+  {"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":"یک محصول را انتخاب کنید","Help":"انتخاب محصول برای سفارش خرید","Order":0,"FetchConfig":{"api":"api/Products/getProducts4selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب محصول الزامی است"}]},
+  {"Name":"productOfferId","Caption":"انتخاب سفارش فروش","Type":"dynamicSelect","PlaceHolder":"یک سفارش فروش را انتخاب کنید","Help":"انتخاب یکی از سفارش های فروش","Order":0,"FetchConfig":{"api":"api/productOffers/getProductOffers4selectOption","fetchFilters":["productId"]},"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب سفارش فروش الزامی است "}]},
+  {"Name":"quantity","Caption":"تعداد","Type":"number","PlaceHolder":"تعداد مورد نیازتان را وارد کنید","Help":"انتخاب تعداد مورد نظر از محصول","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب تعداد الزامی است"}]}
+]
+[
+{"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"FetchConfig":{"api":"api/Products/getProducts4selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" محصول الزامی است"}]},
+{"Name":"basePrice","Caption":"قیمت پایه","Type":"price","PlaceHolder":"قیمت پایه محصول را وارد کنید","Help":"قیمت محصول را بنویسید","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"قیمت پایه الزامی است"}]},
+{"Name":"inventory","Caption":"موجودی","Type":"number","PlaceHolder":"تعداد موجودی را وارد کنید","Help":"تعداد محصول در انبار","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"موجودی الزامی است"},
+{"Rule":"min","Condition":"0","Message":"موجودی نمی‌تواند منفی باشد"}]}
+]
+
+
+
+
+[{"Header":"\u0634\u0646\u0627\u0633\u0647","Accessor":"id","Type":"number"},
+{"Header":"\u0646\u0627\u0645 \u0645\u062D\u0635\u0648\u0644","Accessor":"name","Type":"text"},
+{"Header":"\u062F\u0633\u062A\u0647\u200C\u0628\u0646\u062F\u06CC","Accessor":"categoryName","Type":"text"},
+{"Header":"\u0628\u0631\u0646\u062F","Accessor":"brandName","Type":"text"},
+{"Header":"\u062A\u0648\u0636\u06CC\u062D\u0627\u062A","Accessor":"description","Type":"textarea"}]
+
+
+[
+{"Name":"name","Caption":"نام محصول","Type":"text","PlaceHolder":"نام محصول را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"نام محصول الزامی است"}]},
+{"Name":"description","Caption":"توضیحات محصول","Type":"textarea","PlaceHolder":"در باره محصول توضیح دهید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"توضیحات محصول الزامی است"}]},
+{"Name":"categoryId","Caption":"دسته بندی","Type":"select","FetchConfig":{"api":"api/Categories/selectOption","fetchFilters":[]},"PlaceHolder":"دسته بندی محصول را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"دسته بندی محصول الزامی است"}]},
+{"Name":"brandId","Caption":"برند","Type":"dynamic","FetchConfig":{"api":"api/Brands/selectOption","fetchFilters":[]},"PlaceHolder":"برند محصول را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"برند محصول الزامی است"}]},
+{"Name":"width","Caption":"عرض","Type":"number","PlaceHolder":"عرض محصول را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[]},
+{"Name":"height","Caption":"طول یا ارتفاع","Type":"number","PlaceHolder":"طول یا ارتفاع را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[]},
+{"Name":"depth","Caption":"عمق","Type":"number","PlaceHolder":"عمق را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[]},
+{"Name":"weight","Caption":"وزن","Type":"number","PlaceHolder":"وزن را وارد کنید","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[]}
+]
+[
+  {
+    "Name": "name",
+    "Caption": "نام محصول",
+    "Type": "text",
+    "PlaceHolder": "نام محصول را وارد کنید",
+    "Help":"مثلاً: تلویزیون سامسونگ 55 اینچ",
+    "Order": 0,
+    "Rules": [
+      { "Rule": "required", "Condition": "true", "Message": "نام محصول الزامی است" }
+    ]
+  },
+    {
+    "Name": "description",
+    "Caption": "توضیحات",
+    "Type": "textarea",
+    "PlaceHolder": "توضیحات محصول را وارد کنید",
+    "Help":"می‌توانید ویژگی‌ها و مشخصات محصول را بنویسید",
+    "Order": 0,
+    "Rules": [{ "Rule": "required", "Condition": "true", "Message": "نام محصول الزامی است" }]
+  },
+    {
+    "Name": "categoryId",
+    "Caption": "دسته‌بندی",
+    "Type": "dynamicSelect",
+    "FetchConfig" :{"api":"api/Categories/selectOption","FetchFilters":[]},
+    "PlaceHolder": "دسته‌بندی محصول را انتخاب کنید",
+    "Help":"محصول به کدام دسته تعلق دارد",
+    "Order": 0,
+    "Rules": [
+      { "Rule": "required", "Condition": true, "Message": "دسته‌بندی الزامی است" }
+    ]
+  },
+    {
+    "Name": "brandId",
+    "Caption": "برند",
+    "Type": "dynamicSelect",
+    "FetchConfig" :{"api":"api/Brands/selectOption","FetchFilters":[]},
+    "PlaceHolder": "برند محصول را انتخاب کنید",
+    "Help":"محصول به کدام برند تعلق دارد",
+    "options": [],
+    "Order": 0,
+    "Rules": [
+      { "Rule": "required", "Condition": true, "Message": "برند الزامی است" }
+    ]
+  },
+    {
+    "Name": "width",
+    "Caption": "عرض",
+    "Type": "number",
+    "PlaceHolder": "عرض محصول را وارد کنید",
+    "Help":"می‌تواند خالی باشد",
+    "Order": 0,
+    "Rules": []
+  },
+  {
+    "Name": "height",
+    "Caption": "طول یا ارتفاع",
+    "Type": "number",
+    "PlaceHolder": "طول یا ارتفاع را وارد کنید",
+    "Help":"می‌تواند خالی باشد",
+    "Order": 0,
+    "Rules": []
+  },{
+    "Name": "depth",
+    "Caption": "عمق",
+    "Type": "number",
+    "PlaceHolder": "عمق را وارد کنید",
+    "Help":"می‌تواند خالی باشد",
+    "Order": 0,
+    "Rules": []
+  },{
+    "Name": "weight",
+    "Caption": "وزن",
+    "Type": "number",
+    "PlaceHolder": "وزن را وارد کنید",
+    "Help":"می‌تواند خالی باشد",
+    "Order": 0,
+    "Rules": []
+  }  
+]
+
+//productImage
+[
+  {"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false},
+  {"Header":"نام محصول","Accessor":"productName","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"عکس محصول","Accessor":"productImageUrl","Type":"image","Sortable":false,"Filterable":false},
+  {"Header":"عکس اصلی","Accessor":"isMain","Type":"bool","Sortable":false,"Filterable":false}
+]
+
+[
+{"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" محصول الزامی است"}]},
+{"Name":"imageUrl","Caption":"تصویر","Type":"fileArray","PlaceHolder":"آدرس تصویر را وارد کنید","Help":"تصویر محصول را آپلود کنید","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"وارد کردن تصویر الزامی است"}]}
+]
+
+[
+{"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" محصول الزامی است"}]},
+{"Name":"Images","Caption":"تصویر","Type":"fileArray","PlaceHolder":"آدرس تصویر را وارد کنید","Help":"تصویر محصول را آپلود کنید","Order":0,"Rules":[]},
+{"Name":"IsMainImages","Caption":"","Type":"hidden","PlaceHolder":"آدرس تصویر را وارد کنید","Help":"تصویر محصول را آپلود کنید","Order":0,"Rules":[]}
+]
+
+
+
+["active","delete"]
+
+// {"Name":"price","Caption":"","Type":"number","PlaceHolder":"","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":""},{"Rule":"min","Condition":"0","Message":""}]},
+// {"Name":"inventory","Caption":"","Type":"number","PlaceHolder":"","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":""},{"Rule":"min","Condition":"0","Message":""}]},
+// {"Name":"images","Caption":"","Type":"fileMultiple","PlaceHolder":"","Help":"","Order":0,"FetchConfig":null,"Options":null,"Rules":[]},
+// Name
+// Description
+// CategoryId
+// BrandId
+//orderItems
+ 
+[
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false},
+{"Header":"نام محصول","Accessor":"productName","Type":"text","Sortable":false,"Filterable":false},
+{"Header":"عکس محصول","Accessor":"productImage","Type":"image","Sortable":false,"Filterable":false},
+{"Header":"تامین کننده","Accessor":"productOfferUser","Type":"image","Sortable":false,"Filterable":false},
+{"Header":"تعداد","Accessor":"quantity","Type":"number","Sortable":false,"Filterable":false},
+{"Header":"قیمت پایه","Accessor":"unitPrice","Type":"number","Sortable":false,"Filterable":false},
+{"Header":"قیمت نهایی","Accessor":"totalPrice","Type":"number","Sortable":false,"Filterable":false},
+{"Header":"مالک سفارش","Accessor":"user","Type":"text","Sortable":false,"Filterable":false},
+{"Header":"وضعیت","Accessor":"orderStatus","Type":"text","Sortable":false,"Filterable":false}
+]
+//product offer discount 
+
+[
+  {"Header":"\u0634\u0646\u0627\u0633\u0647","Accessor":"id","Type":"number","Sortable":false,"Filterable":false},
+  {"Header":"نام محصول","Accessor":"productName","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"عکس محصول","Accessor":"productImage","Type":"image","Sortable":false,"Filterable":false},
+  {"Header":"تامین کننده","Accessor":"supplier","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"نام تخفیف","Accessor":"discountTitle","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"مقدار تخفیف","Accessor":"discountAmount","Type":"number","Sortable":false,"Filterable":false},
+  {"Header":"درصدی","Accessor":"discountIsPercent","Type":"bool","Sortable":false,"Filterable":false}
+]
+ 
+[
+{"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" محصول الزامی است"}]},
+{"Name":"productOfferId","Caption":"انتخاب سفارش","Type":"dynamicSelect","PlaceHolder":" سفارش را انتخاب کنید","Help":"","Order":0,"FetchConfig":{"api":"api/productOffers/selectOption","fetchFilters":["productId"]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" پیشنهاد محصول الزامی است"}]},
+{"Name":"discountId","Caption":"انتخاب تخفیف","Type":"dynamicSelect","PlaceHolder":" تخفیف را انتخاب کنید","Help":"مثلاً: یلدا","Order":0,"FetchConfig":{"api":"api/discounts/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" تخفیف الزامی است"}]}
+]
+
+//product offer tags
+[
+  {"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"نام محصول","Accessor":"productName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"عکس محصول","Accessor":"productImage","Type":"image","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"نام تامین کننده","Accessor":"supplierName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"عکس تامین کننده","Accessor":"supplierImage","Type":"image","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"متن تگ","Accessor":"tagName","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+]
+[
+{"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" محصول الزامی است"}]},
+{"Name":"productOfferId","Caption":"انتخاب سفارش","Type":"dynamicSelect","PlaceHolder":" سفارش را انتخاب کنید","Help":"","Order":0,"FetchConfig":{"api":"api/productOffers/selectOption","fetchFilters":["productId"]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" پیشنهاد محصول الزامی است"}]},
+{"Name":"tagId","Caption":"انتخاب تگ","Type":"dynamicSelect","PlaceHolder":" تگ را انتخاب کنید","Help":"مثلاً: یلدا","Order":0,"FetchConfig":{"api":"api/tags/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" تگ الزامی است"}]}
+]
+//roles
+[{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام نقش","Accessor":"name","Type":"text","Sortable":false,"Filterable":false,"Options":null}]
+//discountcodes
+ 
+[
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"کد تخفیف","Accessor":"code","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"مقدار تخفیف","Accessor":"amount","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"درصدی","Accessor":"isPercent","Type":"bool","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"تاریخ شروع","Accessor":"startDate","Type":"date","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"تاریخ پایان","Accessor":"endDate","Type":"date","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"آیدی مالک","Accessor":"userId","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"محدودیت استفاده","Accessor":"usageLimit","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"تعداد استفاده","Accessor":"usedCount","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"دارای اعتبار","Accessor":"isValid","Type":"bool","Sortable":false,"Filterable":false,"Options":null}
+]
+[
+{"Name":"code","Caption":"متن کد","Type":"text","PlaceHolder":" متن کد تخفیف را وارد کنید","Help":" هر متن دلخواهی می توان وارد کرد","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":" متن کد تخفیف الزامی است"}]},
+{"Name":"amount","Caption":"مقدار تخفیف","Type":"number","PlaceHolder":" مقدار را وارد کنید","Help":"","Order":0,"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" مقدار تخفیف الزامی است"}]},
+{"Name":"isPercent","Caption":"نوع تخفیف ","Type":"checkbox","PlaceHolder":"عدد وارد شده به درصد از مبلغ کم شود یا خیر","Help":"عدد وارد شده به درصد از مبلغ کم شود یا خیر","Order":0,"Rules":[]},
+{"Name":"startDate","Caption":"تاریخ شروع ","Type":"date","PlaceHolder":"تاریخ شروع اعتبار کد تخفیف","Help":"تاریخ شروع اعتبار کد تخفیف","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":" تاریخ شروع الزامی است"}]},
+{"Name":"endDate","Caption":"تاریخ پایان","Type":"date","PlaceHolder":"تاریخ پایان اعتبار کد تخفیف","Help":"تاریخ پایان اعتبار کد تخفیف","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":" تاریخ پایان الزامی است"}]},
+{"Name":"usageLimit","Caption":"محدودیت ","Type":"number","PlaceHolder":"محدودیت تعداد استفاده از کد","Help":"محدودیت تعداد استفاده از کد","Order":0,"Rules":[]},
+{"Name":"userId","Caption":"آیدی کاربر","Type":"number","PlaceHolder":"آیدی کاربری که می تواند از این کد استفاده کند","Help":"آیدی کاربری که می تواند از این کد استفاده کند","Order":0,"Rules":[]}
+]
+//payment methods
+[
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"درگاه","Accessor":"title","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"آنلاین","Accessor":"isOnline","Type":"bool","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"کانفیگ","Accessor":"configJson","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"ترتیب نمایش","Accessor":"displayOrder","Type":"number","Sortable":false,"Filterable":false,"Options":null}
+]
+
+ [
+{"Name":"title","Caption":"نام درگاه","Type":"text","PlaceHolder":" نام درگاه را وارد کنید","Help":" نام درگاه را وارد کنید","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":" نام درگاه  الزامی است"}]},
+{"Name":"code","Caption":"کد درگاه","Type":"text","PlaceHolder":"کد درگاه را وارد کنید","Help":"کد درگاه الزامی است","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"کد درگاه الزامی است"}]},
+{"Name":"isOnline","Caption":"فعال ","Type":"checkbox","PlaceHolder":"آیا این درگاه کار میکند؟","Help":"آیا این درگاه کار میکند؟","Order":0,"Rules":[]},
+{"Name":"configJson","Caption":"کانفیگ ","Type":"text","PlaceHolder":"کد جیسون مربوط به کانکشن درگاه","Help":"کد جیسون مربوط به کانکشن درگاه","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":" کد جیسون مربوط به کانکشن درگاه الزامی است"}]},
+{"Name":"displayOrder","Caption":"ترتیب","Type":"number","PlaceHolder":"ترتیب نمایش را مشخص کنید","Help":"اولویت درگاه را تغییر دهید","Order":0,"Rules":[]}
+]
+//payment
+[
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"سفارش","Accessor":"orderId","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"تاریخ پرداخت","Accessor":"paymentDate","Type":"datetime","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"مبلغ","Accessor":"amount","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"روش پرداخت","Accessor":"paymentMethod","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"وضعیت","Accessor":"status","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"شناسه تراکنش","Accessor":"transactionId","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+]
+[
+{"Name":"orderId","Caption":"شناسه سفارش","Type":"text","PlaceHolder":"آیدی سفارش","Help":"آیدی سفارشی که این پرداختی به اون تعلق داره","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"شناسه سفارش الزامی است"}]},
+{"Name":"amount","Caption":"مبلغ","Type":"price","PlaceHolder":"مبلغ پرداختی به عدد","Help":"مبلغی که در این تراکنش پرداخت شده","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"تراکنش پرداختی باید مبلغ داشته باشد"},{"Rule":"min","Condition":"1000","Message":"حداقل مبلغ پرداختی 1000 تومان است"}]},
+{"Name":"paymentMethod","Caption":"نوع پرداخت","Type":"dynamicSelect","FetchConfig" :{"api":"api/PaymentMethods/selectOption","fetchFilters":[]},"PlaceHolder":"درگاه پرداخت","Help":"نوع درگاه پرداخت را مشخص کنید","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"نوع درگاه پرداخت الزامی است"}]},
+{"Name":"status","Caption":"وضعیت پرداخت","Type":"text","PlaceHolder":"انتخاب وضعیت پرداخت","Help":"مشخص کنید که پرداخت موفقیت آمیز بوده یا نه","Order":0,"Rules":null},
+{"Name":"transactionId","Caption":"کد تراکنش","Type":"text","PlaceHolder":"کد تراکنش","Help":"کد تراکنش یا کد پیگیری ","Order":0,"Rules":null},
+{"Name":"paymentDate","Caption":"تاریخ پرداخت","Type":"date","PlaceHolder":"تاریخ پرداخت را مشخص کنید","Help":"تاریخ و زمان دقیق تراکنش","Order":0,"Rules":null}
+]
+//entity configs
+[
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام موجودیت","Accessor":"entityName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام فارسی","Accessor":"persianDisplayName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام انگلیسی","Accessor":"englishDisplayName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"پایانه/Api","Accessor":"endPoint","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+]
+{"Header":"عملیاتهای صفحه","Accessor":"actionsJson","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+{"Header":"جدول","Accessor":"columnsJson","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"فرم","Accessor":"formFieldsJson","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+{"Header":"آیکون","Accessor":"entityIconBase64","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+[
+{"Name":"entityName","Caption":"نام موجودیت صفحه","Type":"text","PlaceHolder":"مثلا :comments","Help":"برای واکشی کانفیگ صفحه به کار می رود","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"نام کانفیگ صفحه الزامی است"}]},
+{"Name":"persianDisplayName","Caption":"نام صفحه","Type":"text","PlaceHolder":"مثلا :نظرات","Help":"برای نمایش نام فارسی صفحه در بالای صفحه به کار می رود","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"نام صفحه به فارسی الزامی است"}]},
+{"Name":"englishDisplayName","Caption":"نام صفحه به انگلیسی","Type":"text","PlaceHolder":"برای نمایش در بالای صفحه","Help":"برای نمایش در بالای صفحه","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"نام صفحه به انگلیسی الزامی است"}]},
+{"Name":"endPoint","Caption":"پایانه ارتباطی/Api","Type":"text","PlaceHolder":"مثلا:blogs","Help":"نام واحد ارتباطی در api ها","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"نام پایانه/Api الزامی است"}]},
+
+{"Name":"entityIconBase64","Caption":"آیکون/SVG","Type":"textarea","PlaceHolder":"متن svg Base64: ","Help":"<svg xmlns=","Order":0,"Rules":null},
+{"Name":"columns","Caption":"ستون های جدول","Type":"textarea","PlaceHolder":"ستون های جدول نمایش را مشخص کنید","Help":"","Order":0,"Rules":null},
+{"Name":"actions","Caption":"عملیات صفحه","Type":"textarea","PlaceHolder":"['active','edit','delete','new']","Help":"عملیاتی که میتوانند انجام بدهند را مشخص کنید","Order":0,"Rules":null},
+{"Name":"formFields","Caption":"فیلد های فرم","Type":"textarea","PlaceHolder":"فیلد های مورد نیاز فرم را مشخص کنید","Help":"","Order":0,"Rules":null}
+]
+//shipping method
+ 
+ [
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام","Accessor":"title","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"توضیحات","Accessor":"description","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"قیمت","Accessor":"price","Type":"price","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"زمان تحویل/ساعت","Accessor":"estimatedDeliveryTime","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"پیش فرض","Accessor":"isDefault","Type":"bool","Sortable":false,"Filterable":false,"Options":null}
+]
+ [
+{"Name":"title","Caption":"نام نحوه ارسال","Type":"text","PlaceHolder":"مثلا :پیک","Help":"نحوه ی ارسال مرسوله را مشخص می کند","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"نام نحوه ارسال الزامی است"}]},
+{"Name":"description","Caption":"توضیحات ","Type":"text","PlaceHolder":"مثلا :استفاده از باربری تهران","Help":"توضیح کوتاهی در مورد نحوه ارسال بدهید","Order":0,"Options":null,"Rules":[]},
+{"Name":"price","Caption":"هزینه ارسال","Type":"price","PlaceHolder":"200,000 تومان","Help":"هزینه ارسال مستقیم به قیمت پایانی فاکتور اضافه می گردد","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"هزینه ارسال الزامی است"}]},
+{"Name":"estimatedDeliveryTime","Caption":"تخمین فاصله زمانی","Type":"number","PlaceHolder":"مثلا:4","Help":"مفهوم می تواند به روز یا ساعت باشد","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"زمان ارسال الزامی است"}]},
+{"Name":"isDefault","Caption":"پیش فرض","Type":"checkbox","PlaceHolder":"","Help":"اگر کاربر نحوه ارسال را انتخاب نکند این نوع ارسال پیش فرض قرار گیرد","Order":0,"Rules":[]}
+]
+//special offers 
+ [
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام محصول","Accessor":"productName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"عکس محصول","Accessor":"productImage","Type":"image","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نام تامین کننده","Accessor":"supplierName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"تاریخ شروع","Accessor":"startDate","Type":"date","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"تاریخ پایان","Accessor":"endDate","Type":"date","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"ترتیب نمایش","Accessor":"displayOrder","Type":"number","Sortable":false,"Filterable":false,"Options":null}
+]
+ [
+{"Name":"productId","Caption":"انتخاب محصول","Type":"dynamicSelect","PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" محصول الزامی است"}]},
+{"Name":"productOfferId","Caption":"انتخاب سفارش","Type":"dynamicSelect","PlaceHolder":" سفارش را انتخاب کنید","Help":"","Order":0,"FetchConfig":{"api":"api/productOffers/selectOption","fetchFilters":["productId"]},"Options":[],"Rules":[{"Rule":"required","Condition":"true","Message":" پیشنهاد محصول الزامی است"}]},
+{"Name":"discountId","Caption":"انتخاب تخفیف ","Type":"dynamicSelect","FetchConfig":{"api":"api/discounts/selectOption","fetchFilters":[]},"PlaceHolder":"مثلا :یلدا","Help":"تخفیف خاصی که می خواهید بر روی سفارش شما اعمال بشه رو انتخاب کنید","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":" تخفیف الزامی است"}]},
+{"Name":"startDate","Caption":"زمان شروع","Type":"date","PlaceHolder":"انتخاب تاریخ","Help":"زمان شروع پیشنهاد ویژه","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"زمان شروع الزامی است"}]},
+{"Name":"endDate","Caption":"زمان پایان","Type":"date","PlaceHolder":"انتخاب تاریخ","Help":"زمان پایان پیشنهاد ویژه","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"زمان پایان الزامی است"}]},
+{"Name":"displayOrder","Caption":"ترتیب نمایش","Type":"number","PlaceHolder":"","Help":"در صفحه اصلی به ترتیب این اولویت نمایش داده میشود","Order":0,"Rules":[]}
+]
+//landing slides
+ 
+ [
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":" عکس","Accessor":"banner","Type":"image","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"آدرس صفحه","Accessor":"pageUrl","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+]
+ [
+{"Name":"bannerUrl","Caption":"انتخاب بنر","Type":"file","PlaceHolder":"انتخاب بنر","Help":"عکسی که انتظار می رود در صفحه اصلی دیده شود","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب عکس الزامی است"}]},
+{"Name":"firstUrl","Caption":"آدرس اول","Type":"text","PlaceHolder":"آدرس اول مقصد","Help":"با کلیک بر روی عکس به چه آدرسی برود ؟","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"آدرس صفحه اول الزامی است"}]}
+{"Name":"secondUrl","Caption":"آدرس دوم","Type":"text","PlaceHolder":"آدرس دوم مقصد","Help":"با کلیک بر روی عکس به چه آدرسی برود ؟","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"آدرس صفحه دوم الزامی است"}]}
+{"Name":"bannerTitle","Caption":"عنوان بنر","Type":"text","PlaceHolder":"عنوان بنر","Help":"عنوان بنر","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"آدرس صفحه مقصد الزامی است"}]}
+{"Name":"bannerDescription","Caption":"توضیحات بنر","Type":"text","PlaceHolder":"توضیحات بنر","Help":"توضیحات بنر","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"توضیحات بنر الزامی است"}]}
+]
+//rates
+[
+{"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"کاربر","Accessor":"userName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"نوع","Accessor":"targetType","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"شناسه هدف","Accessor":"targetId","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+{"Header":"امتیاز","Accessor":"rateValue","Type":"rate","Sortable":false,"Filterable":false,"Options":null}
+]
+ 
+ [
+  {"Name":"userId","Caption":"کاربر","Type":"dynamicSelect","FetchConfig":{"api":"api/Users/selectOption","fetchFilters":[]},"PlaceHolder":"کاربر مد نظر","Help":"مثلاً:علی این نظر را داده","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"کاربر الزامی است"}]},
+  {"Name":"targetType","Caption":"دسته‌بندی مورد نظر","Type":"select","Options": [{ "label":"Blog","value":1 },{ "label":"Product","value":2 } , { "label":"Supplier","value":3 }],"PlaceHolder":"دسته را انتخاب کنید","Help":"دسته را انتخاب کنید","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب دسته الزامی است"}]},
+  {"Name":"targetId","Caption":"شناسه هدف","Type":"number","PlaceHolder":"انتخاب شناسه هدف","Help":"شناسه محصول یا مقاله یا تامین کننده را وارد کنید","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"شناسه هدف الزامی است"}]},
+  {"Name":"value","Caption":"امتیاز","Type":"rate","PlaceHolder":"از یک تا پنج امتیاز بدید","Help":"از یک که پایینترین امتیاز است تا 5 بالا ترین امتیاز","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"امتیاز الزامی است"}]}
+]
+//userAddress
+[
+  {"Header":"\u0634\u0646\u0627\u0633\u0647","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"کاربر","Accessor":"userName","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"\u0634\u0647\u0631","Accessor":"city","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"\u0627\u0633\u062A\u0627\u0646","Accessor":"state","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"\u0622\u062F\u0631\u0633 \u06A9\u0627\u0645\u0644","Accessor":"fullAddress","Type":"textarea","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"\u067E\u06CC\u0634\u200C\u0641\u0631\u0636","Accessor":"isDefault","Type":"bool","Sortable":false,"Filterable":false,"Options":null}
+]
+  [
+{"Name":"userId","Caption":"شناسه کاربر","Type":"dynamicSelect","FetchConfig":{"api":"api/Users/selectOption","fetchFilters":[]},"PlaceHolder":"شناسه کاربر را وارد کنید","Help":"در صورتی که انتخاب نکنید برای خودتان این آدرس ثبت میشود","Order":0,"Options":null,"Rules":[]},
+{"Name":"name","Caption":"نام آدرس","Type":"text","PlaceHolder":"نام آدرس را وارد کنید","Help":"برای سازماندهی بهتر چند آدرس به کار میرود","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"شماره تماس الزامی است"}]},
+{"Name":"phoneNumber","Caption":"شماره تماس","Type":"phoneNumber","PlaceHolder": "شماره تماس را وارد کنید","Help":"09121234567","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"شماره تماس الزامی است"}]},
+{"Name":"city","Caption":"شهر","Type":"text","PlaceHolder":"نام شهر","Help":"مثلاً: تهران","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"نام شهر الزامی است"}]},
+{"Name":"state","Caption": "استان","Type":"text","PlaceHolder":"نام استان","Help":"مثلاً: تهران","Order":0,"Rules":[{"Rule":"required","Condition":"true","Message":"نام استان الزامی است"}]},
+{"Name":"postalCode","Caption":"کد پستی","Type":"text","PlaceHolder":"کد پستی را وارد کنید","Help":"مثلاً: 1234567890","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"کد پستی الزامی است"}]},
+{"Name":"fullAddress","Caption":"آدرس کامل","Type":"textarea","PlaceHolder":"آدرس کامل را وارد کنید","Help":"مثلاً: خیابان آزادی، پلاک 12","Order":0,"FetchConfig":null,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"آدرس کامل الزامی است"}]}
+ ]
+ //product specifications
+ [
+  {"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"نام کالا","Accessor":"productName","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"مشخصه","Accessor":"key","Type":"text","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"مقدار","Accessor":"value","Type":"text","Sortable":false,"Filterable":false,"Options":null}
+]
+[
+{"Name":"productId","Caption":"شناسه کالا","Type":"dynamicSelect","FetchConfig":{"api":"api/Products/selectOption","fetchFilters":[]},"PlaceHolder":" محصول را انتخاب کنید","Help":"مثلاً: تلویزیون سامسونگ 55 اینچ","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب کالا الزامی است"}]},
+{"Name":"key","Caption":"مشخصه","Type":"text","PlaceHolder":"مشخصه را وارد کنید","Help":"صفت یا کلمه کلیدی مربوطه","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"نام مشخصه الزامی است"}]},
+{"Name":"value","Caption":"مقدار","Type":"text","PlaceHolder": "مقدار مشخصه را وارد کنید","Help":"مقدار صفت این محصول","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"مقدار مشخصه الزامی است"}]}
+]
+ //blog tags
+ [
+  {"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"نام تگ","Accessor":"tagName","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"عنوان فارسی مقاله","Accessor":"blogTitleFa","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"عنوان انگلیسی مقاله","Accessor":"blogTitleEn","Type":"text","Sortable":false,"Filterable":false}
+  ]
+ 
+[
+{"Name":"blogId","Caption":"شناسه مقاله","Type":"dynamicSelect","FetchConfig":{"api":"api/blogs/selectOption","fetchFilters":[]},"PlaceHolder":" مقاله را انتخاب کنید","Help":"به چه مقاله ای تگ وارد شود ؟","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب کالا الزامی است"}]},
+{"Name":"tagId","Caption":"مشخصه","Type":"dynamicSelect","FetchConfig":{"api":"api/tags/selectOption","fetchFilters":[]},"PlaceHolder":"تگ را انتخاب کنید","Help":"چه تگی به مقاله وارد شود؟","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"نام مشخصه الزامی است"}]},
+ ]
+  //user tags
+ [
+  {"Header":"شناسه","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},
+  {"Header":"نام تگ","Accessor":"tagName","Type":"text","Sortable":false,"Filterable":false},
+  {"Header":"نام کاربر","Accessor":"user","Type":"text","Sortable":false,"Filterable":false},
+   ]
+ 
+[
+{"Name":"blogId","Caption":"شناسه کالا","Type":"dynamicSelect","FetchConfig":{"api":"api/blogs/selectOption","fetchFilters":[]},"PlaceHolder":" مقاله را انتخاب کنید","Help":"به چه مقاله ای تگ وارد شود ؟","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"انتخاب کالا الزامی است"}]},
+{"Name":"tagId","Caption":"مشخصه","Type":"dynamicSelect","FetchConfig":{"api":"api/tags/selectOption","fetchFilters":[]},"PlaceHolder":"تگ را انتخاب کنید","Help":"چه تگی به مقاله وارد شود؟","Order":0,"Options":null,"Rules":[{"Rule":"required","Condition":"true","Message":"نام مشخصه الزامی است"}]},
+ ]
+ //blog tag 
+ [{"Header":"\u0634\u0646\u0627\u0633\u0647","Accessor":"id","Type":"number","Sortable":false,"Filterable":false,"Options":null},{"Header":"\u0646\u0627\u0645 \u062A\u06AF","Accessor":"tagName","Type":"text","Sortable":false,"Filterable":false,"Options":null},{"Header":"\u0639\u0646\u0648\u0627\u0646 \u0641\u0627\u0631\u0633\u06CC \u0645\u0642\u0627\u0644\u0647","Accessor":"blogTitleFa","Type":"text","Sortable":false,"Filterable":false,"Options":null},{"Header":"\u0639\u0646\u0648\u0627\u0646 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u0645\u0642\u0627\u0644\u0647","Accessor":"blogTitleEn","Type":"text","Sortable":false,"Filterable":false,"Options":null}]

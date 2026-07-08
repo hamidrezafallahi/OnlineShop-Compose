@@ -1,0 +1,209 @@
+{
+  "brand":{
+    "name":"برند",
+    "icon":"آیکون"
+  },
+    "blog":{
+    "author":"نویسنده",
+    "tableOfContents":"فهرست مطالب",
+    "introduction":"مقدمه",
+    "content":"محتوا",
+    "conclusion":"نتیجه‌گیری",
+    "share":"اشتراک گذاری",
+    "createdAt":"تاریخ ایجاد",
+    "updatedAt":"آخرین ویرایش"
+  },
+  "header":{
+    "men":"مردانه",
+    "women":"زنانه",
+    "discounts":"تخفیفات",
+    "blogs":"مقالات",
+    "landing page":"بازگشت به صفحه اصلی",
+    "register":"ثبت نام / ورود",
+    "shopping cart":"سبد خرید",
+    "theme":"تغییر تم",
+    "lang":"تغییر زبان"
+  },
+  "title": {
+    "notification": "اعلان ها"
+  },
+  "homePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page"
+  },
+  "general": {
+    "changePassWord": "تغییر رمز عبور",
+    "save": "ذخیره",
+    "new":"جدید",
+    "edit":"ویرایش",
+    "list":"لیست",
+    "default":"پیش فرض" ,
+    "apply":"ثبت",
+    "delete":"حذف",
+    "paymentMethod":"روش پرداخت",
+    "loginFirst":"ابتدا وارد شوید"
+
+  },
+  "register": {
+    "enter":"ورود",
+    "enterEmail": "برای ورود ایمیل خود را وارد کنید",
+    "email":"ایمیل",
+    "emailPlaceHolder":"m@example.com",
+    "password":"پسوورد",
+    "forgotPassword":"رمز عبور خود را فراموش کردید ؟ ",
+    "signUp":"ثبت نام",
+    "dotHaveAnyAccount":"اکانتی ندارید ؟",
+    "startSignUp":"برای ثبت نام ایمیل خود را وارد کنید",
+    "emailRequired":"ایمیل الزامی است",
+    "invalidEmail":"فرمت ایمیل صحیح نیست",
+    "phoneRequired":"شماره موبایل الزامی است",
+    "invalidPhone":"فرمت شماره صحیح نیست (۰۹xxxxxxxxx)",
+    "passwordRequired": "رمز عبور الزامی است",
+    "passwordMinLength":"حداقل ۸ کاراکتر",
+    "fullNameRequired":"نام کامل الزامی است",
+    "fullName":"نام و نام خانوادگی",
+    "userDescription":"توضیحات کاربر",
+    "phoneNumber":"شماره تلفن همراه",
+    "phoneNumberPlaceholder":"********09",
+    "register":"ثبت نام",
+    "havingAccount":"من اکانت دارم",
+    "rememberMe":"مرا به خاطر بسپار",
+    "userImage":"عکس کاربر",
+    "success":"ثبت نام با موفقیت انجام شد",
+    "failed":"ثبت نام با خطا مواجه شد"
+  },
+  "shoppingCart":{
+    "header":{
+      "yourCart":"سبد خرید شما",
+      "items":"اقلام",
+      "reviewBeforeCheckout":"قبل از سفارش گذاری مجددا اقلام را بررسی کنید",
+      "totalDiscount":"تخفیف کلی",
+      "shipping":"هزینه ارسال",
+      "total":"مبلغ کل",
+      "freeShippingOver":"ارسال رایگان برای سفارشات بالاتر از دو میلیون تومان است",
+      "checkout":"سفارش گذاری",
+      "viewCart":"مشاهده سبد خرید"
+    },
+    "ShoppingCart":"سبد خرید",
+    "ItemsInYourCart":"تعداد اقلام در سبد خرید شما",
+    "days":"روز",
+    "standardShipping":"نوع ارسال استاندارد",
+    "shippingMethod":"نوع ارسال",
+    "reviewYourCartDetailsAndShippingInformation":"لطفا جزییات سبد و نحوه ارسال را مطالعه بفرمایید",
+    "shoppingCartSummary":"جمع سبد خرید",
+    "promoCode":"کد تخفیف",
+    "promoCodePlaceHolder":"کد تخفیف را وارد کنید",
+    "subTotal":"مبلغ سفارش",
+    "shipping":"هزینه ارسال",
+    "total":"مبلغ کل",
+    "freeReturns":"مهلت تست 30 روز",
+    "securePayment":"پرداخت امن",
+    "fastDelivery":"ارسال سریع",
+    "placeOrder":"سفارش گذاری",
+    "chooseAddress":"ابتدا آدرس انتخاب کنید",
+    "emptyCart":"سبد خرید شما خالی است",
+    "promoCodeSubmit":"کد تخفیف اعمال شد",
+    "discountCodeAmount":"میزان تخفیف از کد",
+    "totalDiscount":"مبلغ تخفیف محصولات"
+  },
+  "address":{
+     "addresses":"آدرس ها",
+     "addFirstAddress":"اولین آدرس خود را ثبت کنید",
+     "addNewAddress":"اضافه کردن آدرس جدید",
+     "name":"نام",
+     "phoneNumber":"شماره تماس",
+     "state":"استان",
+     "city":"شهر",
+     "fullAddress":"آدرس کامل",
+     "postalCode":"کد پستی",
+     "saveAddress":"ذخیره آدرس",
+     "cancel":"انصراف",
+     "chooseAsDefault":"انتخاب به عنوان پیشفرض",
+     "editAddress":"ویرایش آدرس"
+
+  },
+  "checkout":{
+    "proceedToCheckout":"ارسال به درگاه پرداخت",
+    "title":"سفارشات",
+        "landing page":"بازگشت به صفحه اصلی"
+
+  },
+  "payment": {
+    "verifying": "در حال تأیید پرداخت...",
+    "waiting": "لطفاً چند لحظه صبر کنید",
+    "redirect": "در حال انتقال به درگاه",
+
+    "paymentFailed": "پرداخت ناموفق بود",
+    "payment_issue": "در انجام پرداخت مشکلی پیش آمده است",
+    "what_happened": "چه اتفاقی افتاد؟",
+    "error_code": "کد خطا",
+    "payment_error": "خطای پرداخت",
+
+    "insufficient_funds": "موجودی کافی نیست",
+    "card_declined": "کارت رد شد",
+    "expired_card": "کارت منقضی شده است",
+    "network_error": "خطای شبکه",
+    "timeout": "زمان پرداخت به پایان رسید",
+
+    "solutions_title": "راه‌حل‌های پیشنهادی",
+    "retry_title": "تلاش مجدد پرداخت",
+    "retry_desc": "اطمینان حاصل کنید که اطلاعات کارت بانکی صحیح است.",
+    "alternative_title": "روش پرداخت دیگر",
+    "alternative_desc": "می‌توانید از روش پرداخت دیگری استفاده کنید.",
+    "support_title": "تماس با پشتیبانی",
+    "support_desc": "در صورت ادامه مشکل با پشتیبانی تماس بگیرید.",
+
+    "order_title": "سفارش شما",
+    "order_number": "شماره سفارش",
+    "failed_status": "پرداخت ناموفق",
+    "order_notice": "سفارش شما به طور موقت رزرو شده است. لطفاً ظرف ۲۴ ساعت پرداخت را تکمیل کنید.",
+
+    "retry_button": "تلاش مجدد پرداخت",
+    "back_to_checkout": "بازگشت به صفحه پرداخت",
+    "view_cart": "مشاهده سبد خرید",
+    "back_home": "بازگشت به خانه",
+
+    "final_confirm_title": "تأیید نهایی سفارش",
+    "final_confirm_desc": "لطفاً اطلاعات سفارش خود را بررسی و تأیید کنید",
+    "shipping_address": "آدرس ارسال",
+    "shipping_method": "روش ارسال",
+    "payment_method": "روش پرداخت",
+    "items_total": "جمع کالاها",
+    "shipping_cost": "هزینه ارسال",
+    "discount": "تخفیف",
+    "final_amount": "مبلغ نهایی",
+    "cancel": "انصراف",
+    "confirm_and_pay": "تأیید و پرداخت",
+    "connecting_gateway": "در حال اتصال به درگاه...",
+    "currency": "تومان"
+  },
+   "orderStatus": {
+    "pending": "در انتظار تایید",
+    "confirmed": "تایید شده",
+    "paid": "پرداخت شده",
+    "shipped": "ارسال شده",
+    "delivered": "تحویل داده شده",
+    "cancelled": "لغو شده"
+  },
+  "comments":{
+    "yourComment":"نظر شما",
+        "yourRate":"امتیاز شما"
+
+  },
+  "product":{
+    "width":"عرض",
+    "height":"ارتفاع",
+    "depth":"عمق",
+    "weight":"وزن"
+  },
+  "category":{
+    "subCategories":"زیر مجموعه این دسته بندی",
+    "noSubCategory":"زیر دسته بندی ای وجود ندارد",
+    "noCategorySupplier":"تامین کننده ای وجود ندارد",
+    "goToParent":"برو به دسته بندی والد"
+  },
+  "common":{
+    "loading":"در حال بارگذاری"
+  }
+ 
+}

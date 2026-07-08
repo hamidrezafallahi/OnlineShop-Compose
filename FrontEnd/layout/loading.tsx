@@ -1,0 +1,7 @@
+import React from 'react';
+
+export default function Loading() {
+  return (
+    <div className="mx-auto mb-4 border-primary border-t-2 border-b-2 rounded-full w-16 h-16 animate-spin"></div>
+  );
+}

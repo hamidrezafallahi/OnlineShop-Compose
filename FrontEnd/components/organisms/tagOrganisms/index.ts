@@ -1,0 +1,1 @@
+export { RelatedProductByTag } from './relatedProductByTag';

@@ -1,0 +1,183 @@
+﻿using Application.Dtos;
+using Application.Queries;
+using MediatR;
+using OnlineShop.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Common;
+using Microsoft.AspNetCore.Http;
+using OnlineShop.Domain.Entities;
+
+ 
+    public class GetCategorieQueryHandler(ICategoryRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) : 
+        IRequestHandler<GetAllCategoriesQuery, ServiceResult<ListDto<CategoryDto>>>,
+        IRequestHandler<GetCategoryByIdQuery, ServiceResult<CategoryDto>>,
+        IRequestHandler<GetAllCategoriesIdQuery, ServiceResult<IEnumerable<IdDto>>>
+    {
+                public async Task<ServiceResult<ListDto<CategoryDto>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+        {
+            int pageNumber = request.page ?? 1;
+            int pageSize = request.pageSize ?? 10;
+            IQueryable<Category> query;
+            if (request.IsShowInLanding.HasValue && request.IsShowInLanding == true) {
+                query = _repo.Query(c => c.IsShowInLanding);
+            } else if (request.IsShowInLanding.HasValue && request.IsShowInLanding == false) 
+            {
+                query = _repo.Query(c => !c.IsShowInLanding);
+            } else if (request.Q is not null && request.Q.Length > 0)
+            {
+                query = _repo.Query(b => b.IsActive && (b.CategoryEnglishDesc.Contains(request.Q) || b.CategoryPersianDesc.Contains(request.Q) || b.EnglishName.Contains(request.Q) || b.PersianName.Contains(request.Q)));
+            }
+            else if(request.OnlyActives.HasValue && request.OnlyActives == false)
+            {
+                query = _repo.Query();
+            }
+            else
+            {
+                query = _repo.Query(b => b.IsActive);
+            }
+            
+            
+
+
+            int totalCount = await query.CountAsync(cancellationToken);
+            var pagedCategories = await query
+        .Skip((pageNumber - 1) * pageSize).Take(pageSize)
+                .ToListAsync(cancellationToken);
+            var req = _accessor.HttpContext?.Request;
+            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+
+            var flatDtos = pagedCategories.Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                PersianName=c.PersianName,
+                CategoryPersianDesc=c.CategoryPersianDesc,
+                EnglishName=c.EnglishName,
+                CategoryEnglishDesc=c.CategoryEnglishDesc,
+                CategoryCover = !string.IsNullOrEmpty(c.ImageUrl)
+                    ? $"{domainUrl}/{c.ImageUrl.TrimStart('/')}"
+                    : null,
+                IsShowInLanding=c.IsShowInLanding,
+                IsActive=c.IsActive,
+                ParentCategoryId = c.ParentCategoryId
+            }).ToList();
+
+
+            var categoryTree = request.IsShowInLanding.HasValue ? flatDtos: CategoryTreeBuilder.BuildTree(flatDtos);
+
+            dynamic? config = null;
+
+            if (request.ByConfig == true)
+            {
+                config = await _configRepo.GetByEntityNameAsync("categories");
+            }
+
+            var resultDto = new ListDto<CategoryDto>
+            {
+                Records = categoryTree,
+                ColumnsJson = config?.ColumnsJson,
+                ActionsJson = config?.ActionsJson,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+
+            return ServiceResult<ListDto<CategoryDto>>.Ok(resultDto);
+        }
+                public async Task<ServiceResult<CategoryDto>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+        {
+            var req = _accessor.HttpContext.Request;
+            string domainUrl = $"{req.Scheme}://{req.Host}";
+            var allCategories = await _repo.Query()
+                 .Where(c => !c.IsDeleted)
+                 .Select(cat => new CategoryDto
+                 {
+                     CategoryEnglishDesc = cat.CategoryEnglishDesc,
+                     CategoryPersianDesc = cat.CategoryPersianDesc,
+                     EnglishName = cat.EnglishName,
+                     Id = cat.Id,
+                     CategoryCover = $"{domainUrl}/{cat.ImageUrl.TrimStart('/')}",
+                     IsShowInLanding = cat.IsShowInLanding,
+                     ParentCategoryId = cat.ParentCategoryId,
+                     PersianName = cat.PersianName,
+                 })
+
+                 .ToListAsync(cancellationToken);
+
+            var category = allCategories.FirstOrDefault(c => c.Id == request.Id);
+            if (category == null)
+                return ServiceResult<CategoryDto>.Failed("Category not found");
+            category.SubCategories = CategoryTreeBuilder.BuildTree(allCategories, category.Id);
+            return ServiceResult<CategoryDto>.Ok(category);
+        }
+                public async Task<ServiceResult<IEnumerable<IdDto>>> Handle(GetAllCategoriesIdQuery request,CancellationToken cancellationToken)
+        {
+            var categoryIds = await _repo.GetAllIds();
+            var idDtos = categoryIds.Select(p => new IdDto
+            {
+                Id = p
+            }).ToList();
+
+            return ServiceResult<IEnumerable<IdDto>>.Ok(idDtos);
+        }
+    }
+    public class GetParent4selectOptionQueryHandler(ICategoryRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) : IRequestHandler<GetParent4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>
+    {
+        public async Task<ServiceResult<ListDto<SelectOptionDto>>> Handle(GetParent4selectOptionQuery request, CancellationToken ct)
+        {
+            int pageNumber = request.page ?? 1;
+            int pageSize = request.pageSize ?? 10;
+            int currentId = request.Id ?? 0;
+            IQueryable<Category> query;
+            var excludeIds = currentId == 0
+        ? new List<int>()
+        : await GetAllDescendants(currentId, ct); 
+
+             query = _repo.Query(c => c.IsActive && !excludeIds.Contains(c.Id));
+            int totalCount = await query.CountAsync(c => c.IsActive && !excludeIds.Contains(c.Id));
+        var pagedCategories = await query
+    .Skip((pageNumber - 1) * pageSize).Take(pageSize)
+            .ToListAsync(ct);
+        var req = _accessor.HttpContext?.Request;
+        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+
+        var flatDtos = pagedCategories.Select(c => new SelectOptionDto
+        {
+            Id = c.Id,
+            PersianLabel = c.PersianName,
+            EnglishLabel=c.EnglishName
+        }).ToList();
+
+
+            var resultDto = new ListDto<SelectOptionDto>
+            {
+                Records = flatDtos,
+                ColumnsJson = null,
+                ActionsJson = null,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+
+            return ServiceResult<ListDto<SelectOptionDto>>.Ok(resultDto);
+
+        }
+        private async Task<List<int>> GetAllDescendants(int categoryId, CancellationToken ct)
+        {
+            var descendants = new HashSet<int> { categoryId };
+            var queue = new Queue<int>();
+            queue.Enqueue(categoryId);
+
+            while (queue.Any())
+            {
+                var parentId = queue.Dequeue();
+                var children = await _repo.Query(c => c.ParentCategoryId == parentId)
+                    .Select(c => c.Id).ToListAsync(ct);
+
+                foreach (var childId in children)
+                    if (descendants.Add(childId))
+                        queue.Enqueue(childId);
+            }
+            return descendants.ToList();
+        }
+    };
+

@@ -1,0 +1,3 @@
+interface IProps{
+    locale:string
+}

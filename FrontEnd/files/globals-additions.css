@@ -1,0 +1,82 @@
+/*
+ * ─────────────────────────────────────────────────────────
+ *  ADDITIONS TO globals.css
+ *  Drop these rules into your existing globals.css file.
+ *  They power the perfume landing page design system.
+ * ─────────────────────────────────────────────────────────
+ */
+
+/* Google Fonts import — Cormorant Garamond for display text */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── Design tokens ── */
+:root {
+  --clr-ink:     #141210;   /* near-black charcoal */
+  --clr-gold:    #C8955A;   /* warm gold accent    */
+  --clr-blush:   #E8C4B0;   /* soft blush          */
+  --clr-sage:    #8B9E8A;   /* muted sage          */
+  --clr-cream:   #F7F3EE;   /* ivory background    */
+  --clr-warm-10: #1e1a16;   /* dark warm surface   */
+}
+
+/* ── Utility: hide scrollbar but allow scroll ── */
+.hidden-show-scrollbar::-webkit-scrollbar { display: none; }
+.hidden-show-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Smooth scrolling ── */
+html { scroll-behavior: smooth; }
+
+/* ── Base body defaults ── */
+body {
+  font-family: 'Inter', 'Vazirmatn', sans-serif;
+  background-color: var(--clr-cream);
+  color: var(--clr-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Cormorant display utility ── */
+.font-display {
+  font-family: 'Cormorant Garamond', 'Titr', serif;
+}
+
+/* ── Reduced motion support ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Focus visible ring ── */
+:focus-visible {
+  outline: 2px solid var(--clr-gold);
+  outline-offset: 3px;
+}
+
+/* ── Smooth image loading ── */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ── Carousel drag cursor ── */
+[data-draggable] { cursor: grab; }
+[data-draggable]:active { cursor: grabbing; }
+
+/*
+ * Tailwind custom color extension (add to tailwind.config.js):
+ *
+ * extend: {
+ *   colors: {
+ *     ink:   '#141210',
+ *     gold:  '#C8955A',
+ *     blush: '#E8C4B0',
+ *     sage:  '#8B9E8A',
+ *     cream: '#F7F3EE',
+ *   },
+ *   fontFamily: {
+ *     display: ["'Cormorant Garamond'", 'serif'],
+ *   }
+ * }
+ */
