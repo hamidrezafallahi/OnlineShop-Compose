@@ -1,0 +1,7 @@
+{
+  "ConnectionStrings": {
+    "ARIANERP cloud": "Server=customerdb-new\\ARIANERP;Database=Falahi;User ID=Arianerp;Password=ariansystem01erp;MultipleActiveResultSets=true;Encrypt=false",
+    "ARIAN": "Server=(localdb)\\MSSQLLocalDB;Database=YourDatabaseName;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=False;",
+    "laptop": "Server=HAMIDREZA-FALLA\\SQLEXPRESS;Database=OnlineShopDb;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=false;TrustServerCertificate=true"
+  }
+}

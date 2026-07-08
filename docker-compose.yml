@@ -17,8 +17,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-    # Only expose this to the host if you need to connect from outside
-    # (e.g. SSMS/Azure Data Studio on your own machine). Remove in a locked-down prod setup.
     ports:
       - "1433:1433"
 
@@ -30,13 +28,6 @@ services:
     depends_on:
       sql:
         condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__DefaultConnection: "Server=sql,1433;Database=OnlineShopDb;User Id=sa;Password=${SQL_SA_PASSWORD};MultipleActiveResultSets=true;Encrypt=false;TrustServerCertificate=true"
-      ConnectionStrings__HangfireConnection: "Server=sql,1433;Database=HangfireDb;User Id=sa;Password=${SQL_SA_PASSWORD};MultipleActiveResultSets=true;Encrypt=false;TrustServerCertificate=true"
-      Jwt__Key: "${JWT_KEY}"
-      Jwt__Issuer: "OnlineShop"
-      Jwt__Audience: "OnlineShopUsers"
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/health || exit 1"]
       interval: 15s
@@ -48,10 +39,6 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-    # Not published to the host on purpose - only the frontend/nginx should
-    # reach it over the internal network. Add "ports: - 8080:8080" temporarily
-    # if you want to hit the API directly for debugging.
-
   frontend:
     build:
       context: ./FrontEnd
@@ -64,7 +51,7 @@ services:
     ports:
       - "80:3000"
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL}"
       INTERNAL_API_URL: "${INTERNAL_API_URL}"
       API_URL: "${API_URL}"
