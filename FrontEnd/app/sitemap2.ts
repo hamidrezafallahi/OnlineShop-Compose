@@ -1,6 +1,6 @@
 // import type { MetadataRoute } from 'next';
 
-// const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// const BASE_URL = process.env.INTERNAL_API_URL;
 
 // type ChangeFreq = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
 

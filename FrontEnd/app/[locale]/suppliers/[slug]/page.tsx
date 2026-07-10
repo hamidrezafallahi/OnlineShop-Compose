@@ -4,7 +4,7 @@ import SupplierTemplate from '@components/templates/supplierTemplate';
 import { ApiResponse } from '@models/base';
 import { IUser } from '@models/user';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 // ===== 1. تولید مسیرهای استاتیک =====
 // export async function generateStaticParams() {

@@ -6,7 +6,7 @@ import { SimpleProductCard } from '@components/molecules/productCard';
 import { IProduct } from '@lib/product';
 import { ApiResponse } from '@models/base';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function BrandProducts({ id }: { id: number }) {
   const response = await fetch(

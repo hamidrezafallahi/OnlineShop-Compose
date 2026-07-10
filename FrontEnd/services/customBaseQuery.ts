@@ -11,8 +11,6 @@ import {
   showErrorToast,
 } from '@utils/core';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
 const mutex = new Mutex();
 
 export async function baseQueryByToken(
@@ -75,13 +73,10 @@ async function baseQueryWithAuth(
   extraOptions: {}
 ) {
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl,
-
+    baseUrl:"",
     credentials: "include",
-
     prepareHeaders: (headers) => {
       const token = getTokens("candyAccess");
-
       if (token?.val) {
         headers.set(
           "Authorization",

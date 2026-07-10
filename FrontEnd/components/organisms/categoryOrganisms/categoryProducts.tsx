@@ -6,7 +6,7 @@ import { SimpleProductCard } from '@components/molecules/productCard';
 import { ApiResponse } from '@models/base';
 import { ILandingProduct } from '@models/product';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function CategoryProducts({id}:{id:number}) {
     const response = await fetch(`${baseUrl}api/Products/getProductByCategoryId/${id}`,

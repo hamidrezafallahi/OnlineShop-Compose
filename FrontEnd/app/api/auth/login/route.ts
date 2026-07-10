@@ -1,14 +1,12 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
     const response = await fetch(
-      `${baseUrl}api/Identity/login`,
+      `api/Identity/login`,
       {
         method: "POST",
         headers: {

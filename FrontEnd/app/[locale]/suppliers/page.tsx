@@ -5,7 +5,6 @@ import SupplierCard from '@components/molecules/supplierCard';
 import { getAll } from '@lib/getAll';
 import { IUser } from '@models/user';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 type Props = {
   params: Promise<{ locale: string }>;
 };

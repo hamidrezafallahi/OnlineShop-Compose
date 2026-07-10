@@ -4,7 +4,7 @@ using OnlineShop.Infrastructure;
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.OpenApi;
-
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Api
 {
@@ -14,11 +14,11 @@ namespace Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-             builder.Services.AddControllers();
+            builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
@@ -35,6 +35,17 @@ namespace Api
             });
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddHealthChecks();
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+                {
+                    options.ForwardedHeaders =
+                        ForwardedHeaders.XForwardedFor |
+                        ForwardedHeaders.XForwardedProto |
+                        ForwardedHeaders.XForwardedHost;
+
+                    // چون Nginx داخل Docker است
+                    options.KnownNetworks.Clear();
+                    options.KnownProxies.Clear();
+                });
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.GetName().Name.Contains("Application"))
                 .ToArray();
@@ -49,8 +60,8 @@ namespace Api
                     var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
                     return RateLimitPartition.GetFixedWindowLimiter(ip, _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 100,       
-                        Window = TimeSpan.FromMinutes(1), 
+                        PermitLimit = 100,
+                        Window = TimeSpan.FromMinutes(1),
                         QueueLimit = 5
                     });
                 });
@@ -99,13 +110,15 @@ namespace Api
 
 
             var app = builder.Build();
+app.UseForwardedHeaders();
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseCors("AllowFrontend");
             }
-            app.UseCors("AllowFrontend");
+            app.UseStaticFiles();
             app.UseMiddleware<BlacklistMiddleware>();
             app.UseMiddleware<WhitelistMiddleware>();
             app.UseMiddleware<SuspiciousClientMiddleware>();
@@ -114,9 +127,8 @@ namespace Api
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseHangfireDashboard();
-            app.MapHealthChecks("/health"); 
+            app.MapHealthChecks("/health");
             app.MapControllers();
-            app.UseStaticFiles();
             app.Run();
         }
     }

@@ -4,7 +4,7 @@ import BrandCard from '@components/molecules/brandCard';
 import { ApiResponse } from '@models/base';
 import { IBrand } from '@models/brand';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export default async function ProductBrand({ id }: { id: number }) {
   const response = await fetch(`${baseUrl}api/Brands/${id}`,{next: { revalidate: 36 }});

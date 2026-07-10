@@ -1,13 +1,11 @@
- 
+.env*
 # FrontEnd
 FrontEnd/node_modules
-FrontEnd/yarn.lock
 FrontEnd/.next
-FrontEnd/.env
+FrontEnd/.env*
 
 # BackEnd
 BackEnd/Api/wwwroot/
-BackEnd/Infrastructure/Migrations/
 BackEnd/.vs/
 # Build Outputs
 BackEnd/**/bin/
@@ -22,7 +20,7 @@ BackEnd/**/obj/
 
 # Logs
 *.log
-BackEnd/**/.env
+BackEnd/**/.env*
 BackEnd/**/appsettings.json
 # Publish
 BackEnd/**/publish/

@@ -12,7 +12,7 @@ import {
 } from '@components/organisms/productOrganisms/productSuppliers';
 import ProductTags from '@components/organisms/productOrganisms/productTags';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 // === 1. تولید مسیرهای استاتیک ===
 // export async function generateStaticParams() {

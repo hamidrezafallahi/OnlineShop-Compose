@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { ApiResponse } from '@models/base';
 import { IUser } from '@models/user';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function BrandSuppliers({ id }: { id: number }) {
   const response = await fetch(

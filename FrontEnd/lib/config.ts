@@ -5,7 +5,7 @@ import {
   menuResponse,
 } from '@models/config';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 export async function getConfig(configName: string) {
     const res = await fetch(`${baseUrl}api/configs/configName`
         , {

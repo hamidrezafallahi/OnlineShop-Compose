@@ -8,7 +8,7 @@ import {
 import { PagedResponse } from '@models/base';
 import { IUser } from '@models/user';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function CategorySupplierExtended({ id }: { id: number }) {
   const response = await fetch(

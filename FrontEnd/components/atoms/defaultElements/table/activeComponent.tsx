@@ -13,14 +13,13 @@ interface IProps extends Omit<SwitchProps, "id"> {
   id: number;
   checked:boolean;
 }
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 function ActiveComponent({ ...props }: IProps) {
   const { id,checked } = props;
   const params = useParams();
   const [active] = useGetConditionallyMutation();
   const handleSwitchChange = async (e: boolean) => {
     const res = await active({
-      url: `${baseUrl}api/${params.field}/active`,
+      url: `api/${params.field}/active`,
       body: {
         Id: id,
         IsActive: e,

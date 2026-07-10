@@ -3,8 +3,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export async function POST() {
     try {
         const cookieStore = await cookies();
@@ -26,7 +24,7 @@ export async function POST() {
         }
 
         const response = await fetch(
-            `${BASE_URL}api/Identity/refresh-token`,
+            `api/Identity/refresh-token`,
             {
                 method: "POST",
                 headers: {

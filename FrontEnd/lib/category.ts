@@ -6,7 +6,7 @@ import {
   ICategory,
 } from '@models/category';
 
-const baseUrl = process.env.API_URL!;
+const baseUrl = process.env.INTERNAL_API_URL!;
 export async function getCategories({ queries }: CategoryRequestQueries = { queries: {} as any }) {
   const { ByConfig, IsShowInLanding, Page, PageSize } = (await queries) || {};
   const params = new URLSearchParams();

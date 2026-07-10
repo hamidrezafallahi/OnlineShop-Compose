@@ -5,7 +5,7 @@ import {
   SupplierCardGrid,
 } from './supplierCard';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 export async function ProductSupplierExtended({
   productId,
 }: {

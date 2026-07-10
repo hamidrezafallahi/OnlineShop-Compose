@@ -10,7 +10,7 @@ import {
 
 import CommentAndRate from './CommentAndRate';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function SupplierCommentsAndRates(props: {
   params: { slug: string; locale: string };

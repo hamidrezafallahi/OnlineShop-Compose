@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 // export async function generateStaticParams() {
 //   try {
 //     const res = await fetch(
-//       `${process.env.NEXT_PUBLIC_API_URL}api/Blogs/getSlugs`,
+//       `${process.env.INTERNAL_API_URL}api/Blogs/getSlugs`,
 //       {
 //         cache: "no-store",
 //       }

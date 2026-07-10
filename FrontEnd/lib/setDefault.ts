@@ -6,7 +6,7 @@ import {
 } from 'next/cache';
 import { cookies } from 'next/headers';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function fetchDefault(entity:string,formData:FormData) {
   const id = formData.get('id') as string;

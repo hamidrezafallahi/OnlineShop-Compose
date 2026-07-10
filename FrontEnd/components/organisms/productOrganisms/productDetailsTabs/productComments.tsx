@@ -6,7 +6,7 @@ import {
 
 import ProductCommentForm from './productCommentForm';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 interface ProductCommentsProps {
   id: number;

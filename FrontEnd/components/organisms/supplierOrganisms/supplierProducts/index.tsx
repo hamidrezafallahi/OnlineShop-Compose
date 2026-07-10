@@ -5,7 +5,7 @@ import { IDetailedProductOffer } from '@models/product';
 
 import SupplierProductsCarousel from './supplierProductsCarousel';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 export async function SupplierProducts(props: {
   id: number; // IDetailedProduct[]
 }) {

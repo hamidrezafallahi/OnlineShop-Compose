@@ -19,9 +19,6 @@ RUN (getent group app || groupadd -r app) \
 COPY --from=build /app/publish .
 RUN mkdir -p /app/wwwroot/uploads && chown -R app:app /app
 ENV ASPNETCORE_URLS=http://+:8080
-ENV ASPNETCORE_ENVIRONMENT=Production
-ENV Jwt__Issuer=OnlineShop
-ENV Jwt__Audience=OnlineShopUsers
 EXPOSE 8080
 USER app
 ENTRYPOINT ["dotnet", "Api.dll"]

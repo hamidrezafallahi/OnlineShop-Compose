@@ -4,7 +4,7 @@ import CategoryCard from '@components/molecules/categoryCart';
 import { ApiResponse } from '@models/base';
 import { ICategory } from '@models/category';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export default async function ProductCategory({ id, }: { id: number }) {
   const response = await fetch(`${baseUrl}api/Categories/${id}`,{next: { revalidate: 36 }});

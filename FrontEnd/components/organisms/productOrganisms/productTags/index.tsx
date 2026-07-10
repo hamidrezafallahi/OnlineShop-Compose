@@ -4,7 +4,7 @@ import TagCard from '@components/molecules/tagCard';
 import { SimpleResponse } from '@models/base';
 import { IProductTags } from '@models/product';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.INTERNAL_API_URL;
 
 export default async function ProductTags({ id }: { id: number }) {
   const response = await fetch(`${baseUrl}api/ProductOfferTags/productId/${id}`,{next: { revalidate: 36 }});
