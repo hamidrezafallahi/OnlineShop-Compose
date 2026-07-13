@@ -23,7 +23,10 @@ import { useGetConditionallyMutation } from '@services/base';
 import { IBaseQueryResponse } from '@services/base/type';
 import { synchronousCart } from '@slice/shoppingCartSlice';
 import { useAppSelector } from '@store/index';
-import { showErrorToast } from '@utils/core';
+import {
+  createCookie,
+  showErrorToast,
+} from '@utils/core';
 
 import {
   ILogin,
@@ -31,6 +34,9 @@ import {
   IProps,
   TokenPayload,
 } from './type';
+
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+;
 
 export function LoginForm({
   className,
@@ -68,15 +74,15 @@ export function LoginForm({
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
+          const res = await fetch(`${baseUrl}/api/Identity/login`, {
+      method: 'POST',
+      headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
-        body: JSON.stringify(login),
-      });
+      credentials: "include",
+      body:  JSON.stringify(login),  // browser خودش Content-Type: multipart/form-data set می‌کنه
+    });
+  
 
       const data: IBaseQueryResponse<ILoginResponse> =
         await res.json();
@@ -85,14 +91,14 @@ export function LoginForm({
         showErrorToast(data.error);
         return;
       }
-
+      createCookie("candyAccess",data.data.accessToken)
       const decoded: TokenPayload = jwtDecode(
         data.data.accessToken,
       );
 
       const syncCartResponse: IBaseQueryResponse<SynchronousResponse> =
         await syncCart({
-          url: `/api/Carts/sync`,
+          url:`${baseUrl}/api/Carts/sync`,
           body: {
             clientItems: ShoppingCart?.products?.length
               ? ShoppingCart.products.map((i) => ({

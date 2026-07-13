@@ -37,10 +37,10 @@ export async function baseQueryByToken(
         if (!refreshed) {
           deleteCookie("candyAccess");
 
-          if (typeof window !== "undefined") {
-            window.location.href =
-              "/fa/register";
-          }
+          // if (typeof window !== "undefined") {
+          //   window.location.href =
+          //     "/fa/register";
+          // }
 
           return {
             error: {
