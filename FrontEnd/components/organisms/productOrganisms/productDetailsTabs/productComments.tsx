@@ -17,7 +17,7 @@ export default async function ProductComments({ id,locale }: ProductCommentsProp
   if (!id) throw new Error("Product ID is required");
 
   const response = await fetch(
-    `${baseUrl}api/Comments/${EnumTargetType.Product}/${id}`,
+    `${baseUrl}/api/Comments/${EnumTargetType.Product}/${id}`,
     {
       next: { revalidate: 36 }, // ISR
     },

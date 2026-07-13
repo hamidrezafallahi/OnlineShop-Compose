@@ -16,7 +16,7 @@ function TheMostProducts() {
   const [activeTab, setActiveTab] = useState("BestSeller");
   const [content, setContent] = useState<ILandingProduct[]>();
   const { data, isLoading, isFetching } = useGetData<ILandingProduct[], any>({
-    url: `api/Products/landings?${activeTab}=true`,
+    url: `/api/Products/landings?${activeTab}=true`,
   });
   const locale = useLocale();
   useEffect(() => {

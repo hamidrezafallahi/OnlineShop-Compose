@@ -5,9 +5,32 @@ using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.OpenApi;
 using Microsoft.AspNetCore.HttpOverrides;
+using OnlineShop.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api
 {
+    public interface IDataInitializer
+    {
+        void InitializeData();
+    }//از این استفاده کن برای این که seed data بزنی
+
+    public static class helper
+    {
+        public static IApplicationBuilder IntializeDatabase(this IApplicationBuilder app)
+        {
+
+            using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
+
+            dbContext.Database.Migrate();
+            var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
+            foreach (var dataInitializer in dataInitializers)
+                dataInitializer.InitializeData();
+
+            return app;
+        }
+    }
     public class Program
     {
         public static void Main(string[] args)
@@ -118,12 +141,16 @@ app.UseForwardedHeaders();
                 app.UseSwaggerUI();
                 app.UseCors("AllowFrontend");
             }
+            app.IntializeDatabase();
             app.UseStaticFiles();
             app.UseMiddleware<BlacklistMiddleware>();
             app.UseMiddleware<WhitelistMiddleware>();
             app.UseMiddleware<SuspiciousClientMiddleware>();
             app.UseRateLimiter();
-            app.UseHttpsRedirection();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseHangfireDashboard();

@@ -5,7 +5,7 @@ const baseUrl = process.env.INTERNAL_API_URL;
 
 export default async function ProductSpecs({ id }: {id:number}) { 
    const response = await fetch(
-      `${baseUrl}api/Products/getSpecifications/${id}`,
+      `${baseUrl}/api/Products/getSpecifications/${id}`,
       {
         next: { revalidate: 36 }, // ISR
       },

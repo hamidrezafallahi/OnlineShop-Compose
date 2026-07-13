@@ -19,7 +19,7 @@ export async function SupplierCommentsAndRates(props: {
   const slug = await params.slug;
 
   const response = await fetch(
-    `${baseUrl}api/Comments/${EnumTargetType.Supplier}/${slug}`,{next: { revalidate: 36 }});
+    `${baseUrl}/api/Comments/${EnumTargetType.Supplier}/${slug}`,{next: { revalidate: 36 }});
   if (!response.ok) return <div>تأمین‌کننده پیدا نشد</div>;
 
   const { data }: { data: IComment[] } = await response.json();

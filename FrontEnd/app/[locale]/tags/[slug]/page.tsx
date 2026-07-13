@@ -40,7 +40,7 @@ export async function generateMetadata({
   const { slug } = resolvedParams;
 
   const response = await fetch(
-    `${baseUrl}api/Tag/getTagByTagId?tagId=${slug}`,
+    `${baseUrl}/api/Tag/getTagByTagId?tagId=${slug}`,
     { next: { revalidate: 36 } },
   );
   const locale = resolvedParams.locale || "fa";
@@ -73,7 +73,7 @@ export default async function Page(props: {
 }) {
   const { slug } = await props.params;
   console.log(slug);
-  const response = await fetch(`${baseUrl}api/Tags/${slug}`, {
+  const response = await fetch(`${baseUrl}/api/Tags/${slug}`, {
     next: { revalidate: 36 },
   });
   const TagResponse: SimpleResponse<ITag> = await response.json();

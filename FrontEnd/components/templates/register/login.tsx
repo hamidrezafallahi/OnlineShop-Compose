@@ -92,7 +92,7 @@ export function LoginForm({
 
       const syncCartResponse: IBaseQueryResponse<SynchronousResponse> =
         await syncCart({
-          url: `api/Carts/sync`,
+          url: `/api/Carts/sync`,
           body: {
             clientItems: ShoppingCart?.products?.length
               ? ShoppingCart.products.map((i) => ({

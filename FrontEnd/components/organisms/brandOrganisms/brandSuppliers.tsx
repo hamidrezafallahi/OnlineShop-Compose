@@ -11,7 +11,7 @@ const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function BrandSuppliers({ id }: { id: number }) {
   const response = await fetch(
-    `${baseUrl}api/Brands/getProductsSuppliersByBrandId/${id}`,
+    `${baseUrl}/api/Brands/getProductsSuppliersByBrandId/${id}`,
     {
       cache: "no-store",
     },

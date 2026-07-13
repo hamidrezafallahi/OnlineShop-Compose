@@ -2,9 +2,19 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0
 
 WORKDIR /src
 
+# Layer 1: Restore NuGet packages (cached until csproj files change)
+COPY ["Api/Api.csproj", "Api/"]
+COPY ["Application/Application.csproj", "Application/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+COPY ["Common/Common.csproj", "Common/"]
+RUN dotnet restore "Api/Api.csproj"
+
+# Layer 2: Copy source code (invalidates cache when code changes)
 COPY . .
 
-RUN dotnet restore Api/Api.csproj
+# Install curl & wget for healthcheck support
+RUN apt-get update && apt-get install -y --no-install-recommends curl wget && rm -rf /var/lib/apt/lists/*
 
 ENV ASPNETCORE_ENVIRONMENT=Development
 

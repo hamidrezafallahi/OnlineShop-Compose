@@ -13,7 +13,7 @@ function DeleteComponent({ ...props }: { id: string }) {
   const [deleteRecord,{data,isLoading}] = useGetConditionallyMutation()
   const handleDeleteRecord =async ()=>{
 const deleteRes = await deleteRecord({
-    url:`api/${params.field}/${id}`,
+    url:`/api/${params.field}/${id}`,
     method:'DELETE'
   })
 

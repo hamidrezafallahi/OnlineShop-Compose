@@ -54,7 +54,7 @@ const DeleteCategory = ({ id, endpoint }: { id: number; endpoint: string }) => {
   const [deleteApi, { isLoading }] = useCUDDataMutation();
   const deleteHandler = async () => {
     const res = await deleteApi({
-      url: `api/${endpoint + "/" + id}`,
+      url: `/api/${endpoint + "/" + id}`,
       method: "DELETE",
     }).unwrap();
     if (res) {
@@ -86,7 +86,7 @@ const ActiveCategory = ({
   const [ActiveApi, { isLoading }] = useCUDDataMutation();
   const activeHandler = async (e:boolean) => {
     const res = await ActiveApi({
-      url: `api/${endpoint + "/active"}`,
+      url: `/api/${endpoint + "/active"}`,
       body: {
         id,
         isActive: e,

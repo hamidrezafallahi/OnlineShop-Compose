@@ -13,7 +13,7 @@ export async function approveComment(field:string,formData: FormData) {
   const isApprove = formData.get('isApproved') === 'true';
     const cookieStore =await cookies();
   const token = cookieStore.get('candyAccess')?.value;
-   const response = await fetch(`${baseUrl}api/${field}/approve`, {
+   const response = await fetch(`${baseUrl}/api/${field}/approve`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json', 

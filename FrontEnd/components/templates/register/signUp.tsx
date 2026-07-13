@@ -122,7 +122,7 @@ const handleRegister = async () => {
 
   try {
     // ✅ Fetch دستی - بدون RTK Query
-    const response = await fetch(`${baseUrl}api/Identity/Register`, {
+    const response = await fetch(`${baseUrl}/api/Identity/Register`, {
       method: 'POST',
       body: formData,  // browser خودش Content-Type: multipart/form-data set می‌کنه
     });

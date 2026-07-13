@@ -23,7 +23,7 @@ export default function TheMostProducts() {
   const locale = useLocale();
 
   const { data, isLoading, isFetching } = useGetData<ILandingProduct[], any>({
-    url: `api/Products/landings?${activeTab}=true`,
+    url: `/api/Products/landings?${activeTab}=true`,
   });
 
   useEffect(() => {

@@ -17,7 +17,7 @@ export default function PaymentMethod() {
     const t = useTranslations()
   const dispatch = useDispatch();
   const { data } = useGetData<DataResponse<IPaymentMethod>>({
-    url: 'api/paymentMethods',
+    url: '/api/paymentMethods',
     method: 'GET',
   });
 const handleChangePaymentMethod = (e:string|number)=>{
