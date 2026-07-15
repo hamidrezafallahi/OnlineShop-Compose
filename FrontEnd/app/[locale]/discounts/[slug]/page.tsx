@@ -45,20 +45,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: blog.titleFa || blog.titleEn,
-      description: blog.summary?.slice(0, 160),
+      description: blog.contentFa?.slice(0, 160)||blog.contentEn?.slice(0, 160),
       openGraph: {
         title: blog.titleFa || blog.titleEn,
-        description: blog.summary?.slice(0, 160),
+        description:blog.contentFa?.slice(0, 160)||blog.contentEn?.slice(0, 160),
         images: blog.thumbnailFile ? [blog.thumbnailFile] : [],
         locale: locale === "fa" ? "fa_IR" : "en_US",
         type: "article",
-        publishedTime: blog.publishDate,
-        authors: [blog.author || "Admin"],
+        publishedTime:new Date(blog.createdAt.getDate()).toISOString() ,
+        authors: [blog.authorName || "Admin"],
       },
       twitter: {
         card: "summary_large_image",
         title: blog.titleFa || blog.titleEn,
-        description: blog.summary?.slice(0, 160),
+        description: blog.contentFa?.slice(0, 160)||blog.contentEn?.slice(0, 160),
         images: blog.thumbnailFile ? [blog.thumbnailFile] : [],
       },
     };
