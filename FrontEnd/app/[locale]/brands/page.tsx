@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import CustomPagination from '@components/molecules/pagination';
 import { getAll } from '@lib/getAll';
+import { PageParams } from '@models/base';
 import { IBrand } from '@models/brand';
 
 type Props = {
@@ -24,14 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({
   searchParams,
   params,
-}: {
-  searchParams?:
-    | Promise<{ [key: string]: string | string[] | undefined }>
-    | { [key: string]: string | string[] | undefined };
-  params: Promise<{ locale: string }> | { locale: string };
-}) {
-  // Await کردن هر دو
-  const resolvedSearchParams =
+}:  PageParams<{locale: string}>) {
+   const resolvedSearchParams =
     searchParams instanceof Promise ? await searchParams : searchParams;
   const resolvedParams = params instanceof Promise ? await params : params;
 

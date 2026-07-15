@@ -6,13 +6,8 @@ import {
 import { PageParams } from '@models/base';
 
 export const dynamic = "force-dynamic";
-interface PageProps {
-  params: Promise<{
-    field: string;
-    id: string;
-  }>;
-}
-export default async function Page({ params }:   PageParams<{id: string,field:string}>) {
+ 
+export default async function Page({ params }:PageParams<{id: string,field:string}>) {
   const { field, id } = await params;
    const defaultValues:Record<string, unknown> = await getById( field, id );
   console.log(defaultValues)
