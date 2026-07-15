@@ -4,10 +4,10 @@ import FormGenerator from '@components/organisms/formGenerator';
 import { getFormConfigByEntityName } from '@lib/getAll';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     locale: string;
     field: string;
-  };
+  }>;
 }
 export const dynamic = "force-dynamic";
 
