@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+.yarn/
+.pnp/
+.pnp.js
+
+# Build artifacts
+.next/
+out/
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+Logs/
+
+# Environment
+.env
+.env.*
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# Next.js
+.cache/
+
+# Test
+__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+coverage/
+
+# TypeScript
+*.tsbuildinfo

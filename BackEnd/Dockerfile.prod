@@ -1,24 +1,74 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# ─── Backend Production ──────────────────────────────────────────────────────
+# Multi-stage build: minimal final image with optimized layers.
+# ==============================================================================
+
+# ─── Stage 1: Restore ─────────────────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS restore
+
 WORKDIR /src
+
+# Copy project files first for layer caching
 COPY ["Api/Api.csproj", "Api/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Common/Common.csproj", "Common/"]
+
 RUN dotnet restore "Api/Api.csproj"
+
+# ─── Stage 2: Build ───────────────────────────────────────────────────────────
+FROM restore AS build
+WORKDIR /src
+
+# Copy all source
 COPY . .
-WORKDIR /src/Api
-RUN dotnet publish "Api.csproj" -c Release -o /app/publish --no-restore /p:UseAppHost=false
+
+WORKDIR "/src/Api"
+RUN dotnet build "Api.csproj" -c Release -o /app/build --no-restore
+
+# ─── Stage 3: Publish ────────────────────────────────────────────────────────
+FROM build AS publish
+RUN dotnet publish "Api.csproj" -c Release -o /app/publish \
+    --no-restore \
+    /p:UseAppHost=false \
+    /p:DebugType=none \
+    /p:DebugSymbols=false \
+    /p:GenerateDocumentationFile=false \
+    /p:AssemblyVersion=1.0.0.0
+
+# ─── Stage 4: Runtime ────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
-WORKDIR /app
+
+LABEL maintainer="OnlineShop Team" \
+      description="OnlineShop Backend - Production" \
+      version="1.0"
+
+# Install wget for health checks (curl is larger; wget is smaller)
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
-RUN (getent group app || groupadd -r app) \
- && (getent passwd app || useradd -r -g app app)
-COPY --from=build /app/publish .
-RUN mkdir -p /app/wwwroot/uploads && chown -R app:app /app
+    && apt-get install -y --no-install-recommends wget ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -r -u 1001 -m appuser
+
+WORKDIR /app
+
+# Copy published artifacts
+COPY --from=publish --chown=appuser:appuser /app/publish .
+
+# Create uploads directory
+RUN mkdir -p /app/wwwroot/uploads && chown -R appuser:appuser /app/wwwroot
+
+# Security: remove shell access for appuser
+RUN usermod -s /usr/sbin/nologin appuser
+
 ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
 EXPOSE 8080
-USER app
+
+USER appuser
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+
 ENTRYPOINT ["dotnet", "Api.dll"]

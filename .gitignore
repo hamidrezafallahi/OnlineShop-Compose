@@ -1,34 +1,75 @@
-.env*
-# FrontEnd
-FrontEnd/node_modules
-FrontEnd/.next
-FrontEnd/.env*
+# =============================================================================
+# OnlineShop - Git Ignore
+# =============================================================================
 
-# BackEnd
-BackEnd/Api/wwwroot/
-BackEnd/.vs/
-# Build Outputs
-BackEnd/**/bin/
-BackEnd/**/obj/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-# NuGet
-*.nupkg
-*.snupkg
+# ─── Environment ──────────────────────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
 
-# Logs
-*.log
-BackEnd/**/.env*
-BackEnd/**/appsettings.json
-# Publish
-BackEnd/**/publish/
-# OS Files
+# ─── IDE / Editor ─────────────────────────────────────────────────────────
+.idea/
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
 .DS_Store
 Thumbs.db
-# Docker
-**/.dockerignore
+Desktop.ini
 
-# OS
-Thumbs.db
+# ─── OS ───────────────────────────────────────────────────────────────────
+*.log
+logs/
+*.pid
+
+# ─── Docker ───────────────────────────────────────────────────────────────
+docker/nginx/conf.d/*.conf
+!docker/nginx/nginx.conf
+!docker/nginx/conf.d/default.conf
+!docker/nginx/conf.d/production.conf
+docker/certbot/conf/
+docker/certbot/www/
+
+# ─── Backend ──────────────────────────────────────────────────────────────
+BackEnd/**/bin/
+BackEnd/**/obj/
+BackEnd/**/.vs/
+BackEnd/**/*.user
+BackEnd/**/*.suo
+BackEnd/**/*.userprefs
+BackEnd/**/packages/
+BackEnd/**/*.nupkg
+BackEnd/**/TestResults/
+BackEnd/**/*.trx
+BackEnd/**/coverage/
+BackEnd/**/coverage.json
+BackEnd/**/appsettings.*.local.json
+BackEnd/**/connectionStrings.json
+BackEnd/Api/wwwroot/uploads/*
+
+# ─── Frontend ─────────────────────────────────────────────────────────────
+FrontEnd/.next/
+FrontEnd/out/
+FrontEnd/build/
+FrontEnd/dist/
+FrontEnd/node_modules/
+FrontEnd/.cache/
+FrontEnd/coverage/
+FrontEnd/*.tsbuildinfo
+FrontEnd/next-env.d.ts
+
+# ─── SSL / Certificates ──────────────────────────────────────────────────
+*.pfx
+*.p12
+*.cert
+*.key
+!docker/certbot/conf/ # Track folder existence, not contents
+
+# ─── Secrets ──────────────────────────────────────────────────────────────
+secrets/
+credentials.json
+serviceAccountKey.json

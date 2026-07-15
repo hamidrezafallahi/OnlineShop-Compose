@@ -1,13 +1,37 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+# ─── Backend Development ────────────────────────────────────────────────────
+# Purpose: Fast startup with hot-reload via dotnet watch
+# Source code is mounted as a volume; this image provides SDK + cached NuGet packages.
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS base
+
+LABEL maintainer="OnlineShop Team" \
+      description="OnlineShop Backend - Development" \
+      version="1.0"
 
 WORKDIR /src
 
-COPY . .
+# Copy only project files for dependency caching
+COPY ["Api/Api.csproj", "Api/"]
+COPY ["Application/Application.csproj", "Application/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+COPY ["Common/Common.csproj", "Common/"]
 
+# Restore dependencies (cached layer)
 RUN dotnet restore Api/Api.csproj
 
+# Install dev tools (optional but useful)
+RUN dotnet tool install --global dotnet-ef 2>&1 || true
+ENV PATH="$PATH:/root/.dotnet/tools"
+
 ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:8080
 
 EXPOSE 8080
 
-CMD ["dotnet","watch","run","--project","Api/Api.csproj","--urls=http://0.0.0.0:8080"]
+# Healthcheck for development
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD dotnet run --project Api/Api.csproj --no-build -- --healthcheck || exit 1
+
+# Use dotnet watch with hot-reload
+CMD ["dotnet", "watch", "run", "--project", "Api/Api.csproj", "--urls=http://0.0.0.0:8080"]

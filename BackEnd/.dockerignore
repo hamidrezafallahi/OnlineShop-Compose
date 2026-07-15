@@ -1,0 +1,43 @@
+# .NET build artifacts
+bin/
+obj/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.nupkg
+*.snupkg
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+Logs/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Environment
+.env
+.env.*
+appsettings.*.local.json
+connectionStrings.json
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# Test
+**/TestResults/

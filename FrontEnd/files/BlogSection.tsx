@@ -1,14 +1,19 @@
 "use client";
 import React from 'react';
+
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CalendarIcon, UserIcon } from '@components/atoms/iconComponents';
+
+import {
+  CalendarIcon,
+  UserIcon,
+} from '@components/atoms/iconComponents';
 
 const blogPosts = [
   {
     id: 1,
-    title: '۵ نکته برای انتخاب عطر مناسب فصل',
+    title: '6 نکته برای انتخاب عطر مناسب فصل',
     excerpt: 'انتخاب عطر مناسب برای هر فصل باعث می‌شود حس و حالتان با طبیعت هماهنگ‌تر باشد.',
     image: '/images/blogs/perfume-tips.jpg',
     author: 'تحریریه عطرینو',
@@ -42,30 +47,30 @@ export default function BlogSection() {
   const locale = useLocale();
 
   return (
-    <section className="bg-[#F7F3EE] py-20 px-6 md:px-16">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-[#F7F3EE] px-6 md:px-16 py-20">
+      <div className="mx-auto max-w-7xl">
 
         {/* Header */}
-        <div className="flex items-end justify-between mb-12">
+        <div className="flex justify-between items-end mb-12">
           <div className="flex items-center gap-4">
-            <div className="w-8 h-px bg-[#C8955A]" />
+            <div className="bg-[#C8955A] w-8 h-px" />
             <div>
-              <p className="text-[#C8955A] text-xs tracking-[0.35em] uppercase mb-1">دانش</p>
-              <h2 className="font-['Cormorant_Garamond'] text-[#141210] text-3xl md:text-4xl font-light">
+              <p className="mb-1 text-[#C8955A] text-xs uppercase tracking-[0.35em]">دانش</p>
+              <h2 className="font-['Cormorant_Garamond'] font-light text-[#141210] text-3xl md:text-4xl">
                 از بلاگ ما بخوانید
               </h2>
             </div>
           </div>
           <Link
             href={`/${locale}/blog`}
-            className="text-[#141210]/50 hover:text-[#C8955A] text-sm border-b border-[#141210]/20 hover:border-[#C8955A] transition-all duration-300 pb-px"
+            className="pb-px border-[#141210]/20 hover:border-[#C8955A] border-b text-[#141210]/50 hover:text-[#C8955A] text-sm transition-all duration-300"
           >
             همه مقالات ←
           </Link>
         </div>
 
         {/* Blog grid — first card featured, rest smaller */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="gap-5 grid grid-cols-1 md:grid-cols-3">
           {blogPosts.map((post, i) => (
             <Link
               key={post.id}
@@ -87,8 +92,8 @@ export default function BlogSection() {
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 {/* Tag pill */}
-                <div className="absolute top-3 start-3">
-                  <span className="bg-white/90 backdrop-blur-sm text-[#141210] text-xs px-3 py-1 rounded-full border border-[#E8D5C4]/60">
+                <div className="top-3 absolute start-3">
+                  <span className="bg-white/90 backdrop-blur-sm px-3 py-1 border border-[#E8D5C4]/60 rounded-full text-[#141210] text-xs">
                     {post.tag}
                   </span>
                 </div>
@@ -96,13 +101,13 @@ export default function BlogSection() {
 
               {/* Content */}
               <div className="flex flex-col flex-1 p-5 text-right">
-                <h3 className="font-['Cormorant_Garamond'] text-[#141210] text-xl font-medium leading-snug mb-2 group-hover:text-[#C8955A] transition-colors duration-300">
+                <h3 className="mb-2 font-['Cormorant_Garamond'] font-medium text-[#141210] group-hover:text-[#C8955A] text-xl leading-snug transition-colors duration-300">
                   {post.title}
                 </h3>
-                <p className="text-[#141210]/45 text-sm leading-relaxed flex-1">
+                <p className="flex-1 text-[#141210]/45 text-sm leading-relaxed">
                   {post.excerpt}
                 </p>
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#E8D5C4]/40">
+                <div className="flex justify-between items-center mt-4 pt-4 border-[#E8D5C4]/40 border-t">
                   <div className="flex items-center gap-1.5 text-[#141210]/35 text-xs">
                     <UserIcon />
                     <span>{post.author}</span>
