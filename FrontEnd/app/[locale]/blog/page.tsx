@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { BlogCard } from '@components/molecules/blog';
 import CustomPagination from '@components/molecules/pagination';
 import { getAll } from '@lib/getAll';
+import { PageParams } from '@models/base';
 import { IBlog } from '@models/Blog';
 
 type Props = {
@@ -19,9 +20,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Page({
   searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+}:  PageParams<{locale: string}>) {
     const params = await searchParams;
   const page = parseInt((params?.page as string) ?? "1");
   const PageRecordCount = 10;
