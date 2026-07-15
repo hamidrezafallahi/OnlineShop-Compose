@@ -24,7 +24,7 @@ export default function ClientAddress() {
 
   const t = useTranslations();
   const { data, isLoading, refetch } = useGetData<IAddress[], any>({
-    url: "api/Address/ByUser",
+    url: "/api/Address/ByUser",
     method: "GET",
   });
   const [itemMutate, { isLoading: addLoading }] = useGetConditionallyMutation();

@@ -43,7 +43,7 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const { slug } = resolvedParams;
 
-  const response = await fetch(`${baseUrl}api/Brands/${slug}`, {
+  const response = await fetch(`${baseUrl}/api/Brands/${slug}`, {
     cache: "no-store",
   });
   const locale = resolvedParams.locale || "fa"; // استفاده از locale از params
@@ -75,7 +75,7 @@ export default async function Page(props: {
   // Await کردن params
   const { slug, locale } = await props.params;
 
-  const response = await fetch(`${baseUrl}api/Brands/${slug}`, {
+  const response = await fetch(`${baseUrl}/api/Brands/${slug}`, {
     cache: "no-store",
   });
   const brandResponse: SimpleResponse<IBrand> = await response.json()

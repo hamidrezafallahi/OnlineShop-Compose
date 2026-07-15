@@ -45,21 +45,12 @@ LABEL maintainer="OnlineShop Team" \
 
 # Install wget for health checks (curl is larger; wget is smaller)
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends wget ca-certificates \
-    && rm -rf /var/lib/apt/lists/* \
-    && useradd -r -u 1001 -m appuser
-
-WORKDIR /app
-
-# Copy published artifacts
-COPY --from=publish --chown=appuser:appuser /app/publish .
-
-# Create uploads directory
-RUN mkdir -p /app/wwwroot/uploads && chown -R appuser:appuser /app/wwwroot
-
-# Security: remove shell access for appuser
-RUN usermod -s /usr/sbin/nologin appuser
-
+    && apt-get install -y --no-install-recommends curl wget \
+    && rm -rf /var/lib/apt/lists/*
+RUN (getent group app || groupadd -r app) \
+ && (getent passwd app || useradd -r -g app app)
+COPY --from=build /app/publish .
+RUN mkdir -p /app/wwwroot/uploads && chown -R app:app /app
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false

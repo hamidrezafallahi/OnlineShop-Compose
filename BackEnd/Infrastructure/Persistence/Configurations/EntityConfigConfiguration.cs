@@ -146,7 +146,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     new FormFieldDefinition { Name = "authorId", Caption = "نویسنده", Type = "dynamicSelect", FetchConfig = new FetchConfig { api = "api/Users/selectOption", fetchFilters = new List<object>() }, Help = "نویسنده بلاگ" }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -191,7 +191,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     //new FormFieldDefinition { Name = "isActive", Caption = "وضعیت", Type = "checkbox", Help = "در صورت غیرفعال بودن برند در لیست نمایش داده نمی‌شود" }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -301,7 +301,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     //}
                 }),
             IsActive = true,
-            CreatedAt = DateTime.Now,
+                CreatedAt = new DateTime(2026, 1, 1),
             CreatedBy = 1,
             IsDeleted = false
         };
@@ -396,7 +396,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     //}
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -505,7 +505,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -544,7 +544,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -636,7 +636,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -754,7 +754,7 @@ namespace OnlineShop.Infrastructure.Configurations
 
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -846,7 +846,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -915,7 +915,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -977,7 +977,7 @@ namespace OnlineShop.Infrastructure.Configurations
 
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1046,7 +1046,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1099,7 +1099,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1152,7 +1152,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1251,7 +1251,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1325,7 +1325,7 @@ namespace OnlineShop.Infrastructure.Configurations
 
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1437,7 +1437,7 @@ namespace OnlineShop.Infrastructure.Configurations
 
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1526,7 +1526,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1633,7 +1633,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1732,7 +1732,7 @@ namespace OnlineShop.Infrastructure.Configurations
                    
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1816,7 +1816,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1904,7 +1904,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -1974,7 +1974,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     }
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -2006,7 +2006,7 @@ namespace OnlineShop.Infrastructure.Configurations
                 FormFieldsJson = JsonSerializer.Serialize(new List<FormFieldDefinition>
                 { }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -2030,7 +2030,7 @@ namespace OnlineShop.Infrastructure.Configurations
                 }),
                 FormFieldsJson = JsonSerializer.Serialize(new List<FormFieldDefinition> { }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -2163,7 +2163,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     //}
                 }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };
@@ -2228,7 +2228,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         }
                     } }),
                 IsActive = true,
-                CreatedAt = DateTime.Now,
+                    CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };

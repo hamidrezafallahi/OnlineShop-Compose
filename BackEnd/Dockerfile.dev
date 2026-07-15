@@ -11,14 +11,19 @@ LABEL maintainer="OnlineShop Team" \
 WORKDIR /src
 
 # Copy only project files for dependency caching
+# Layer 1: Restore NuGet packages (cached until csproj files change)
 COPY ["Api/Api.csproj", "Api/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Common/Common.csproj", "Common/"]
+RUN dotnet restore "Api/Api.csproj"
 
-# Restore dependencies (cached layer)
-RUN dotnet restore Api/Api.csproj
+# Layer 2: Copy source code (invalidates cache when code changes)
+COPY . .
+
+# Install curl & wget for healthcheck support
+RUN apt-get update && apt-get install -y --no-install-recommends curl wget && rm -rf /var/lib/apt/lists/*
 
 # Install dev tools (optional but useful)
 RUN dotnet tool install --global dotnet-ef 2>&1 || true

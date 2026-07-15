@@ -8,7 +8,7 @@ import { showErrorToast } from '@utils/core';
 
 export async function getBlogBySlug({ params }: { params: { slug: string } }) {
     const slug = params.slug;
-    const res = await fetch(`${process.env.INTERNAL_API_URL}api/Blogs/${slug}`, {
+    const res = await fetch(`${process.env.INTERNAL_API_URL}/api/Blogs/${slug}`, {
         cache: 'no-store'
     });
     const response:SimpleResponse<IBlog> = await res.json();

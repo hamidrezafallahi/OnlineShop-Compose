@@ -12,7 +12,7 @@ const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function CategorySupplierExtended({ id }: { id: number }) {
   const response = await fetch(
-    `${baseUrl}api/productOffers/getSuppliersByCategoryId?CategoryId=${id}`,
+    `${baseUrl}/api/productOffers/getSuppliersByCategoryId?CategoryId=${id}`,
     {
       cache: "no-store",
     },

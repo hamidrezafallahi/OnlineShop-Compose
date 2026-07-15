@@ -12,7 +12,7 @@ export default function OrderDetails({
 }) {
   const t = useTranslations();
   const { data, isLoading } = useGetData<IOrder>({
-    url: `api/orders/${selectedOrderId}`,
+    url: `/api/orders/${selectedOrderId}`,
     method: "GET",
     skip: !selectedOrderId,
   });

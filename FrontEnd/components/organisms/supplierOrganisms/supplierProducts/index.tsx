@@ -10,7 +10,7 @@ export async function SupplierProducts(props: {
   id: number; // IDetailedProduct[]
 }) {
   const { id } = props;
-  const response = await fetch(`${baseUrl}api/productOffers/by-seller/${id}`, {
+  const response = await fetch(`${baseUrl}/api/productOffers/by-seller/${id}`, {
     next: { revalidate: 36 },
   });
   const res: ApiResponse<IDetailedProductOffer> = await response.json();

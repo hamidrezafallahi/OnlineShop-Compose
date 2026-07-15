@@ -43,7 +43,7 @@ function ShoppingCartHeaderComponent({ ...props }: IProps) {
     shallowEqual
   );
   const { data, isSuccess } = useGetData<any, IShippingMethod[]>({
-    url: "api/ShippingMethods",
+    url: "/api/ShippingMethods",
     skip: ShoppingCart.products.length == 0,
   });
   useEffect(() => {

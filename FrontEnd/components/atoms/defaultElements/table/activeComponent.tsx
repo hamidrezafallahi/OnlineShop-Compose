@@ -19,7 +19,7 @@ function ActiveComponent({ ...props }: IProps) {
   const [active] = useGetConditionallyMutation();
   const handleSwitchChange = async (e: boolean) => {
     const res = await active({
-      url: `api/${params.field}/active`,
+      url: `/api/${params.field}/active`,
       body: {
         Id: id,
         IsActive: e,

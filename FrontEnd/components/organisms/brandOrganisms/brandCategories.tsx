@@ -8,7 +8,7 @@ const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function BrandCategories({ id }: { id: number }) {
   const response = await fetch(
-    `${baseUrl}api/Brands/getProductsCategoriesByBrandId/${id}`,
+    `${baseUrl}/api/Brands/getProductsCategoriesByBrandId/${id}`,
     {
       cache: "no-store",
     },

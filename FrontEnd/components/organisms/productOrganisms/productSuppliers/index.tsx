@@ -12,7 +12,7 @@ export async function ProductSupplierExtended({
   productId: string;
 }) {
   const response = await fetch(
-    `${baseUrl}api/productOffers/by-product/${productId}`,
+    `${baseUrl}/api/productOffers/by-product/${productId}`,
     {
       next: { revalidate: 36 },
     },

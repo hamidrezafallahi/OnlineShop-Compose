@@ -33,7 +33,7 @@ const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSetRate = async (e: number) => {
     const res = await mutateRate({
-      url: "/api/Rates",
+      url: "api/Rates",
       body: {
         targetId: id,
         targetType: EnumTargetType.Product,

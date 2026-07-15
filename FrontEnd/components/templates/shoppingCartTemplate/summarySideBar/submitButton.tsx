@@ -47,7 +47,7 @@ function SubmitButton({ ...props }: IProps) {
 
     if (!!ShoppingCart?.address) {
       const order:IBaseQueryResponse<{orderId:number}> = await itemMutate({
-        url: "api/Orders/CheckoutCart",
+        url: "/api/Orders/CheckoutCart",
         body: {
           shippingAddressId: ShoppingCart.address.id,
           shippingMethodId: ShoppingCart.shippingMethod?.id,

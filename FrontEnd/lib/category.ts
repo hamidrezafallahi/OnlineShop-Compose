@@ -14,7 +14,7 @@ export async function getCategories({ queries }: CategoryRequestQueries = { quer
   if (PageSize !== undefined) params.append("PageSize", PageSize.toString());
   if (ByConfig !== undefined) params.append("ByConfig", ByConfig.toString());
   if (IsShowInLanding !== undefined) params.append("IsShowInLanding", IsShowInLanding.toString());
-  const url = `${baseUrl}api/Categories?${params.toString()}`;
+  const url = `${baseUrl}/api/Categories?${params.toString()}`;
   try {
     const res = await fetch(url, {
       cache: "no-store",

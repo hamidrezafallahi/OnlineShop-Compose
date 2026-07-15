@@ -26,7 +26,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const { slug, locale = "fa" } = resolvedParams;
-    const response = await fetch(`${baseUrl}api/Users/${slug}`,{next: { revalidate: 36 }});
+    const response = await fetch(`${baseUrl}/api/Users/${slug}`,{next: { revalidate: 36 }});
 
     if (response.status === 404) {
       return {
@@ -70,7 +70,7 @@ export default async function Page(props: {
   const { params } = props;
   const slug = await params.slug;
 
-  const response = await fetch(`${baseUrl}api/Users/${slug}`,{next: { revalidate: 36 }});
+  const response = await fetch(`${baseUrl}/api/Users/${slug}`,{next: { revalidate: 36 }});
 
   const { data }: { data: IUser } = await response.json();
 

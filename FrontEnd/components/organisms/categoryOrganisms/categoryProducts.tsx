@@ -9,7 +9,7 @@ import { ILandingProduct } from '@models/product';
 const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function CategoryProducts({id}:{id:number}) {
-    const response = await fetch(`${baseUrl}api/Products/getProductByCategoryId/${id}`,
+    const response = await fetch(`${baseUrl}/api/Products/getProductByCategoryId/${id}`,
     {
       cache: "no-store",
     },

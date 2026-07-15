@@ -7,7 +7,7 @@ import { IBrand } from '@models/brand';
 const baseUrl = process.env.INTERNAL_API_URL;
 
 export default async function ProductBrand({ id }: { id: number }) {
-  const response = await fetch(`${baseUrl}api/Brands/${id}`,{next: { revalidate: 36 }});
+  const response = await fetch(`${baseUrl}/api/Brands/${id}`,{next: { revalidate: 36 }});
   const brands: ApiResponse<IBrand> = await response.json();
   const brand = brands.data;
   return (

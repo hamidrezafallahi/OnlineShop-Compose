@@ -8,7 +8,7 @@ const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function RelatedProductByTag({ tagId }: { tagId: number }) {
   const response = await fetch(
-    `${baseUrl}api/ProductOfferTags/tag/${tagId}`,{next: { revalidate: 36 }});
+    `${baseUrl}/api/ProductOfferTags/tag/${tagId}`,{next: { revalidate: 36 }});
   const productsResponse: ApiResponse<ISimpleProduct[]> = await response.json();
   console.log(productsResponse)
   return (

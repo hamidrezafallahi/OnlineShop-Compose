@@ -23,7 +23,7 @@ function PromoCode() {
   const handleSubmitPromoCode = async () => {
     if (promoCode && promoCode.trim().length > 0) {
       const res = await getPromoCode({
-        url: `api/DiscountCodes/getCode/${promoCode?.trim()}`,
+        url: `/api/DiscountCodes/getCode/${promoCode?.trim()}`,
         method: "GET",
         id:"none"
       }).unwrap();
