@@ -1,21 +1,19 @@
-import React from 'react';
+import React, { use } from 'react';
 
 import AdminList from '@components/templates/admin/adminList';
 import { getAll } from '@lib/getAll';
 
 export const dynamic = "force-dynamic";
-
+ 
 export default async function Page({
   params,
   searchParams,
 }: {
-   params: Promise<{ field: string }> | { field: string };
-   searchParams?:
-    | Promise<{ [key: string]: string | string[] | undefined }>
-    | { [key: string]: string | string[] | undefined };
+  params: Promise<{ field: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-    const resolvedSearchParams = searchParams instanceof Promise ? await searchParams : searchParams;
-      const resolvedParams = params instanceof Promise ? await params : params;
+  const resolvedParams = use(params);
+  const resolvedSearchParams = searchParams ? use(searchParams) : undefined;
   const { field:entity } = resolvedParams;
   const page = parseInt(
     (resolvedSearchParams?.page as string) ?? "1"
