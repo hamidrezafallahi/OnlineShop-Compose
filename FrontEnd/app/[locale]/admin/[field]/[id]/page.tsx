@@ -3,6 +3,7 @@ import {
   getById,
   getFormConfigByEntityName,
 } from '@lib/getAll';
+import { PageParams } from '@models/base';
 
 export const dynamic = "force-dynamic";
 interface PageProps {
@@ -11,7 +12,7 @@ interface PageProps {
     id: string;
   }>;
 }
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }:   PageParams<{id: string,field:string}>) {
   const { field, id } = await params;
    const defaultValues:Record<string, unknown> = await getById( field, id );
   console.log(defaultValues)

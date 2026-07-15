@@ -31,3 +31,13 @@ export interface ApiResponse<T> {
   isSuccess: boolean;
   error: string | null;
 }
+
+
+ 
+export type PageParams<
+  P extends Record<string, string> = Record<string, string>,
+  S extends Record<string, string | string[] | undefined> = Record<string, string | string[] | undefined>
+> = {
+  params: Promise<P>;
+  searchParams?: Promise<S>;
+};
