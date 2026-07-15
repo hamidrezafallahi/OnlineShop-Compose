@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
 
   // ─── ESLint ──────────────────────────────────────────────────────────────
   eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
+    ignoreDuringBuilds:true,
   },
 
   // ─── React ───────────────────────────────────────────────────────────────

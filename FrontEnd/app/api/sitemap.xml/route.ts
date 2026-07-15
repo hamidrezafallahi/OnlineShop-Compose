@@ -81,7 +81,7 @@ export async function GET() {
       buildEntry(`categories/${p.slug}`, 0.7, 'monthly')
     ),
     ...suppliers.map((p) =>
-      buildEntry(`suppliers/${p.slug}`, 0.7, 'monthly' as any)
+      buildEntry(`suppliers/${p.slug}`, 0.7, 'monthly' )
     ),
     ...tags.map((p) =>
       buildEntry(`tags/${p.slug}`, 0.7, 'monthly')

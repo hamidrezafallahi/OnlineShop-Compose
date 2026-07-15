@@ -12,7 +12,7 @@ export default async function Page({
   params: { field: string; id: string };
 }) {
   const { field, id } = await Promise.resolve(params);
-  const defaultValues:Record<string, any> = await getById( field, id );
+  const defaultValues:Record<string, unknown> = await getById( field, id );
   console.log(defaultValues)
   const res = await getFormConfigByEntityName(field)
    return (

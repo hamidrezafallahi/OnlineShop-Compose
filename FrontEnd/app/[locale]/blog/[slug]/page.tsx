@@ -30,7 +30,7 @@ type Props = {
 //     if (!res.ok) return [];
 //     const response: SimpleResponse<IBlog[]> = await res.json();
 //     if (!response.isSuccess) return [];
-//     return (response.data || []).map((item: any) => ({
+//     return (response.data || []).map((item: unknown) => ({
 //       slug: item.slug,
 //     }));
 //   } catch (error) {
