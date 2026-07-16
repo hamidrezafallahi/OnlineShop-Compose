@@ -72,7 +72,6 @@ export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
-  console.log(slug);
   const response = await fetch(`${baseUrl}/api/Tags/${slug}`, {
     next: { revalidate: 36 },
   });

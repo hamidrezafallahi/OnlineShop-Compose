@@ -3,42 +3,50 @@ import { Metadata } from 'next';
 import { BlogCard } from '@components/molecules/blog';
 import CustomPagination from '@components/molecules/pagination';
 import { getAll } from '@lib/getAll';
-import { PageParams } from '@models/base';
 import { IBlog } from '@models/Blog';
 
 type Props = {
-  params: Promise<{ locale: string}>;
+  params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   return {
-    title:locale == 'fa'?"لیست بلاگ‌ها":'blog list',
-    description:locale == 'fa'? "همه مطالب و مقالات ما را اینجا ببینید":'see all blogs here',
+    title: locale == 'fa' ? "لیست بلاگ‌ها" : 'blog list',
+    description: locale == 'fa' ? "همه مطالب و مقالات ما را اینجا ببینید" : 'see all blogs here',
   };
 }
+
 export const dynamic = "force-dynamic";
 
 export default async function Page({
   searchParams,
-}:  PageParams<{locale: string}>) {
-    const params = await searchParams;
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = searchParams ? await searchParams : undefined;
   const page = parseInt((params?.page as string) ?? "1");
   const PageRecordCount = 10;
+  
   const response = await getAll<IBlog>("blogs", {
     page: page,
     pageSize: PageRecordCount,
-    byConfig: false
-  });  
+    byConfig: false,
+  });
+
   return (
     <article className="flex flex-col gap-6 p-6 pt-28">
       <section className="flex flex-wrap gap-4">
-        {response?.data.records.map((item,index) => (
+        {response?.data.records.map((item, index) => (
           <BlogCard key={index} blog={item} />
         ))}
       </section>
-      <CustomPagination pageSize={PageRecordCount} total={response?.data.totalCount||0} current={page}  />
+      <CustomPagination
+        pageSize={PageRecordCount}
+        total={response?.data.totalCount || 0}
+        current={page}
+      />
     </article>
   );
 }
-
-

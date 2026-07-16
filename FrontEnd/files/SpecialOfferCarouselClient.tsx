@@ -1,9 +1,19 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+} from 'react';
+
 import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon, ShoppingCartIcon } from '@components/atoms/iconComponents';
+
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ShoppingCartIcon,
+} from '@components/atoms/iconComponents';
+import CountdownDisplayClient
+  from '@components/molecules/countdownDisplayClient';
 import { SpecialOffer } from '@models/specialOffer';
-import CountdownDisplayClient from '../countdownDisplayClient';
 
 interface Props {
   spacialOffers: SpecialOffer[];
@@ -67,7 +77,7 @@ export default function SpecialOfferCarouselClient({ spacialOffers }: Props) {
 
   if (!items.length) {
     return (
-      <div className="flex items-center justify-center w-full h-full text-white/30 text-sm">
+      <div className="flex justify-center items-center w-full h-full text-white/30 text-sm">
         پیشنهادی موجود نیست
       </div>
     );
@@ -82,13 +92,7 @@ export default function SpecialOfferCarouselClient({ spacialOffers }: Props) {
         onClick={() => scroll('left')}
         aria-label="قبلی"
         style={{ display: 'none' }}
-        className="
-          absolute top-1/2 left-0 z-30 -translate-y-1/2
-          flex items-center justify-center
-          w-8 h-8 rounded-full
-          bg-white/10 border border-white/15 text-white
-          hover:bg-white/20 transition-all duration-300
-        "
+        className="top-1/2 left-0 z-30 absolute flex justify-center items-center bg-white/10 hover:bg-white/20 border border-white/15 rounded-full w-8 h-8 text-white transition-all -translate-y-1/2 duration-300"
       >
         <ChevronLeftIcon config={{ size: 14 }} />
       </button>
@@ -99,13 +103,7 @@ export default function SpecialOfferCarouselClient({ spacialOffers }: Props) {
         onClick={() => scroll('right')}
         aria-label="بعدی"
         style={{ display: 'none' }}
-        className="
-          absolute top-1/2 right-0 z-30 -translate-y-1/2
-          flex items-center justify-center
-          w-8 h-8 rounded-full
-          bg-white/10 border border-white/15 text-white
-          hover:bg-white/20 transition-all duration-300
-        "
+        className="top-1/2 right-0 z-30 absolute flex justify-center items-center bg-white/10 hover:bg-white/20 border border-white/15 rounded-full w-8 h-8 text-white transition-all -translate-y-1/2 duration-300"
       >
         <ChevronRightIcon config={{ size: 14 }} />
       </button>
@@ -132,14 +130,9 @@ export default function SpecialOfferCarouselClient({ spacialOffers }: Props) {
 
 function OfferCard({ offer }: { offer: SpecialOffer }) {
   return (
-    <article className="
-      relative bg-[#1e1a16] border border-white/8
-      rounded-2xl overflow-hidden h-full flex flex-col
-      hover:border-[#C8955A]/30 transition-all duration-400
-      group
-    ">
+    <article className="group relative flex flex-col bg-[#1e1a16] border border-white/8 hover:border-[#C8955A]/30 rounded-2xl h-full overflow-hidden transition-all duration-400">
       {/* Image */}
-      <div className="relative w-full h-44 overflow-hidden bg-[#141210] shrink-0">
+      <div className="relative bg-[#141210] w-full h-44 overflow-hidden shrink-0">
         <Image
           src={offer.product.mainImage || 'https://picsum.photos/seed/p/300/300'}
           alt={offer.product.name}
@@ -149,12 +142,12 @@ function OfferCard({ offer }: { offer: SpecialOffer }) {
           sizes="200px"
         />
         {/* Countdown badge */}
-        <div className="absolute top-2 start-2 z-10">
+        <div className="top-2 z-10 absolute start-2">
           <CountdownDisplayClient targetTime={new Date(offer.endDate).getTime()} />
         </div>
         {/* Discount badge */}
         {offer.product.discountId > 0 && (
-          <div className="absolute top-2 end-2 z-10 bg-[#C8955A] text-white text-xs px-2 py-1 rounded-lg font-medium">
+          <div className="top-2 z-10 absolute bg-[#C8955A] px-2 py-1 rounded-lg font-medium text-white text-xs end-2">
             {offer.product.discountAmount}
             <span className="text-[10px]"> ت</span>
           </div>
@@ -163,21 +156,16 @@ function OfferCard({ offer }: { offer: SpecialOffer }) {
       </div>
 
       {/* Info */}
-      <div className="flex flex-col gap-2 p-3 flex-1">
-        <h4 className="text-white text-xs font-medium line-clamp-2 leading-relaxed">
+      <div className="flex flex-col flex-1 gap-2 p-3">
+        <h4 className="font-medium text-white text-xs line-clamp-2 leading-relaxed">
           {offer.product.name}
         </h4>
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/8">
-          <span className="text-[#C8955A] text-sm font-semibold">
+        <div className="flex justify-between items-center mt-auto pt-2 border-white/8 border-t">
+          <span className="font-semibold text-[#C8955A] text-sm">
             {offer.product.finalPrice}
           </span>
           <button
-            className="
-              flex items-center gap-1
-              bg-[#C8955A] hover:bg-[#b8854a]
-              text-white text-xs px-2.5 py-1.5 rounded-lg
-              transition-colors duration-300
-            "
+            className="flex items-center gap-1 bg-[#C8955A] hover:bg-[#b8854a] px-2.5 py-1.5 rounded-lg text-white text-xs transition-colors duration-300"
           >
             <ShoppingCartIcon />
             <span>افزودن</span>

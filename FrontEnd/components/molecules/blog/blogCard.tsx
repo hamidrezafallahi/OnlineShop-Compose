@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { IBlog } from '@models/Blog';
 
 export async function BlogCard({ ...props }: { blog: IBlog }) {
-  const {   slug, titleFa, thumbnailFile, author  } = props.blog;
+  const {   slug, titleFa, thumbnailFile  } = props.blog;
   const locale =await getLocale();
  
   return (

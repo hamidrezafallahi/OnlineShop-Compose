@@ -3,7 +3,7 @@ import React from 'react';
 import { getLocale } from 'next-intl/server';
 
 import { SimpleProductCard } from '@components/molecules/productCard';
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
 import { ILandingProduct } from '@models/product';
 
 const baseUrl = process.env.INTERNAL_API_URL;
@@ -14,7 +14,7 @@ export async function CategoryProducts({id}:{id:number}) {
       cache: "no-store",
     },
   );
-  const productsResponse: ApiResponse<ILandingProduct[]> = await response.json();
+  const productsResponse: SimpleResponse<ILandingProduct[]> = await response.json();
   const products: ILandingProduct[] = productsResponse.data;
   console.log(productsResponse)
   const locale = await getLocale()

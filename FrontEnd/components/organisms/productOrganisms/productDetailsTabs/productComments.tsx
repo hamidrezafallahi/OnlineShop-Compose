@@ -1,4 +1,4 @@
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
 import {
   EnumTargetType,
   IComment,
@@ -27,7 +27,7 @@ export default async function ProductComments({ id,locale }: ProductCommentsProp
     throw new Error("Failed to fetch comments");
   }
 
-  const comments:ApiResponse<IComment[]> = await response.json();
+  const comments:SimpleResponse<IComment[]> = await response.json();
   return (
     <section className="space-y-4">
       {comments.data.length === 0 && (

@@ -1,4 +1,4 @@
-import React, { use } from 'react';
+import React from 'react';
 
 import { ITreeContext } from '@components/atoms/defaultElements/tree';
 import AdminCategoryTemplate from '@components/templates/admin/categories';
@@ -6,23 +6,28 @@ import {
   getAll,
   getFormConfigByEntityName,
 } from '@lib/getAll';
-import { PageParams } from '@models/base';
 
 export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
-}: PageParams<{locale: string}>) {
-  const resolvedSearchParams = searchParams ? use(searchParams) : undefined;
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  
   const page = parseInt((resolvedSearchParams?.page as string) ?? "1");
   const pageSize = parseInt(
-    (resolvedSearchParams?.pageSize as string) ?? "10000",
+    (resolvedSearchParams?.pageSize as string) ?? "10000"
   );
+
   const list = await getAll<ITreeContext>("Categories", {
     page,
     pageSize,
     byConfig: true,
     onlyActives: false,
   });
+
   const res = await getFormConfigByEntityName("Categories");
 
   return (

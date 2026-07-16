@@ -9,7 +9,9 @@ import { IProductTag } from '@models/tag';
 
 type Props = {
   params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -20,23 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale == "fa" ? "همه تگ ها را اینجا ببینید" : "see all tags here",
   };
 }
+
 export default async function Page({
   searchParams,
-  params,
 }: {
-  searchParams?:
-    | Promise<{ [key: string]: string | string[] | undefined }>
-    | { [key: string]: string | string[] | undefined };
-  params: Promise<{ locale: string }> | { locale: string };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-   const resolvedSearchParams =
-    searchParams instanceof Promise ? await searchParams : searchParams;
-  const resolvedParams = params instanceof Promise ? await params : params;
-
-  const { locale } = resolvedParams;
-  const PageNumber = parseInt(
-    (resolvedSearchParams?.page as string) ?? "1"
-  );
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const PageNumber = parseInt((resolvedSearchParams?.page as string) ?? "1");
   const PageRecordCount = 10;
 
   const response = await getAll<IProductTag>("ProductTag", {
@@ -44,7 +37,9 @@ export default async function Page({
     pageSize: PageRecordCount,
     byConfig: false,
   });
+
   const tags: IProductTag[] = response?.data?.records ?? [];
+
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-7xl">
       <h1 className="mb-8 font-bold text-3xl text-center">تمام تگ ها</h1>
@@ -54,8 +49,10 @@ export default async function Page({
           <p className="text-gray-500">تگی یافت نشد.</p>
         </div>
       ) : (
-        <div className="flex justify-start items-center gap-4">
-          {tags.map((tag,index) => (<TagCard key={index} tag={{id:tag.id,name:tag.tagName}}/>))}
+        <div className="flex flex-wrap justify-start items-center gap-4">
+          {tags.map((tag, index) => (
+            <TagCard key={index} tag={{ id: tag.id, name: tag.tagName }} />
+          ))}
         </div>
       )}
       <CustomPagination

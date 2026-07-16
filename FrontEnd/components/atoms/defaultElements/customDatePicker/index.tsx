@@ -26,18 +26,16 @@ import * as React from 'react';
 
 import {
   DatePicker,
-  IDatePickerProps,
+  DatePickerProps,
 } from 'react-persian-range-picker';
 
-interface IProps extends IDatePickerProps {
+interface IProps extends DatePickerProps {
 
 }
 
 export default function CustomDatePicker({ ...props }:IProps) {
-  const {} = props;
   return <DatePicker
   className='!w-full'
   {...props}
-  
   />;
 }

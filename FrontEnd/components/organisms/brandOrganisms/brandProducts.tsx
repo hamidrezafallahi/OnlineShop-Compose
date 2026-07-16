@@ -3,15 +3,15 @@ import React from 'react';
 import { getLocale } from 'next-intl/server';
 
 import { SimpleProductCard } from '@components/molecules/productCard';
-import { IProduct } from '@lib/product';
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
+import { IProduct } from '@models/product';
 
 const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function BrandProducts({ id }: { id: number }) {
   const response = await fetch(
     `${baseUrl}/api/Brands/getProductByBrandId/${id}`,{next: { revalidate: 36 }});
-  const productsResponse: ApiResponse<IProduct[]> = await response.json();
+  const productsResponse: SimpleResponse<IProduct[]> = await response.json();
   const products: IProduct[] = productsResponse.data;
   const locale = await getLocale()
   return (

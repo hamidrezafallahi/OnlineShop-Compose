@@ -63,7 +63,7 @@ const FormFieldRenderer = ({
           <CustomDatePicker
             defaultValue={getValues(field.Name) || ""}
             onChange={(e) => {
-              setValue(field.Name, new Date(e).toISOString());
+              setValue(field.Name, new Date(e as number).toISOString());
             }}
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}

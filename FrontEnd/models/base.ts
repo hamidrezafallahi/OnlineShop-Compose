@@ -4,13 +4,13 @@ export interface PagedResponse<T> {
   data: DataResponse<T>
 }
 export interface DataResponse<T> {
-    records: T[];
-    columnsJson: string | null;
-    actionsJson: string | null;
-    totalCount: number;
-    pageNumber: number;
-    pageSize: number;
-    totalPages: number;
+  records: T[];
+  columnsJson: string | null;
+  actionsJson: string | null;
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
 }
 export interface Ids {
   id: number
@@ -26,18 +26,18 @@ export interface ApiResponse<T> {
   error: string | null;
 }
 
- export interface SimpleResponse<T> {
-  data:T;
+export interface SimpleResponse<T> {
+  data: T;
   isSuccess: boolean;
   error: string | null;
 }
 
 
- 
+
 export type PageParams<
   P extends Record<string, string> = Record<string, string>,
   S extends Record<string, string | string[] | undefined> = Record<string, string | string[] | undefined>
 > = {
-  params: Promise<P>;
-  searchParams?: Promise<S>;
+  params: P | Promise<P>;
+  searchParams?: S | Promise<S>;
 };

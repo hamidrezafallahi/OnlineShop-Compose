@@ -14,34 +14,24 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function CategoriesPage({
+export default async function Page({
   searchParams,
-  params,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-  params: { locale: string };
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // در Next.js 15+ نیاز به await کردن params داریم
-  const { locale } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
 
-  // دریافت پارامترهای جستجو - در Next.js 15 باید await شوند
-  const resolvedSearchParams = searchParams
-    ? searchParams instanceof Promise
-      ? await searchParams
-      : searchParams
-    : {};
-
-  // استفاده از searchParams برای دریافت شماره صفحه
   const page = parseInt(
     (Array.isArray(resolvedSearchParams?.page)
       ? resolvedSearchParams?.page[0]
-      : resolvedSearchParams?.page) ?? "1",
+      : resolvedSearchParams?.page) ?? "1"
   );
   const pageSize = parseInt(
     (Array.isArray(resolvedSearchParams?.pageSize)
       ? resolvedSearchParams?.pageSize[0]
-      : resolvedSearchParams?.pageSize) ?? "10",
+      : resolvedSearchParams?.pageSize) ?? "10"
   );
+
   const response = await getAll<ICategory>("categories", {
     page: page,
     pageSize: pageSize,
@@ -49,6 +39,7 @@ export default async function CategoriesPage({
   });
 
   const categories = response?.data.records || [];
+
   return (
     <article className="flex flex-col gap-6 p-6">
       <header className="mb-4">
@@ -64,10 +55,7 @@ export default async function CategoriesPage({
         <>
           <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {categories.map((cat, index) => (
-              <CategoryCard
-                key={index}
-                category={cat} 
-              />
+              <CategoryCard key={index} category={cat} />
             ))}
           </div>
 

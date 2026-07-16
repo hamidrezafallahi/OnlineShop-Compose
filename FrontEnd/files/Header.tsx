@@ -1,12 +1,20 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
+import {
+  useLocale,
+  useTranslations,
+} from 'next-intl';
 import Link from 'next/link';
+
 import { UserIcon } from '@components/atoms/iconComponents';
 import LangSwitcher from '@components/molecules/lang';
 import ThemeSwitcher from '@components/molecules/theme';
-import MobileMenu from './mobileMenu';
-import ShoppingCart from './shoppingCart';
+import MobileMenu from '@layout/header/mobileMenu';
+import ShoppingCart from '@layout/header/shoppingCart';
 
 export default function Header() {
   const locale = useLocale();
@@ -51,7 +59,7 @@ export default function Header() {
             <MobileMenu />
             <Link
               href={`/${locale}`}
-              className="font-['Cormorant_Garamond'] text-white text-xl tracking-widest font-light"
+              className="font-['Cormorant_Garamond'] font-light text-white text-xl tracking-widest"
             >
               عطرینو
             </Link>
@@ -64,7 +72,7 @@ export default function Header() {
             {/* Brand */}
             <Link
               href={`/${locale}`}
-              className="font-['Cormorant_Garamond'] text-white text-2xl tracking-[0.15em] font-light shrink-0"
+              className="font-['Cormorant_Garamond'] font-light text-white text-2xl tracking-[0.15em] shrink-0"
             >
               {t('brand.name')}
             </Link>
@@ -80,13 +88,7 @@ export default function Header() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="
-                    relative text-white/70 hover:text-white text-sm tracking-wide
-                    transition-colors duration-300
-                    after:absolute after:-bottom-0.5 after:right-0 after:w-0 after:h-px
-                    after:bg-[#C8955A] after:transition-all after:duration-300
-                    hover:after:w-full hover:after:left-0
-                  "
+                  className="after:right-0 after:-bottom-0.5 hover:after:left-0 after:absolute relative after:bg-[#C8955A] after:w-0 hover:after:w-full after:h-px text-white/70 hover:text-white text-sm tracking-wide transition-colors after:transition-all duration-300 after:duration-300"
                 >
                   {item.label}
                 </Link>
@@ -98,12 +100,7 @@ export default function Header() {
               <Link
                 href={`/${locale}/register`}
                 aria-label={t('header.register')}
-                className="
-                  flex items-center justify-center w-9 h-9 rounded-full
-                  border border-white/20 text-white/70 hover:text-white
-                  hover:border-white/40 hover:bg-white/10
-                  transition-all duration-300
-                "
+                className="flex justify-center items-center hover:bg-white/10 border border-white/20 hover:border-white/40 rounded-full w-9 h-9 text-white/70 hover:text-white transition-all duration-300"
               >
                 <UserIcon />
               </Link>

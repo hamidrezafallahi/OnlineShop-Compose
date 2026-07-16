@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CategoryCard from '@components/molecules/categoryCart';
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
 import { ICategory } from '@models/category';
 
 const baseUrl = process.env.INTERNAL_API_URL;
@@ -13,7 +13,7 @@ export async function BrandCategories({ id }: { id: number }) {
       cache: "no-store",
     },
   );
-  const categoriesResponse: ApiResponse<ICategory[]> = await response.json();
+  const categoriesResponse: SimpleResponse<ICategory[]> = await response.json();
   const categories: ICategory[] = categoriesResponse.data;
   return (
     <div className="my-10">

@@ -7,30 +7,10 @@ import { IBlog } from '@models/Blog';
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
 export const dynamic = "force-dynamic";
-
-// ===== 1. تولید مسیرهای استاتیک =====
-// export async function generateStaticParams() {
-//   try {
-//     const res = await fetch(
-//       `${process.env.INTERNAL_API_URL}api/Blogs/getSlugs`,
-//       {
-//         cache: "no-store",
-//       }
-//     );
-
-//     if (!res.ok) return [];
-//     const { data } = await res.json();
-
-//     return (data || []).map((item: any) => ({
-//       slug: item.slug,
-//     }));
-//   } catch (error) {
-//     console.error("Error generating static params:", error);
-//     return [];
-//   }
-// }
 
 // ===== 2. تولید Metadata =====
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -45,20 +25,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: blog.titleFa || blog.titleEn,
-      description: blog.contentFa?.slice(0, 160)||blog.contentEn?.slice(0, 160),
+      description: blog.contentFa?.slice(0, 160) || blog.contentEn?.slice(0, 160),
       openGraph: {
         title: blog.titleFa || blog.titleEn,
-        description:blog.contentFa?.slice(0, 160)||blog.contentEn?.slice(0, 160),
+        description: blog.contentFa?.slice(0, 160) || blog.contentEn?.slice(0, 160),
         images: blog.thumbnailFile ? [blog.thumbnailFile] : [],
         locale: locale === "fa" ? "fa_IR" : "en_US",
         type: "article",
-        publishedTime:new Date(blog.createdAt.getDate()).toISOString() ,
+        publishedTime: new Date(blog.createdAt).toISOString(),
         authors: [blog.authorName || "Admin"],
       },
       twitter: {
         card: "summary_large_image",
         title: blog.titleFa || blog.titleEn,
-        description: blog.contentFa?.slice(0, 160)||blog.contentEn?.slice(0, 160),
+        description: blog.contentFa?.slice(0, 160) || blog.contentEn?.slice(0, 160),
         images: blog.thumbnailFile ? [blog.thumbnailFile] : [],
       },
     };
@@ -70,9 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // ===== 3. صفحه تک مقاله =====
-export default async function BlogPage({ params }: Props) {
+export default async function Page({ params }: Props) {
   const { locale, slug } = await params;
   let blog: IBlog | null = null;
+  
   try {
     blog = await getBlogBySlug({ params: { slug } });
   } catch (error) {
@@ -110,14 +91,14 @@ export default async function BlogPage({ params }: Props) {
         >
           <div className="flex items-center gap-4 mb-4">
             <span className="bg-primary/80 px-3 py-1 rounded-full text-sm">
-              {isRTL ? blog.titleFa || "دسته‌بندی":blog.titleEn || "category"}
+              {isRTL ? blog.titleFa || "دسته‌بندی" : blog.titleEn || "category"}
             </span>
             <time className="text-white/90">
               {new Intl.DateTimeFormat(locale, {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-              }).format(new Date())}
+              }).format(new Date(blog.createdAt))}
             </time>
           </div>
           <h1 className="mb-4 font-bold text-3xl md:text-5xl leading-tight">
@@ -148,12 +129,12 @@ export default async function BlogPage({ params }: Props) {
                   {blog.authorId || "نویسنده"}
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  <time className="text-white/90">
+                  <time>
                     {new Intl.DateTimeFormat(locale, {
                       day: "numeric",
                       month: "long",
                       year: "numeric",
-                    }).format(new Date())}
+                    }).format(new Date(blog.createdAt))}
                   </time>
                 </p>
               </div>
@@ -221,7 +202,6 @@ export default async function BlogPage({ params }: Props) {
                     {isRTL ? "فهرست مطالب" : "Table of Contents"}
                   </h3>
                   <nav className={`space-y-2 ${isRTL ? "text-right" : ""}`}>
-                    {/* می‌توانید h2ها را از محتوا استخراج کنید */}
                     <a
                       href="#section1"
                       className="block py-2 text-gray-600 hover:text-primary"
@@ -257,7 +237,6 @@ export default async function BlogPage({ params }: Props) {
             {isRTL ? "مقالات مرتبط" : "Related Articles"}
           </h2>
           <div className="gap-6 grid grid-cols-1 md:grid-cols-3">
-            {/* اینجا می‌توانید مقالات مرتبط را اضافه کنید */}
             {[1, 2, 3].map((item) => (
               <div
                 key={item}

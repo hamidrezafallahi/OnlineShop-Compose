@@ -4,7 +4,7 @@ import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
 import { IUser } from '@models/user';
 
 const baseUrl = process.env.INTERNAL_API_URL;
@@ -16,7 +16,7 @@ export async function BrandSuppliers({ id }: { id: number }) {
       cache: "no-store",
     },
   );
-  const suppliersResponse: ApiResponse<IUser[]> = await response.json();
+  const suppliersResponse: SimpleResponse<IUser[]> = await response.json();
   const suppliers: IUser[] = suppliersResponse.data;
   const locale = await getLocale();
 

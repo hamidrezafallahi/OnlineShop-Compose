@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 import SupplierTemplate from '@components/templates/supplierTemplate';
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
 import { IUser } from '@models/user';
 
 const baseUrl = process.env.INTERNAL_API_URL;
@@ -34,7 +34,7 @@ export async function generateMetadata({
         description: "",
       };
     }
-    const result: ApiResponse<IUser> = await response.json();
+    const result: SimpleResponse<IUser> = await response.json();
     if (!result.isSuccess) {
       return {
         title: locale === "fa" ? "تامین کننده" : "Supplier",
@@ -64,13 +64,16 @@ export async function generateMetadata({
 }
 
 // ===== 3. صفحه تولید کننده =====
-export default async function Page(props: {
-  params: { slug: string; locale: string };
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { params } = props;
-  const slug = await params.slug;
+  const { slug } = await params;
 
-  const response = await fetch(`${baseUrl}/api/Users/${slug}`,{next: { revalidate: 36 }});
+  const response = await fetch(`${baseUrl}/api/Users/${slug}`, {
+    next: { revalidate: 36 },
+  });
 
   const { data }: { data: IUser } = await response.json();
 

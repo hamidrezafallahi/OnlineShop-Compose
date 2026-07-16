@@ -3,69 +3,20 @@ import { Metadata } from 'next';
 
 import CustomPagination from '@components/molecules/pagination';
 import { SimpleProductCard } from '@components/molecules/productCard';
-import { IProduct } from '@lib/product';
 import { PagedResponse } from '@models/base';
+import { IProduct } from '@models/product';
 
 const baseUrl = process.env.INTERNAL_API_URL;
-// ===== 1. تولید مسیرهای استاتیک =====
-// export async function generateStaticParams() {
-//   try {
- 
-//     const response = await fetch(`${baseUrl}api/Products/getIds`, {
-//       cache: 'force-cache'
-//     });
-    
-//     if (!response.ok) {
-//        return [];
-//     }
-
-//     const result: { data: Ids[]; isSuccess: boolean; error: string | null } = await response.json();
-    
-//     if (!result.isSuccess || !result.data) {
-//       return [];
-//     }
-
-//     // ایجاد صفحات مختلف برای هر locale
-//     const locales = ['fa', 'en'];
-//     const params = [];
-
-//     // فقط صفحات لیست محصولات را generate می‌کنیم (حداکثر 5 صفحه)
-//     const maxPages = 5;
-    
-//     for (const locale of locales) {
-//       for (let page = 1; page <= maxPages; page++) {
-//         params.push({
-//           locale: locale,
-//           page: page.toString(),
-//         });
-//       }
-//     }
-    
-//     return params;
-//   } catch (error) {
-//      return [{ locale: 'fa', page: '1' }];
-//   }
-// }
 
 // ===== 2. تولید Metadata =====
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; page?: string }> | { locale: string; page?: string };
+  params: Promise<{ locale: string; page?: string }>;
 }): Promise<Metadata> {
-  // مدیریت پارامترها
-  let locale = 'fa';
-  let page = '1';
-  
-  if (params instanceof Promise) {
-    const resolvedParams = await params;
-    locale = resolvedParams.locale || 'fa';
-    page = resolvedParams.page || '1';
-  } else {
-    locale = params.locale || 'fa';
-    page = params.page || '1';
-  }
-  
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale || 'fa';
+  const page = resolvedParams.page || '1';
   const pageNumber = parseInt(page);
   const pageTitle = pageNumber > 1 ? ` - صفحه ${pageNumber}` : '';
 
@@ -99,45 +50,22 @@ export async function generateMetadata({
   }
 }
 
-// ===== 3. صفحه محصولات =====
 export default async function Page({
-  searchParams,
   params,
+  searchParams,
 }: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }> | { [key: string]: string | string[] | undefined };
-  params?: Promise<{ locale: string; page?: string }> | { locale: string; page?: string };
+  params: Promise<{ locale: string; page: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // مدیریت پارامترها
-  let locale = 'fa';
-  let pageFromParams = '1';
+  const resolvedParams = await params;
+  const locale = resolvedParams.locale || 'fa';
+  const pageFromParams = resolvedParams.page || '1';
   
-  if (params) {
-    if (params instanceof Promise) {
-      const resolvedParams = await params;
-      locale = resolvedParams.locale || 'fa';
-      pageFromParams = resolvedParams.page || '1';
-    } else {
-      locale = params.locale || 'fa';
-      pageFromParams = params.page || '1';
-    }
-  }
-
-  // مدیریت searchParams
-  let pageFromSearch = '1';
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const pageFromSearch = (resolvedSearchParams?.page as string) || pageFromParams;
   
-  if (searchParams) {
-    if (searchParams instanceof Promise) {
-      const resolvedSearchParams = await searchParams;
-      pageFromSearch = (resolvedSearchParams?.page as string) || pageFromParams;
-    } else {
-      pageFromSearch = (searchParams?.page as string) || pageFromParams;
-    }
-  }
-
   const PageNumber = parseInt(pageFromSearch || "1");
-  const PageRecordCount = 12; // 12 محصول در هر صفحه
-
-  // گرفتن داده‌های محصولات
+  const PageRecordCount = 12;
   let productsResponse: PagedResponse<IProduct>;
   let products: IProduct[] = [];
   let totalCount = 0;
@@ -158,12 +86,9 @@ export default async function Page({
     }
 
     productsResponse = await response.json();
-    
-    // بررسی موفقیت آمیز بودن درخواست
+
     if (productsResponse.isSuccess && productsResponse.data) {
       products = productsResponse.data.records;
-      
-      // اگر API اطلاعات صفحه‌بندی را برمی‌گرداند
       totalCount = productsResponse.data.totalCount || products.length;
       currentPage = productsResponse.data.pageNumber || PageNumber;
       pageSize = productsResponse.data.pageSize || PageRecordCount;
@@ -172,41 +97,36 @@ export default async function Page({
       console.error('API returned error:', productsResponse.error);
       products = [];
     }
-    
   } catch (error) {
-    
-    // داده‌های پیش‌فرض
     productsResponse = {
       data: {
-        records:[],
-      actionsJson:"",
-      columnsJson:"",
-      pageNumber:0,
-      pageSize:0,
-      totalCount:0,
-      totalPages:0
+        records: [],
+        actionsJson: "",
+        columnsJson: "",
+        pageNumber: 0,
+        pageSize: 0,
+        totalCount: 0,
+        totalPages: 0,
       },
       isSuccess: false,
       error: 'خطا در دریافت اطلاعات محصولات',
     };
     products = [];
   }
-console.log(productsResponse)
+
   return (
     <article className="flex flex-col gap-6 p-4 md:p-6 !pt-24">
-      {/* هدر */}
       <header className="mb-8 text-center md:text-right">
         <h1 className="mb-2 font-bold text-2xl md:text-3xl">
           {locale === 'fa' ? 'محصولات' : 'Products'}
         </h1>
         <p className="mx-auto md:mx-0 max-w-2xl text-gray-200">
-          {locale === 'fa' 
-            ? 'مرجع تخصصی خرید انواع محصولات با بهترین قیمت و کیفیت' 
+          {locale === 'fa'
+            ? 'مرجع تخصصی خرید انواع محصولات با بهترین قیمت و کیفیت'
             : 'Specialized reference for buying various products with the best price and quality'}
         </p>
       </header>
 
-      {/* نمایش وضعیت درخواست */}
       {!productsResponse.isSuccess && (
         <div className="bg-red-50 mb-6 px-4 py-3 border border-red-200 rounded-lg text-red-700">
           <p className="font-medium">{locale === 'fa' ? 'خطا' : 'Error'}:</p>
@@ -214,16 +134,15 @@ console.log(productsResponse)
         </div>
       )}
 
-      {/* نمایش تعداد نتایج */}
       {productsResponse.isSuccess && (
         <div className="flex justify-between items-center mb-4">
           <p className="text-gray-200 text-sm">
-            {locale === 'fa' 
+            {locale === 'fa'
               ? `نمایش ${products.length} محصول`
               : `Showing ${products.length} products`}
             {totalCount > 0 && (
               <span className="mr-2">
-                {locale === 'fa' 
+                {locale === 'fa'
                   ? ` از ${totalCount} محصول`
                   : ` of ${totalCount} products`}
               </span>
@@ -232,7 +151,6 @@ console.log(productsResponse)
         </div>
       )}
 
-      {/* لیست محصولات */}
       {products.length === 0 ? (
         <div className="py-16 text-center">
           <div className="mb-6 text-gray-300">
@@ -241,35 +159,35 @@ console.log(productsResponse)
             </svg>
           </div>
           <h3 className="mb-2 font-medium text-gray-200 text-xl">
-            {productsResponse.isSuccess 
+            {productsResponse.isSuccess
               ? (locale === 'fa' ? 'محصولی یافت نشد' : 'No products found')
               : (locale === 'fa' ? 'خطا در دریافت محصولات' : 'Error loading products')}
           </h3>
           <p className="mx-auto max-w-md text-gray-200">
-            {productsResponse.isSuccess 
-              ? (locale === 'fa' 
-                  ? 'در حال حاضر هیچ محصولی در این دسته‌بندی وجود ندارد. لطفاً بعداً مراجعه کنید.'
-                  : 'There are currently no products in this category. Please check back later.')
+            {productsResponse.isSuccess
+              ? (locale === 'fa'
+                ? 'در حال حاضر هیچ محصولی در این دسته‌بندی وجود ندارد. لطفاً بعداً مراجعه کنید.'
+                : 'There are currently no products in this category. Please check back later.')
               : (locale === 'fa'
-                  ? 'مشکلی در ارتباط با سرور به وجود آمده است. لطفاً دوباره تلاش کنید.'
-                  : 'There was a problem connecting to the server. Please try again.')}
+                ? 'مشکلی در ارتباط با سرور به وجود آمده است. لطفاً دوباره تلاش کنید.'
+                : 'There was a problem connecting to the server. Please try again.')}
           </p>
         </div>
       ) : (
         <>
           <section className="gap-4 md:gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {products.map((product,idx) => (<SimpleProductCard product={product} key={idx}/>))}
+            {products.map((product, idx) => (
+              <SimpleProductCard product={product} key={idx} />
+            ))}
           </section>
- 
+
           {totalPages > 1 && (
             <div className="mt-8 pt-6 border-gray-200 border-t">
-              <CustomPagination 
-                pageSize={pageSize} 
-                total={totalCount} 
+              <CustomPagination
+                pageSize={pageSize}
+                total={totalCount}
                 current={currentPage}
-                // totalPages={totalPages}
                 onChange={(page) => {
-                  // منطق تغییر صفحه
                   const url = new URL(window.location.href);
                   url.searchParams.set('PageNumber', page.toString());
                   window.location.href = url.toString();

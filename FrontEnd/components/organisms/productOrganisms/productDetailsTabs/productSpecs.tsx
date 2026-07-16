@@ -1,4 +1,4 @@
-import { ApiResponse } from '@models/base';
+import { SimpleResponse } from '@models/base';
 import { ISpecificationResponse } from '@models/product';
 
 const baseUrl = process.env.INTERNAL_API_URL;
@@ -15,7 +15,7 @@ export default async function ProductSpecs({ id }: {id:number}) {
       throw new Error("Failed to fetch comments");
     }
   
-    const specs:ApiResponse<ISpecificationResponse> = await response.json();
+    const specs:SimpleResponse<ISpecificationResponse> = await response.json();
   if (!specs.data || specs.data.specifications.length === 0) {
     return (
       <p className="text-gray-400 text-sm">

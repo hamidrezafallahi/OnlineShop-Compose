@@ -1,13 +1,15 @@
-// tailwind.config.ts — additions to your existing config
-// Merge the `extend` block below into your existing tailwind.config.ts
-
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  // ... your existing config ...
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     extend: {
-      // ── Design token colors ──
+      // رنگ‌های جدید رو به colors موجود اضافه کن
       colors: {
         ink:   '#141210',
         gold:  '#C8955A',
@@ -77,6 +79,7 @@ const config: Config = {
       },
     },
   },
+  plugins: [],
 };
 
 export default config;
