@@ -23,7 +23,15 @@ namespace Api
             using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
 
-            dbContext.Database.Migrate();
+            if (dbContext is null)
+                return app;
+
+            var pendingMigrations = dbContext.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
+                dbContext.Database.Migrate();
+            else
+                dbContext.Database.EnsureCreated();
+
             var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
             foreach (var dataInitializer in dataInitializers)
                 dataInitializer.InitializeData();

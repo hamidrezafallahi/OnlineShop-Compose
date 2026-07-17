@@ -31,7 +31,7 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
                    .IsRequired();
 
             builder.Property(pm => pm.ConfigJson)
-                   .HasColumnType("nvarchar(max)");
+                   .HasColumnType("text");
 
             // ================= Relations =================
             builder.HasMany(pm => pm.Payments)

@@ -22,7 +22,7 @@ namespace OnlineShop.Infrastructure.Configurations
 
             builder.Property(b => b.ContentFa)
                    .IsRequired()
-                   .HasColumnType("nvarchar(max)");
+                   .HasColumnType("text");
 
             builder.Property(b => b.ConclusionFa)      
                    .IsRequired()
@@ -48,7 +48,7 @@ namespace OnlineShop.Infrastructure.Configurations
 
             builder.Property(b => b.ContentEn)
                    .IsRequired(false)
-                   .HasColumnType("nvarchar(max)");
+                   .HasColumnType("text");
 
             builder.Property(b => b.ConclusionEn)      
                    .IsRequired(false)

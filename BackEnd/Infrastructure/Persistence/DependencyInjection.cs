@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Hangfire;
+using Hangfire.PostgreSql;
 using Infrastructure.Repository;
 using Infrastructure.Services;
 using Infrastructure.Services.payment;
@@ -27,9 +28,10 @@ namespace OnlineShop.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-            services.AddHangfire(config =>config.UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            services.AddHangfire(config => config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));
             services.AddHangfireServer();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IJwtService, JwtService>();

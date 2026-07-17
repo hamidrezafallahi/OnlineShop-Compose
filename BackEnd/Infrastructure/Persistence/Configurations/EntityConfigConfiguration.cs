@@ -31,18 +31,18 @@ namespace OnlineShop.Infrastructure.Configurations
                 .HasMaxLength(200);
 
             builder.Property(e => e.EntityIconBase64)
-                .HasColumnType("nvarchar(max)");
+                .HasColumnType("text");
 
             builder.Property(e => e.ActionsJson)
                 .IsRequired()
-                .HasColumnType("nvarchar(max)");
+                .HasColumnType("text");
 
             builder.Property(e => e.ColumnsJson)
                 .IsRequired()
-                .HasColumnType("nvarchar(max)");
+                .HasColumnType("text");
 
             builder.Property(e => e.FormFieldsJson)
-                .HasColumnType("nvarchar(max)")
+                .HasColumnType("text")
                 .IsRequired(false);
 
             // BaseEntity common fields

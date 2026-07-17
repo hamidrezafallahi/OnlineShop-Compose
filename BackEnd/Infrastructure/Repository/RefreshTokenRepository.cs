@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 using OnlineShop.Infrastructure.Persistence;
