@@ -36,7 +36,6 @@ WORKDIR /src/Api
 # Build application
 RUN dotnet build "Api.csproj" \
     -c Release \
-    -o /app/build \
     --no-restore
 
 # ==============================================================================
