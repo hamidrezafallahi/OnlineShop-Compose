@@ -17,7 +17,7 @@ export async function getAll<T>(
   if (byConfig !== undefined) params.append("byConfig", String(byConfig));
   if (filter !== undefined) params.append("q", String(filter));
   if (onlyActives !== undefined) params.append("onlyActives", String(onlyActives));
-  const url = `${baseUrl}api/${entity}?${params.toString()}`;
+  const url = `${baseUrl}/api/${entity}?${params.toString()}`;
   console.log("getAll", page, pageSize, byConfig, filter, onlyActives, url, entity)
   // console.log(url,entity)
   try {

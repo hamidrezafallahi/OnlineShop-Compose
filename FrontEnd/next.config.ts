@@ -34,6 +34,24 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'localhost',
+        port: '',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '127.0.0.1',
+        port: '',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
         hostname: process.env.DOMAIN_NAME || 'yourdomain.com',
         port: '',
         pathname: '/uploads/**',

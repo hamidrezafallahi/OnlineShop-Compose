@@ -37,17 +37,15 @@ export default async function BaseLayout({ children, params }: IProps) {
   const theme = cookieStore.get("theme")?.value || "default";
 
   return (
-    <html
+    <div
       className={myFont.className}
       dir={locale === "fa" ? "rtl" : "ltr"}
       lang={locale}
       data-theme={theme}
     >
-      <body className="bg-[radial-gradient(circle,var(--primary-color)_60%,var(--secondary-color)_100%)] min-h-screen">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <CustomLayout>{children}</CustomLayout>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <CustomLayout>{children}</CustomLayout>
+      </NextIntlClientProvider>
+    </div>
   );
 }
