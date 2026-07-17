@@ -1,65 +1,102 @@
-# ─── Backend Production ──────────────────────────────────────────────────────
-# Multi-stage build: minimal final image with optimized layers.
+# ==============================================================================
+# Backend Production Dockerfile
+# Multi-stage build optimized for production deployment
 # ==============================================================================
 
-# ─── Stage 1: Restore ─────────────────────────────────────────────────────────
+# ==============================================================================
+# Stage 1 - Restore
+# Restores NuGet packages using only project files for maximum Docker cache usage.
+# ==============================================================================
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS restore
 
 WORKDIR /src
 
-# Copy project files first for layer caching
+# Copy project files
 COPY ["Api/Api.csproj", "Api/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Common/Common.csproj", "Common/"]
 
+# Restore dependencies
 RUN dotnet restore "Api/Api.csproj"
 
-# ─── Stage 2: Build ───────────────────────────────────────────────────────────
+# ==============================================================================
+# Stage 2 - Build
+# ==============================================================================
 FROM restore AS build
+
 WORKDIR /src
 
-# Copy all source
+# Copy source code
 COPY . .
 
-WORKDIR "/src/Api"
-RUN dotnet build "Api.csproj" -c Release -o /app/build --no-restore
+WORKDIR /src/Api
 
-# ─── Stage 3: Publish ────────────────────────────────────────────────────────
+# Build application
+RUN dotnet build "Api.csproj" \
+    -c Release \
+    -o /app/build \
+    --no-restore
+
+# ==============================================================================
+# Stage 3 - Publish
+# Produces the optimized deployment artifacts.
+# ==============================================================================
 FROM build AS publish
-RUN dotnet publish "Api.csproj" -c Release -o /app/publish \
+
+RUN dotnet publish "Api.csproj" \
+    -c Release \
+    -o /app/publish \
+    --no-build \
     --no-restore \
     /p:UseAppHost=false \
-    /p:DebugType=none \
+    /p:DebugType=None \
     /p:DebugSymbols=false \
     /p:GenerateDocumentationFile=false \
     /p:AssemblyVersion=1.0.0.0
 
-# ─── Stage 4: Runtime ────────────────────────────────────────────────────────
+# ==============================================================================
+# Stage 4 - Runtime
+# Final lightweight production image.
+# ==============================================================================
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 
 LABEL maintainer="OnlineShop Team" \
       description="OnlineShop Backend - Production" \
       version="1.0"
 
-# Install wget for health checks (curl is larger; wget is smaller)
+WORKDIR /app
+
+# Install packages required for health checks
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl wget \
-    && rm -rf /var/lib/apt/lists/*
-RUN (getent group app || groupadd -r app) \
- && (getent passwd app || useradd -r -g app app)
-COPY --from=build /app/publish .
-RUN mkdir -p /app/wwwroot/uploads && chown -R app:app /app
-ENV ASPNETCORE_URLS=http://+:8080
-ENV ASPNETCORE_ENVIRONMENT=Production
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+    && apt-get install -y --no-install-recommends wget curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r app \
+    && useradd -r -g app app
+
+# Copy published application
+COPY --from=publish /app/publish .
+
+# Create upload directory and set permissions
+RUN mkdir -p /app/wwwroot/uploads \
+    && chown -R app:app /app
+
+# Environment
+ENV ASPNETCORE_URLS=http://+:8080 \
+    ASPNETCORE_ENVIRONMENT=Production \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 EXPOSE 8080
 
-USER appuser
+# Run as non-root user
+USER app
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+# Health Check
+HEALTHCHECK --interval=30s \
+            --timeout=10s \
+            --start-period=30s \
+            --retries=3 \
+CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 ENTRYPOINT ["dotnet", "Api.dll"]
