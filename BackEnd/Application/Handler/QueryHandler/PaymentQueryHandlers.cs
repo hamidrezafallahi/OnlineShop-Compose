@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 
-public class PaymentQueryHandlers(IPaymentRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) :
+public class PaymentQueryHandlers(IPaymentRepository _repo,IEntityConfigRepository _configRepo) :
     IRequestHandler<GetAllPaymentsQuery, ServiceResult<ListDto<PaymentDto?>>>,
         IRequestHandler<GetPaymentByIdQuery, ServiceResult<PaymentDto?>>,
         IRequestHandler<GetPaymentsByOrderIdQuery, ServiceResult<IEnumerable<PaymentDto>>>
@@ -46,8 +46,6 @@ public class PaymentQueryHandlers(IPaymentRepository _repo, IHttpContextAccessor
         var pagedBrands = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var paymentsDto = pagedBrands.Select(payment => new PaymentDto
         {
             Id = payment.Id,

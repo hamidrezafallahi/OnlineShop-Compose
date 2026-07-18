@@ -14,8 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 public class CommentQueryHandler(ICommentRepository _repo,
         IRateRepository _rateRepo,
         IUserRepository _userRepo,
-        IEntityConfigRepository _configRepo,
-        IHttpContextAccessor _accessor)
+        IEntityConfigRepository _configRepo)
     :
     IRequestHandler<GetAllCommentsQuery, ServiceResult<ListDto<CommentDto>>>,
     IRequestHandler<GetCommentsByTargetQuery, ServiceResult<List<CommentDto>>>,
@@ -81,9 +80,6 @@ public class CommentQueryHandler(ICommentRepository _repo,
         var pagedCartItems = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         var CommentsDto = pagedCartItems.Select(c => new CommentDto
         {
             Id = c.Id,
@@ -125,8 +121,6 @@ public class CommentQueryHandler(ICommentRepository _repo,
 
     public async Task<ServiceResult<List<CommentDto>>> Handle(GetCommentsByTargetQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext.Request;
-        string domainUrl = $"{req.Scheme}://{req.Host}";
         var limit = request.Limit ?? 5;
         IQueryable<Comment> query;
         if (request.Q is not null && request.Q.Length > 0)
@@ -169,15 +163,13 @@ public class CommentQueryHandler(ICommentRepository _repo,
             if (user is not null)
             {
                 item.UserFullName = user.FullName;
-                item.UserImage = $"{domainUrl}/{user.Image.TrimStart('/')}";
+                item.UserImage = user.Image;
             }
         }
         return ServiceResult<List<CommentDto>>.Ok(dto);
     }
     public async Task<ServiceResult<CommentDto?>> Handle(GetCommentByIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext.Request;
-        string domainUrl = $"{req.Scheme}://{req.Host}";
         var comment = _repo.Query(b => b.Id == request.Id)
                    .FirstOrDefault();
 

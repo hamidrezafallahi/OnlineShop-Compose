@@ -9,8 +9,7 @@ using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 public class BlogQueryHandler(
             IBlogRepository _repo,
-            IHttpContextAccessor _accessor,
-            IEntityConfigRepository _configRepo) :
+             IEntityConfigRepository _configRepo) :
         IRequestHandler<GetBlogsQuery, ServiceResult<ListDto<BlogDto>>>,
         IRequestHandler<GetBlogs4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
         IRequestHandler<GetBlogByIdQuery, ServiceResult<BlogDto?>>,
@@ -59,9 +58,6 @@ public class BlogQueryHandler(
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         var blogsDto = pagedBlogs.Select(x => new BlogDto
         {
             Id = x.Id,
@@ -83,9 +79,7 @@ public class BlogQueryHandler(
 
             Slug = x.Slug,
             AuthorName = x.Author.FullName,
-            ThumbnailFile = !string.IsNullOrEmpty(x.ThumbnailFile)
-                ? $"{domainUrl}/{x.ThumbnailFile.TrimStart('/')}"
-                : null,
+            ThumbnailFile = x.ThumbnailFile,
             IsActive = x.IsActive
         }).ToList();
         dynamic? config = null;
@@ -178,8 +172,6 @@ public class BlogQueryHandler(
         var pagedEntity = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync();
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var flatDtos = pagedEntity.Select(x => new SelectOptionDto
         {
             Id = x.Id,
@@ -200,8 +192,6 @@ public class BlogQueryHandler(
     }
     public async Task<ServiceResult<BlogDto?>> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext.Request;
-        string domainUrl = $"{req.Scheme}://{req.Host}";
         var x =  _repo.Query(b => b.Id == request.Id && b.IsActive).Include(x => x.Author)
                    .FirstOrDefault();
 
@@ -228,17 +218,13 @@ public class BlogQueryHandler(
 
             Slug = x.Slug,
             AuthorName = x.Author.FullName,
-            ThumbnailFile = !string.IsNullOrEmpty(x.ThumbnailFile)
-                ? $"{domainUrl}/{x.ThumbnailFile.TrimStart('/')}"
-                : null,
+            ThumbnailFile = x.ThumbnailFile,
             IsActive = x.IsActive
         };
         return ServiceResult<BlogDto?>.Ok(blogDto);
     }
     public async Task<ServiceResult<BlogDto?>> Handle(GetBlogBySlugQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext.Request;
-        string domainUrl = $"{req.Scheme}://{req.Host}";
         var x = await _repo.Query(x => x.Slug == request.Slug.Trim() && x.IsActive).Include(x => x.Author).Include(x => x.BlogTags).ThenInclude(x => x.Tag)
                    .FirstOrDefaultAsync();
 
@@ -265,9 +251,7 @@ public class BlogQueryHandler(
 
             Slug = x.Slug,
             AuthorName = x.Author.FullName,
-            ThumbnailFile = !string.IsNullOrEmpty(x.ThumbnailFile)
-                ? $"{domainUrl}/{x.ThumbnailFile.TrimStart('/')}"
-                : null,
+            ThumbnailFile = x.ThumbnailFile,
             BlogTags = x.BlogTags.Where(bt=>!bt.IsDeleted).Select(t=>new TagDto
             {
                 Id=t.Tag.Id,

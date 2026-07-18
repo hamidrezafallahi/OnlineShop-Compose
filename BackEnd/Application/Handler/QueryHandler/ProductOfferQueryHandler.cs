@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
-public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) :
+public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntityConfigRepository _configRepo) :
         IRequestHandler<GetProductOffersQuery, ServiceResult<ListDto<ProductOfferDetailDto?>>>,
         IRequestHandler<GetProductOffers4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
         IRequestHandler<GetProductOfferByIdQuery, ServiceResult<ProductOfferDetailDto?>>,
@@ -51,8 +51,6 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
         var pagedProductOffers = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var ProductOffersDto = pagedProductOffers.Select(offer => new ProductOfferDetailDto
         {
             Id = offer.Id,
@@ -60,9 +58,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
             ProductName = offer.Product.Name,
             SupplierId = offer.SupplierId,
             SupplierName = offer.Supplier.FullName,
-            SupplierImage = !string.IsNullOrEmpty(offer.Supplier.Image)
-                ? $"{domainUrl}/{offer.Supplier.Image.TrimStart('/')}"
-                : null,
+            SupplierImage =offer.Supplier.Image.TrimStart('/'),
             BasePrice = offer.BasePrice,
             FinalPrice = offer.GetFinalPrice(now),
             Inventory = offer.Inventory,
@@ -128,8 +124,6 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
         var pagedProductOffers = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(ct);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var flatDtos = pagedProductOffers.Select(c => new SelectOptionDto
         {
             Id = c.Id,
@@ -152,9 +146,6 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
     public async Task<ServiceResult<ProductOfferDetailDto?>> Handle(GetProductOfferByIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         var offer = await _offerRepo.GetByIdWithDetailsAsync(request.Id);
         if (offer == null || offer.IsDeleted)
             return ServiceResult<ProductOfferDetailDto?>.Ok(null);
@@ -207,8 +198,6 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
     public async Task<ServiceResult<List<ProductOfferDto>>> Handle(GetProductOffersByProductIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var offers = await _offerRepo.Query().Include(o => o.Product)
                 .Where(o => o.ProductId == request.ProductId && o.IsActive && !o.IsDeleted)
             .Include(o => o.Supplier).ToListAsync();
@@ -220,7 +209,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
             ProductName = offer.Product?.Name ?? "",
             SupplierId = offer.SupplierId,
             SupplierName = offer.Supplier?.FullName ?? "",
-            SupplierImage = $"{domainUrl}/{offer.Supplier.Image.TrimStart('/')}",
+            SupplierImage = offer.Supplier.Image.TrimStart('/'),
             SupplierDesc = offer.Supplier.UserDescription,
             BasePrice = offer.BasePrice,
             FinalPrice = offer.GetFinalPrice(now),
@@ -250,8 +239,6 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
     public async Task<ServiceResult<List<ProductOfferDto>>> Handle(GetProductOffersBySellerIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var offers = _offerRepo.Query(offer => offer.IsActive).Include(o => o.Supplier).Include(o => o.Product).ToList();
 
         var dtos = offers.Select(offer => new ProductOfferDto
@@ -260,15 +247,10 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
             ProductId = offer.ProductId,
             ProductName = offer.Product?.Name ?? "",
             ProductDescription=offer.Product.Description,
-            ProductImage = !string.IsNullOrEmpty(offer.Supplier.Image)
-                ? $"{domainUrl}/{offer.Supplier.Image.TrimStart('/')}"
-                : null,
- 
+            ProductImage =offer.Supplier.Image.TrimStart('/'),
             SupplierId = offer.SupplierId,
             SupplierName = offer.Supplier?.FullName ?? "",
-            SupplierImage = !string.IsNullOrEmpty(offer.Supplier.Image)
-                ? $"{domainUrl}/{offer.Supplier.Image.TrimStart('/')}"
-                : null,
+            SupplierImage = offer.Supplier.Image.TrimStart('/'),
             SupplierDesc = offer.Supplier.UserDescription,
             BasePrice = offer.BasePrice,
             FinalPrice = offer.GetFinalPrice(now),
@@ -318,14 +300,10 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
-
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         foreach (var supplier in pagedSuppliers)
         {
             if (!string.IsNullOrEmpty(supplier.Image))
-                supplier.Image = $"{domainUrl}/{supplier.Image.TrimStart('/')}";
+                supplier.Image = supplier.Image.TrimStart('/');
         }
 
         dynamic? config = null;
@@ -369,14 +347,10 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
-
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         foreach (var supplier in pagedSuppliers)
         {
             if (!string.IsNullOrEmpty(supplier.Image))
-                supplier.Image = $"{domainUrl}/{supplier.Image.TrimStart('/')}";
+                supplier.Image = supplier.Image.TrimStart('/');
         }
 
         dynamic? config = null;
@@ -399,9 +373,6 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo, IHttpC
     }
     public async Task<ServiceResult<List<IdDto?>>> Handle(GetSuppliersIdsQuery request, CancellationToken cancellationToken)
     {
-
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var suppliersIds = await _offerRepo
   .Query(o => !o.IsDeleted && o.IsActive)
   .GroupBy(o => o.SupplierId)

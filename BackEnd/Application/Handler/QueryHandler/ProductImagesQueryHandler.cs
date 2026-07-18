@@ -52,8 +52,6 @@ public class ProductImagesQueryHandler(
         var pagedproductImages = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var productImagesDto = pagedproductImages.Select(p => new GetProductImageDto
         {
             Id = p.Id,
@@ -61,7 +59,7 @@ public class ProductImagesQueryHandler(
             ProductId = p.ProductId,
             ProductName = p.Product.Name,
             IsActive = p.IsActive,
-            ProductImageUrl = $"{domainUrl}/{p.ImageUrl.TrimStart('/')}",
+            ProductImageUrl = p.ImageUrl,
         }).ToList();
 
         dynamic? config = null;
@@ -87,15 +85,13 @@ public class ProductImagesQueryHandler(
     }
     public async Task<ServiceResult<GetProductImageDto>> Handle( GetMainImageByProductIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var productMainImage = _repo.Query(p => !p.IsDeleted && p.IsActive && p.ProductId == request.ProductId && p.IsMain)
             .Select(p => new GetProductImageDto
             {
                 Id = p.Id,
                 IsMain = p.IsMain,
                 ProductId = p.ProductId,
-                ProductImageUrl = $"{domainUrl}/{p.ImageUrl.TrimStart('/')}"
+                ProductImageUrl = p.ImageUrl
             }).FirstOrDefault();
 
 
@@ -103,15 +99,13 @@ public class ProductImagesQueryHandler(
     }
     public async Task<ServiceResult<GetProductImageDto>> Handle(GetProductImagesByIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var productMainImage = _repo.Query(p => !p.IsDeleted && p.IsActive && p.Id == request.Id)
             .Select(p => new GetProductImageDto
             {
                 Id = p.Id,
                 IsMain = p.IsMain,
                 ProductId = p.ProductId,
-                ProductImageUrl = $"{domainUrl}/{p.ImageUrl.TrimStart('/')}"
+                ProductImageUrl = p.ImageUrl
             }).FirstOrDefault();
         return ServiceResult<GetProductImageDto>.Ok(productMainImage);
     }

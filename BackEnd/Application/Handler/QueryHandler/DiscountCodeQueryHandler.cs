@@ -117,8 +117,7 @@ public class DiscountCodeQueryHandler(IDiscountCodeRepository _repo, IEntityConf
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+ 
             var dtos = query.Select(discount => new DiscountCodeDto
             {
                 Id = discount.Id,

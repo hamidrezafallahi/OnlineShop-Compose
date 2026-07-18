@@ -3,12 +3,10 @@ using Application.Queries;
 using Common;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 public class ProductOfferTagQueryHandler(IProductOfferTagRepository _repo,
-            IHttpContextAccessor _accessor,
             IEntityConfigRepository _configRepo)
         : IRequestHandler<GetAllProductOfferTagQuery, ServiceResult<ListDto<ProductOfferTagsDto>>>,
         IRequestHandler<GetProductOfferTagByIdQuery, ServiceResult<ProductOfferTagDetailDto>>,
@@ -39,19 +37,14 @@ public class ProductOfferTagQueryHandler(IProductOfferTagRepository _repo,
                 .Include(pt => pt.Tag)
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var ProductTagsDto = pagedProductTags.Select(pt => new ProductOfferTagsDto
             {
                 Id = pt.Id,
                 IsActive=pt.IsActive,
                productName=pt.ProductOffer.Product.Name,
-               productImage = !string.IsNullOrEmpty(pt.ProductOffer.Product.Images.Where(i => i.IsMain).Select(i => i.ImageUrl).First())
-                ? $"{domainUrl}/{pt.ProductOffer.Product.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).First().TrimStart('/')}"
-                : null,
+               productImage = pt.ProductOffer.Product.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).First().TrimStart('/'),
                supplierName=pt.ProductOffer.Supplier.FullName,
-               supplierImage= !string.IsNullOrEmpty(pt.ProductOffer.Supplier.Image)? $"{domainUrl}/{pt.ProductOffer.Supplier.Image.TrimStart('/')}"
-                : null,
+               supplierImage=pt.ProductOffer.Supplier.Image.TrimStart('/'),
                 TagName = pt.Tag?.Name ?? string.Empty
             }).ToList();
             dynamic? config = null;
@@ -72,9 +65,6 @@ public class ProductOfferTagQueryHandler(IProductOfferTagRepository _repo,
         }
        public async Task<ServiceResult<ProductOfferTagDetailDto>> Handle(GetProductOfferTagByIdQuery request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req?.Scheme + "://" + req.Host ?? "";
-
             var productOfferTag = await _repo
                 .Query()
                 .Include(pot => pot.ProductOffer)
@@ -83,22 +73,13 @@ public class ProductOfferTagQueryHandler(IProductOfferTagRepository _repo,
                 .Include(pot => pot.ProductOffer.Supplier)
                 .Include(pot => pot.Tag)
                 .FirstOrDefaultAsync(pot => pot.Id == request.Id, cancellationToken);
-
             if (productOfferTag == null)
                 return ServiceResult<ProductOfferTagDetailDto>.Failed("productOfferTag not found");
-
             var mainImageUrl = productOfferTag.ProductOffer.Product.Images
                 .FirstOrDefault(i => i.IsMain)?.ImageUrl;
-
-            var mainImagePath = mainImageUrl != null
-                ? $"{domainUrl}/{mainImageUrl.TrimStart('/')}"
-                : null;
+            var mainImagePath = mainImageUrl.TrimStart('/');
             var userImageUrl = productOfferTag.ProductOffer.Supplier.Image;
-
-            var userImagePath = mainImageUrl != null
-                ? $"{domainUrl}/{mainImageUrl.TrimStart('/')}"
-                : null;
-
+            var userImagePath = mainImageUrl.TrimStart('/');
             var dto = new ProductOfferTagDetailDto
             {
                 Id = productOfferTag.Id,
@@ -136,11 +117,7 @@ public class ProductOfferTagQueryHandler(IProductOfferTagRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<ProductCardBySupplierDto>>> Handle(GetAllProductOfferTagByTagIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
-
-
         var productTags = await _repo
             .Query(pt => pt.TagId == request.TagId && !pt.IsDeleted)
             .Include(pt => pt.Tag)
@@ -158,19 +135,18 @@ public class ProductOfferTagQueryHandler(IProductOfferTagRepository _repo,
                 Description = pt.FirstOrDefault().ProductOffer.Product.Description,
                 MainImage = pt.FirstOrDefault().ProductOffer.Product.Images
               .Where(i => !i.IsDeleted && i.IsMain)
-              .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+              .Select(i => i.ImageUrl.TrimStart('/'))
               .FirstOrDefault(),
                 suppliers = new List<SupplierDto>([new SupplierDto { Id = pt.FirstOrDefault().ProductOffer.Supplier.Id,
                 FullName = pt.FirstOrDefault().ProductOffer.Supplier.FullName,
-                Image = $"{domainUrl}/{pt.FirstOrDefault().ProductOffer.Supplier.Image.TrimStart('/')}"}
+                Image = pt.FirstOrDefault().ProductOffer.Supplier.Image.TrimStart('/')
+                }
             ]),
             }).ToList();
         return ServiceResult<IEnumerable<ProductCardBySupplierDto>>.Ok(dtos);
     }
     public async Task<ServiceResult<List<IdDto>>> Handle(GetAllProductOfferTagIdsQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var productOfferTagIds = _repo.Query(p => p.IsActive).Select(p => new IdDto { Id = p.Id }).ToList();
         return ServiceResult<List<IdDto>>.Ok(productOfferTagIds);
     }

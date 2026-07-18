@@ -59,10 +59,6 @@ using OnlineShop.Domain.Interfaces;
         var order = await _repository.GetOrderWithItemsReadModelAsync(request.OrderId);
         if (order == null)
             return ServiceResult<OrderReadModel?>.Failed("Order not found");
-
-        var req = _accessor.HttpContext.Request;
-        string domainUrl = $"{req.Scheme}://{req.Host}";
-
         var dto = new OrderReadModel
         {
             Id = order.Id,
@@ -82,9 +78,7 @@ using OnlineShop.Domain.Interfaces;
                     Name = it.Product.Name,
                     Description = it.Product.Description,
                     Price = it.Product.Price,
-                    Image = !string.IsNullOrEmpty(it.Product.Image)
-                        ? $"{domainUrl}/{it.Product.Image.TrimStart('/')}"
-                        : null
+                    Image = it.Product.Image
                 },
                 Quantity = it.Quantity,
                 UnitPrice = it.UnitPrice
@@ -164,8 +158,6 @@ using OnlineShop.Domain.Interfaces;
             //.Skip((pageNumber - 1) * pageSize)
             //.Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
         var orderItemsDto = pagedOrderItems.Select(oi => {
             var productImageUrl = oi.ProductOffer.Product.Images
@@ -178,17 +170,12 @@ using OnlineShop.Domain.Interfaces;
             {
                 Id = oi.Id,
                 User = oi.Order.User.FullName,
-                ProductOfferUser = !string.IsNullOrEmpty(supplierImageUrl)
-                    ? $"{domainUrl}/{supplierImageUrl?.TrimStart('/')}"
-                    : null,
+                ProductOfferUser = supplierImageUrl,
                 Quantity = oi.Quantity,
                 UnitPrice = oi.UnitPrice,
                 TotalPrice = oi.UnitPrice* oi.Quantity,
                 ProductName = oi.ProductOffer.Product.Name,
-                ProductImage = !string.IsNullOrEmpty(productImageUrl)
-                    ? $"{domainUrl}/{productImageUrl?.TrimStart('/')}"
-                    : null,
-                
+                ProductImage = productImageUrl,
                 OrderStatus = oi.Order.Status.OrderStatusToDisplay(),
                 IsActive=oi.IsActive
             };

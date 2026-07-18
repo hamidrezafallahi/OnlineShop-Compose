@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 public class BlogTagQueryHandler(IBlogTagRepository _repo,
-            IHttpContextAccessor _accessor,
-            IEntityConfigRepository _configRepo)
+             IEntityConfigRepository _configRepo)
         : IRequestHandler<GetAllBlogTagsQuery, ServiceResult<ListDto<BlogTagDto>>>,
         IRequestHandler<GetBlogTagByIdQuery, ServiceResult<BlogTagDto>>
  
@@ -34,8 +33,6 @@ public class BlogTagQueryHandler(IBlogTagRepository _repo,
                 .Include(pt => pt.Tag)
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var ProductTagsDto = pagedEntity.Select(x => new BlogTagDto
             {
                 Id = x.Id,
@@ -63,9 +60,6 @@ public class BlogTagQueryHandler(IBlogTagRepository _repo,
         }
        public async Task<ServiceResult<BlogTagDto>> Handle(GetBlogTagByIdQuery request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req?.Scheme + "://" + req.Host ?? "";
-
             var BlogTag = await _repo
                 .Query()
                 .Include(pot => pot.Tag)
@@ -73,9 +67,6 @@ public class BlogTagQueryHandler(IBlogTagRepository _repo,
 
             if (BlogTag == null)
                 return ServiceResult<BlogTagDto>.Failed("BlogTag not found");
-
-            
-
             var dto = new BlogTagDto
             {
                 Id = BlogTag.Id,

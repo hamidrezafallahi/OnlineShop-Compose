@@ -32,8 +32,7 @@ namespace Application.Handler.QueryHandler
             var pagedCartItems = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+            
             var now = DateTime.UtcNow;
 
             var CartItemsDto = pagedCartItems.Select(c => new CartDto
@@ -157,7 +156,7 @@ namespace Application.Handler.QueryHandler
         }
 
     }
-    public class CartItemQueryHandler(ICartItemRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) :
+    public class CartItemQueryHandler(ICartItemRepository _repo, IEntityConfigRepository _configRepo) :
         IRequestHandler<GetAllCartItemsQuery, ServiceResult<ListDto<CartItemDto>>>,
         IRequestHandler<GetCartItemByIdQuery, ServiceResult<CartItemDto?>>,
         IRequestHandler<GetCartItemsByCartIdQuery, ServiceResult<IEnumerable<CartItemDto>>>
@@ -215,8 +214,6 @@ namespace Application.Handler.QueryHandler
             var pagedCartItems = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var CartItemsDto = pagedCartItems.Select(CI => new CartItemDto
             {
                 Id = CI.Id,
@@ -226,9 +223,7 @@ namespace Application.Handler.QueryHandler
                 UserName= CI.Cart.User.FullName,
                 ProductOfferId = CI.ProductOfferId,
                 ProductName=CI.Product.Name,
-                ProductImage = !string.IsNullOrEmpty(CI.Product.Images.Where(i => i.IsMain).Select(i => i.ImageUrl).First())
-                ? $"{domainUrl}/{CI.Product.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).First().TrimStart('/')}"
-                : null,
+                ProductImage = CI.Product.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).First(),
                 Quantity = CI.Quantity,
                 BasePrice=CI.UnitPrice,
                 FinalPrice=CI.TotalPrice

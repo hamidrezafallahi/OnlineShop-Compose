@@ -2,14 +2,11 @@
 using Application.Queries;
 using Common;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
-using System;
 public class GetSpecialOffersQueryHandler(
             ISpecialOfferRepository _repo,
-            IHttpContextAccessor _accessor,
             IEntityConfigRepository _configRepo) :
         IRequestHandler<GetSpecialOffersQuery, ServiceResult<ListDto<SpecialOffersDto>>>,
         IRequestHandler<GetLandingSpecialOffersQuery, ServiceResult<ListDto<LandingSpecialOffersDto>>>,
@@ -17,8 +14,6 @@ public class GetSpecialOffersQueryHandler(
 {
     public async Task<ServiceResult<ListDto<SpecialOffersDto>>> Handle(GetSpecialOffersQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
         int pageNumber = request.page ?? 1;
         int pageSize = request.pageSize ?? 10;
@@ -67,7 +62,7 @@ public class GetSpecialOffersQueryHandler(
             SupplierName=s.ProductOffer.Supplier.FullName,
             ProductImage = s.ProductOffer.Product.Images
                     .Where(i => !i.IsDeleted && i.IsMain)
-                    .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .FirstOrDefault(),
             DiscountName = s.Discount.Title
 
@@ -96,8 +91,6 @@ public class GetSpecialOffersQueryHandler(
 
     public async Task<ServiceResult<ListDto<LandingSpecialOffersDto>>> Handle(GetLandingSpecialOffersQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
         int pageNumber = request.page ?? 1;
         int pageSize = request.pageSize ?? 10;
@@ -180,7 +173,7 @@ public class GetSpecialOffersQueryHandler(
 
                 MainImage = offer.Product.Images
                     .Where(i => !i.IsDeleted && i.IsMain)
-                    .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .FirstOrDefault(),
 
                 // اگر نیاز بود موجودی هم نمایش داده شود:
@@ -219,8 +212,6 @@ public class GetSpecialOffersQueryHandler(
     }
     public async Task<ServiceResult<SpecialOffersDto?>> Handle(GetSpecialOfferByIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
 
         var special = await _repo.Query(s => s.Id == request.Id && !s.IsDeleted)
@@ -255,7 +246,7 @@ public class GetSpecialOffersQueryHandler(
             IsActive= special.IsActive,
             ProductImage = offer.Product.Images
                 .Where(i => !i.IsDeleted && i.IsMain)
-                .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                .Select(i => i.ImageUrl.TrimStart('/'))
                 .FirstOrDefault(),
             ProductName= offer.Product.Name,
             ProductId=offer.Product.Id,

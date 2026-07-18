@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Interfaces;
 
-public class ProductOfferDiscountQueryHandler(IProductOfferDiscountRepository _repository, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo)
+public class ProductOfferDiscountQueryHandler(IProductOfferDiscountRepository _repository, IEntityConfigRepository _configRepo)
         : IRequestHandler<GetAllProductOfferDiscountQuery, ServiceResult<ListDto<ProductOfferDiscountDto>>>,
         IRequestHandler<GetProductOfferDiscountByIdQuery, ServiceResult<ProductOfferDiscountDto>>,
         IRequestHandler<GetProductOfferDiscountByProductIdQuery, ServiceResult<IEnumerable<ProductOfferDiscountDto>>>,
@@ -38,15 +38,11 @@ public class ProductOfferDiscountQueryHandler(IProductOfferDiscountRepository _r
         var pagedproductOfferDiscount = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var productOfferDiscountsDto = pagedproductOfferDiscount.Select(pd => new ProductOfferDiscountDto
         {
             Id = pd.Id,
             ProductName = pd.ProductOffer.Product.Name,
-            ProductImage = !string.IsNullOrEmpty(pd.ProductOffer.Product.Images.Where(i => i.IsMain).Select(i => i.ImageUrl).First())
-                ? $"{domainUrl}/{pd.ProductOffer.Product.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).First().TrimStart('/')}"
-                : null,
+            ProductImage =pd.ProductOffer.Product.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).First().TrimStart('/'),
             Supplier = pd.ProductOffer.Supplier.FullName,
             DiscountTitle = pd.Discount.Title,
             DiscountAmount = pd.Discount.Amount,

@@ -50,8 +50,7 @@ using OnlineShop.Domain.Interfaces;
         }
         public async Task<ServiceResult<CartReadModel>> Handle(AddOrUpdateCartItemCommand request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+            
             var userId = _accessor.HttpContext.GetUserId();
             if (userId == null) return ServiceResult<CartReadModel>.Failed("Unauthorized");
 
@@ -88,7 +87,7 @@ using OnlineShop.Domain.Interfaces;
                 foreach (var item in updatedCart.Items)
                 {
                     if (!string.IsNullOrWhiteSpace(item.MainImage))
-                        item.MainImage = $"{domainUrl}/{item.MainImage.TrimStart('/')}";
+                        item.MainImage = item.MainImage;
                 }
             }
 
@@ -96,8 +95,7 @@ using OnlineShop.Domain.Interfaces;
         }
     public async Task<ServiceResult<IdDto>> Handle(UpdateCartItemCommand request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+       
         var userId = _accessor.HttpContext.GetUserId();
         if (userId == null) return ServiceResult<IdDto>.Failed("Unauthorized");
         var cart = await _repo.GetUserCartAsync(userId.Value);
@@ -119,7 +117,7 @@ using OnlineShop.Domain.Interfaces;
             foreach (var it in updatedCart.Items)
             {
                 if (!string.IsNullOrWhiteSpace(it.MainImage))
-                    it.MainImage = $"{domainUrl}/{it.MainImage.TrimStart('/')}";
+                    it.MainImage = it.MainImage;
             }
         }
 
@@ -128,8 +126,6 @@ using OnlineShop.Domain.Interfaces;
 
     public async Task<ServiceResult<CartReadModel>> Handle(DecreaseCartItemCommand request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var userId = _accessor.HttpContext.GetUserId();
             if (userId == null) return ServiceResult<CartReadModel>.Failed("Unauthorized");
             var cart = await _repo.GetUserCartAsync(userId.Value);
@@ -154,7 +150,7 @@ using OnlineShop.Domain.Interfaces;
                 foreach (var it in updatedCart.Items)
                 {
                     if (!string.IsNullOrWhiteSpace(it.MainImage))
-                        it.MainImage = $"{domainUrl}/{it.MainImage.TrimStart('/')}";
+                        it.MainImage = it.MainImage;
                 }
             }
 
@@ -162,8 +158,7 @@ using OnlineShop.Domain.Interfaces;
         }
         public async Task<ServiceResult<IdDto>> Handle(DeleteCartItemCommand request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+ 
             var userId = _accessor.HttpContext.GetUserId();
             if (userId == null) return ServiceResult<IdDto>.Failed("Unauthorized");
 
@@ -179,7 +174,7 @@ using OnlineShop.Domain.Interfaces;
                 foreach (var item in updatedCart.Items)
                 {
                     if (!string.IsNullOrWhiteSpace(item.MainImage))
-                        item.MainImage = $"{domainUrl}/{item.MainImage.TrimStart('/')}";
+                        item.MainImage = item.MainImage;
                 }
             }
 
@@ -187,8 +182,7 @@ using OnlineShop.Domain.Interfaces;
         }
     public async Task<ServiceResult<IdDto>> Handle(ActiveCartItemCommand request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+
         var userId = _accessor.HttpContext.GetUserId();
         if (userId == null) return ServiceResult<IdDto>.Failed("Unauthorized");
 
@@ -204,7 +198,7 @@ using OnlineShop.Domain.Interfaces;
             foreach (var item in updatedCart.Items)
             {
                 if (!string.IsNullOrWhiteSpace(item.MainImage))
-                    item.MainImage = $"{domainUrl}/{item.MainImage.TrimStart('/')}";
+                    item.MainImage = item.MainImage;
             }
         }
 
@@ -213,8 +207,7 @@ using OnlineShop.Domain.Interfaces;
 
     public async Task<ServiceResult<CartReadModel>> Handle(SyncCartCommand request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+
             var userId = _accessor.HttpContext.GetUserId();
             if (userId == null) return ServiceResult<CartReadModel>.Failed("Unauthorized");
 
@@ -251,7 +244,7 @@ using OnlineShop.Domain.Interfaces;
                 foreach (var item in updatedCart.Items)
                 {
                     if (!string.IsNullOrWhiteSpace(item.MainImage))
-                        item.MainImage = $"{domainUrl}/{item.MainImage.TrimStart('/')}";
+                        item.MainImage = item.MainImage;
                 }
             }
 

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 
-    public class PaymentMethodQueryHandler(IPaymentMethodRepository _repo,IEntityConfigRepository _configRepo, IHttpContextAccessor _accessor) : 
+    public class PaymentMethodQueryHandler(IPaymentMethodRepository _repo,IEntityConfigRepository _configRepo) : 
         IRequestHandler<GetAllPaymentMethodsQuery, ServiceResult<ListDto<PaymentMethodDto>>>,
         IRequestHandler<GetPaymentMethods4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
         IRequestHandler<GetPaymentMethodByIdQuery, ServiceResult<PaymentMethodDto>>
@@ -86,8 +86,6 @@ using OnlineShop.Domain.Interfaces;
         var pagedEntity = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync();
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var flatDtos = pagedEntity.Select(c => new SelectOptionDto
         {
             Id = c.Id,

@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace Application.Handler.QueryHandler
 {
-    public class BrandQueryHandler(IBrandRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) : 
+    public class BrandQueryHandler(IBrandRepository _repo, IEntityConfigRepository _configRepo) : 
         IRequestHandler<GetAllBrandsQuery, ServiceResult<ListDto<BrandDto>>>,
         IRequestHandler<GetBrands4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
         IRequestHandler<GetBrandByIdQuery, ServiceResult<BrandDto?>>,
@@ -50,16 +50,12 @@ namespace Application.Handler.QueryHandler
             var pagedBrands = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var brandsDto = pagedBrands.Select(br => new BrandDto
             {
                 Id=br.Id,
                 Description=br.Description,
                 Name=br.Name,
-                logoFile = !string.IsNullOrEmpty(br.LogoUrl)
-                ? $"{domainUrl}/{br.LogoUrl.TrimStart('/')}"
-                : null,
+                logoFile = br.LogoUrl,
                 IsActive=br.IsActive,
             }).ToList();
 
@@ -92,8 +88,6 @@ namespace Application.Handler.QueryHandler
             var pagedBrands = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync();
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var flatDtos = pagedBrands.Select(c => new SelectOptionDto
             {
                 Id = c.Id,
@@ -114,8 +108,6 @@ namespace Application.Handler.QueryHandler
         }
         public async Task<ServiceResult<BrandDto?>> Handle(GetBrandByIdQuery request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext.Request;
-            string domainUrl = $"{req.Scheme}://{req.Host}";
             var brand = _repo.Query(b => b.Id == request.Id && !b.IsDeleted)
                         .FirstOrDefault();
             if (brand == null)
@@ -126,9 +118,7 @@ namespace Application.Handler.QueryHandler
                 Name = brand.Name,
                 IsActive = brand.IsActive,
                 Description = brand.Description,
-                logoFile = !string.IsNullOrEmpty(brand.LogoUrl)
-                ? $"{domainUrl}/{brand.LogoUrl.TrimStart('/')}"
-                : null
+                logoFile = brand.LogoUrl
             };
             return ServiceResult<BrandDto?>.Ok(brandDto);
         }

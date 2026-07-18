@@ -122,6 +122,7 @@ services:
       - ./docker/nginx/conf.d/production.conf:/etc/nginx/conf.d/default.conf:ro
       - ./docker/certbot/conf:/etc/letsencrypt:ro
       - ./docker/certbot/www:/var/www/certbot:ro
+      - uploads_prod:/var/www/uploads:ro
     depends_on:
       backend:
         condition: service_healthy
@@ -171,33 +172,6 @@ services:
         limits:
           memory: 256M
           cpus: "0.3"
-  # ─── FTP Server ────────────────────────────────────────────────────────────
-  # ftp:
-    # build:
-    #   context: ./docker/ftp
-    # container_name: shop-ftp-prod
-    # environment:
-    #   FTP_USER: ${FTP_USER:-shopftp}
-    #   FTP_PASSWORD: ${FTP_PASSWORD}
-    #   PASV_ADDRESS: ${DOMAIN_NAME}
-    #   PASV_MIN_PORT: 21100
-    #   PASV_MAX_PORT: 21110
-    # ports:
-    #   - "21:21"
-    #   - "21100-21110:21100-21110"
-    # volumes:
-    #   - ftp_data_prod:/home/vsftpd
-    #   - uploads_prod:/home/vsftpd/uploads:ro
-    # networks:
-    #   - shop-network-prod
-    # restart: unless-stopped
-    # healthcheck:
-    #   test: ["CMD", "nc", "-z", "localhost", "21"]
-    #   interval: 30s
-    #   timeout: 5s
-    #   retries: 3
-    #   start_period: 10s
-
 networks:
   shop-network-prod:
     name: shop-network-prod
@@ -210,5 +184,3 @@ volumes:
     name: shop-uploads-prod
   pgadmin_data_prod:  # <-- این خط را اضافه کنید
     name: shop-pgadmin-data-prod  
-  # ftp_data_prod:
-  #   name: shop-ftp-data-prod

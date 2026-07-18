@@ -11,7 +11,7 @@ using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 
 
-    public class RateQueryHandler(IRateRepository _repo,IUserRepository _userRepo, IEntityConfigRepository _configRepo,IHttpContextAccessor _accessor)
+    public class RateQueryHandler(IRateRepository _repo,IUserRepository _userRepo, IEntityConfigRepository _configRepo)
       : IRequestHandler<GetAllRateQuery, ServiceResult<ListDto<RateDto>>>,
       IRequestHandler<GetRateByIdQuery, ServiceResult<GetRateByIdDto>>,
       IRequestHandler<GetAverageRateQuery, ServiceResult<AverageRateDto>>
@@ -21,10 +21,8 @@ using OnlineShop.Domain.Interfaces;
     public async Task<ServiceResult<ListDto<RateDto>>> Handle(GetAllRateQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
         int pageNumber = request.page ?? 1;
         int pageSize = request.pageSize ?? 10;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         IQueryable<Rate> query;
  
         if (!request.OnlyActives.HasValue || request.OnlyActives == false)
@@ -74,9 +72,6 @@ using OnlineShop.Domain.Interfaces;
     public async Task<ServiceResult<GetRateByIdDto?>> Handle(GetRateByIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         var rate = await _repo.Query(r=> r.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
         if (rate == null) return ServiceResult<GetRateByIdDto?>.Failed("rate not found");
 

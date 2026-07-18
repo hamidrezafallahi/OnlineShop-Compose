@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 
-public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _productOfferRepository, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo)
+public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _productOfferRepository, IEntityConfigRepository _configRepo)
     : IRequestHandler<GetTagsQuery, ServiceResult<ListDto<TagDto>>>,
     IRequestHandler<GetTags4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
     IRequestHandler<GetTagBySlugQuery, ServiceResult<TagDto?>>,
@@ -91,8 +91,6 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
         var pagedEntity = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(ct);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var flatDtos = pagedEntity.Select(x => new SelectOptionDto
         {
             Id = x.Id,

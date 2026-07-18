@@ -34,8 +34,6 @@ public class UserTagQueryHandler(IUserTagRepository _repo,
                 .Include(pt => pt.Tag)
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var ProductTagsDto = pagedEntity.Select(x => new UserTagDto
             {
                 Id = x.Id,
@@ -61,9 +59,6 @@ public class UserTagQueryHandler(IUserTagRepository _repo,
         }
        public async Task<ServiceResult<UserTagDto>> Handle(GetUserTagByIdQuery request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req?.Scheme + "://" + req.Host ?? "";
-
             var UserTag = await _repo
                 .Query()
                 .Include(pot => pot.Tag)

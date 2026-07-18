@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 using System.Drawing;
-public class GetLandingSlideQueryHandler(ISlideRepository _repo, IHttpContextAccessor _accessor,IEntityConfigRepository _configRepo) 
+public class GetLandingSlideQueryHandler(ISlideRepository _repo,IEntityConfigRepository _configRepo) 
     : IRequestHandler<GetAllLandingSlidesQuery, ServiceResult<ListDto<LandingSliderDto>>>,
     IRequestHandler<GetLandingSlideByIdQuery, ServiceResult<LandingSliderDto>>,
     IRequestHandler<GetLandingSlideQuery, ServiceResult<IEnumerable<LandingSliderDto>>>
@@ -31,15 +31,9 @@ public class GetLandingSlideQueryHandler(ISlideRepository _repo, IHttpContextAcc
         var pagedEntity = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(cancellationToken);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
- 
             var Dtos = pagedEntity.Select(entity => new LandingSliderDto
             {
-                BannerUrl = !string.IsNullOrEmpty(entity.BannerUrl)
-                    ? $"{domainUrl}/{entity.BannerUrl.TrimStart('/')}"
-                    : null,
-
+                BannerUrl = entity.BannerUrl,
                 Id = entity.Id,
                 FirstUrl = entity.FirstUrl,
                 SecondUrl = entity.SecondUrl,
@@ -70,17 +64,13 @@ public class GetLandingSlideQueryHandler(ISlideRepository _repo, IHttpContextAcc
         }
     public async Task<ServiceResult<LandingSliderDto>> Handle(GetLandingSlideByIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext.Request;
-        string domainUrl = $"{req.Scheme}://{req.Host}";
         var entity = await _repo.GetByIdAsync(request.Id);
         if (entity == null)
             return ServiceResult<LandingSliderDto?>.Failed("Slide not found");
         var Dto = new LandingSliderDto
         {
             Id = entity.Id,
-            BannerUrl = !string.IsNullOrEmpty(entity.BannerUrl)
-                ? $"{domainUrl}/{entity.BannerUrl.TrimStart('/')}"
-                : null,
+            BannerUrl = entity.BannerUrl,
             FirstUrl = entity.FirstUrl,
             SecondUrl = entity.SecondUrl,
             BannerTitle = entity.BannerTitle,
@@ -109,13 +99,10 @@ public class GetLandingSlideQueryHandler(ISlideRepository _repo, IHttpContextAcc
 
 
 
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+         
         var slidesDto = query.Select(entity => new LandingSliderDto
         {
-            BannerUrl = !string.IsNullOrEmpty(entity.BannerUrl)
-                ? $"{domainUrl}/{entity.BannerUrl.TrimStart('/')}"
-                : null,
+            BannerUrl = entity.BannerUrl,
             FirstUrl = entity.FirstUrl,
             SecondUrl = entity.SecondUrl,
             BannerTitle = entity.BannerTitle,

@@ -10,15 +10,13 @@ using OnlineShop.Domain.Interfaces;
 using System;
 public class ProductSpecificationQueryHandler(
             IProductSpecificationRepository _repo,
-            IHttpContextAccessor _accessor,
             IEntityConfigRepository _configRepo) :
         IRequestHandler<GetProductSpecificationsQuery, ServiceResult<ListDto<SpecificationsDto>>>,
          IRequestHandler<GetProductSpecificationByIdQuery, ServiceResult<SpecificationsDto?>>
 {
     public async Task<ServiceResult<ListDto<SpecificationsDto>>> Handle(GetProductSpecificationsQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+     
         var now = DateTime.UtcNow;
         int pageNumber = request.page ?? 1;
         int pageSize = request.pageSize ?? 10;
@@ -92,12 +90,8 @@ public class ProductSpecificationQueryHandler(
 
     public async Task<ServiceResult<SpecificationsDto?>> Handle(GetProductSpecificationByIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
-
         var special = await _repo.Query(x => x.Id == request.Id && x.IsActive).FirstOrDefaultAsync(cancellationToken);
-
         if (special == null)
             return ServiceResult<SpecificationsDto?>.Failed("مشخصات محصول یافت نشد");
  

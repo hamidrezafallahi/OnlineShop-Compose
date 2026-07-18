@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using OnlineShop.Domain.Entities;
 
  
-    public class GetCategorieQueryHandler(ICategoryRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) : 
+    public class GetCategorieQueryHandler(ICategoryRepository _repo, IEntityConfigRepository _configRepo) : 
         IRequestHandler<GetAllCategoriesQuery, ServiceResult<ListDto<CategoryDto>>>,
         IRequestHandler<GetCategoryByIdQuery, ServiceResult<CategoryDto>>,
         IRequestHandler<GetAllCategoriesIdQuery, ServiceResult<IEnumerable<IdDto>>>
@@ -43,8 +43,6 @@ using OnlineShop.Domain.Entities;
             var pagedCategories = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
 
             var flatDtos = pagedCategories.Select(c => new CategoryDto
             {
@@ -53,9 +51,7 @@ using OnlineShop.Domain.Entities;
                 CategoryPersianDesc=c.CategoryPersianDesc,
                 EnglishName=c.EnglishName,
                 CategoryEnglishDesc=c.CategoryEnglishDesc,
-                CategoryCover = !string.IsNullOrEmpty(c.ImageUrl)
-                    ? $"{domainUrl}/{c.ImageUrl.TrimStart('/')}"
-                    : null,
+                CategoryCover = c.ImageUrl,
                 IsShowInLanding=c.IsShowInLanding,
                 IsActive=c.IsActive,
                 ParentCategoryId = c.ParentCategoryId
@@ -85,8 +81,6 @@ using OnlineShop.Domain.Entities;
         }
                 public async Task<ServiceResult<CategoryDto>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var req = _accessor.HttpContext.Request;
-            string domainUrl = $"{req.Scheme}://{req.Host}";
             var allCategories = await _repo.Query()
                  .Where(c => !c.IsDeleted)
                  .Select(cat => new CategoryDto
@@ -95,7 +89,7 @@ using OnlineShop.Domain.Entities;
                      CategoryPersianDesc = cat.CategoryPersianDesc,
                      EnglishName = cat.EnglishName,
                      Id = cat.Id,
-                     CategoryCover = $"{domainUrl}/{cat.ImageUrl.TrimStart('/')}",
+                     CategoryCover = cat.ImageUrl,
                      IsShowInLanding = cat.IsShowInLanding,
                      ParentCategoryId = cat.ParentCategoryId,
                      PersianName = cat.PersianName,
@@ -120,7 +114,7 @@ using OnlineShop.Domain.Entities;
             return ServiceResult<IEnumerable<IdDto>>.Ok(idDtos);
         }
     }
-    public class GetParent4selectOptionQueryHandler(ICategoryRepository _repo, IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) : IRequestHandler<GetParent4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>
+    public class GetParent4selectOptionQueryHandler(ICategoryRepository _repo, IEntityConfigRepository _configRepo) : IRequestHandler<GetParent4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>
     {
         public async Task<ServiceResult<ListDto<SelectOptionDto>>> Handle(GetParent4selectOptionQuery request, CancellationToken ct)
         {
@@ -137,8 +131,7 @@ using OnlineShop.Domain.Entities;
         var pagedCategories = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(ct);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
+ 
 
         var flatDtos = pagedCategories.Select(c => new SelectOptionDto
         {

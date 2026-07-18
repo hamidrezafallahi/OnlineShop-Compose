@@ -14,8 +14,7 @@ public class ProductQueryHandler(IProductRepository _repo,
         ISpecialOfferRepository _specialOfferRepo,
         ICommentRepository _commentRepository,
         IRateRepository _rateRepository,
-        IEntityConfigRepository _configRepo,
-        IHttpContextAccessor _accessor)
+        IEntityConfigRepository _configRepo)
     : IRequestHandler<GetAllProductsQuery, ServiceResult<ListDto<ProductDto>>>,
     IRequestHandler<GetProducts4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
     IRequestHandler<GetAllProductsByDetailQuery, ServiceResult<IEnumerable<ProductByDetailDto>>>,
@@ -34,10 +33,8 @@ public class ProductQueryHandler(IProductRepository _repo,
     public async Task<ServiceResult<ListDto<ProductDto>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
         int pageNumber = request.page ?? 1;
         int pageSize = request.pageSize ?? 10;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         IQueryable<Product> query;
         if (request.Q is not null && request.Q.Length > 0)
         {
@@ -86,9 +83,7 @@ public class ProductQueryHandler(IProductRepository _repo,
             Weight = x.Dimensions.Weight
         }
         : null,
-            MainImage = !string.IsNullOrEmpty(x.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).FirstOrDefault())
-                ? $"{domainUrl}/{x.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).FirstOrDefault().TrimStart('/')}"
-                : null  
+            MainImage = x.Images.Where(i => i.IsMain && !i.IsDeleted).Select(i => i.ImageUrl).FirstOrDefault()
         }).ToList();
 
 
@@ -122,8 +117,6 @@ public class ProductQueryHandler(IProductRepository _repo,
         var pagedUsers = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync(ct);
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var flatDtos = pagedUsers.Select(c => new SelectOptionDto
         {
             Id = c.Id,
@@ -145,8 +138,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<ProductByDetailDto>>> Handle(GetAllProductsByDetailQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
 
         var products = await _repo.Query(p => p.IsActive)
@@ -166,9 +157,8 @@ public class ProductQueryHandler(IProductRepository _repo,
                 CategoryId = x.CategoryId,
                 ImageUrls = x.Images
                     .Where(i => !i.IsDeleted)
-                    .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .ToList(),
-
                 Dimensions = x.Dimensions == null ? null : new ProductDimensionsDto
                 {
                     Width = x.Dimensions.Width,
@@ -187,8 +177,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<List<IdDto>>> Handle(GetAllProductsIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
 
         var productIds = _repo.Query(p => p.IsActive).Select(p => new IdDto { Id = p.Id }).ToList();
@@ -198,9 +186,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     public async Task<ServiceResult<ProductByDetailDto?>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         var product = await _repo.Query(p => !p.IsDeleted && p.Id == request.Id)
             .Include(p => p.ProductOffers).ThenInclude(pt => pt.ProductOfferTags).ThenInclude(t => t.Tag)
             .Include(p => p.Images)
@@ -224,12 +209,12 @@ public class ProductQueryHandler(IProductRepository _repo,
             CategoryId = product.CategoryId,
             ImageUrls = product.Images
                 .Where(i => !i.IsDeleted)
-                .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                .Select(i => i.ImageUrl.TrimStart('/'))
                 .ToList(),
 
             MainImage = product.Images
                 .Where(i => !i.IsDeleted && i.IsMain)
-                .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                .Select(i => i.ImageUrl.TrimStart('/'))
                 .FirstOrDefault(),
 
 
@@ -245,9 +230,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     public async Task<ServiceResult<ProductSpecialsByIdDto?>> Handle(GetProductSpecialsByIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
-
         var product = await _repo.GetProductWithDetailsAsync(request.Id);
         if (product == null || product.IsDeleted)
             return ServiceResult<ProductSpecialsByIdDto?>.Failed("Product not found");
@@ -266,10 +248,7 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<ProductByDetailDto>>> Handle(GetProductsByCategoryIdQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
-
         var products = await _repo.Query(p => !p.IsDeleted && p.CategoryId == request.CategoryId)
             .Include(p => p.Images)
             .ToListAsync(cancellationToken);
@@ -283,10 +262,9 @@ public class ProductQueryHandler(IProductRepository _repo,
                 Description = x.Description,
                 BrandId = x.BrandId,
                 CategoryId = x.CategoryId,
-
                 MainImage = x.Images
                     .Where(i => !i.IsDeleted && i.IsMain)
-                    .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .FirstOrDefault(),
             };
         })
@@ -296,8 +274,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<ProductDto>>> Handle(GetDiscountedProductsQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
 
         var products = await _repo.Query(p => !p.IsDeleted)
@@ -333,7 +309,7 @@ public class ProductQueryHandler(IProductRepository _repo,
                 CategoryId = p.CategoryId,
                 MainImage = p.BestOffer.Product?.Images
                     ?.Where(i => !i.IsDeleted)
-                    .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .FirstOrDefault()
             })
             .ToList();
@@ -363,8 +339,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<List<TheMostProductDto>>> Handle(GetLandingProductsQuery request, CancellationToken cancellationToken)
     {
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var now = DateTime.UtcNow;
 
         IQueryable<Product> query;
@@ -439,7 +413,7 @@ public class ProductQueryHandler(IProductRepository _repo,
                 !d.IsDeleted && d.IsActive && d.StartDate <= now && d.EndDate >= now)?.Amount,
                 MainImage = p.Images
                     .Where(i => !i.IsDeleted && i.IsMain)
-                    .Select(i => $"{domainUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .FirstOrDefault(),
 
                 AverageRate = rate.Average,
@@ -451,15 +425,13 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<CategoryDto>>> Handle(GetProductsCategoriesByBrandIdQuery request, CancellationToken cancellationToken)
     {
-        var requestUrl = _accessor.HttpContext?.Request;
-        var domainUrl = requestUrl != null ? $"{requestUrl.Scheme}://{requestUrl.Host}" : "";
         var categories = await _repo.Query(p => p.BrandId == request.BrandId)
         .Include(p => p.Category)
          .GroupBy(p => p.CategoryId)
              .Select(g => new CategoryDto
              {
                  Id = g.Key,
-                 CategoryCover = $"{domainUrl}/{g.First().Category.ImageUrl.TrimStart('/')}",
+                 CategoryCover = g.First().Category.ImageUrl.TrimStart('/'),
                  CategoryEnglishDesc = g.First().Category.CategoryEnglishDesc,
                  CategoryPersianDesc = g.First().Category.CategoryPersianDesc,
                  EnglishName = g.First().Category.EnglishName,
@@ -471,9 +443,6 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<ProductCardDto>>> Handle(GetProductsByBrandIdQuery request, CancellationToken cancellationToken)
     {
-        var requestUrl = _accessor.HttpContext?.Request;
-        var baseUrl = requestUrl != null ? $"{requestUrl.Scheme}://{requestUrl.Host}" : "";
-
         var products = await _repo.Query(p => !p.IsDeleted && p.BrandId == request.BrandId)
             .Include(p => p.Images)
             .Select(p => new ProductCardDto
@@ -483,7 +452,7 @@ public class ProductQueryHandler(IProductRepository _repo,
                 Description = p.Description,
                 MainImage = p.Images
                     .Where(i => !i.IsDeleted && i.IsMain)
-                    .Select(i => $"{baseUrl}/{i.ImageUrl.TrimStart('/')}")
+                    .Select(i => i.ImageUrl.TrimStart('/'))
                     .FirstOrDefault(),
 
             })
@@ -493,15 +462,13 @@ public class ProductQueryHandler(IProductRepository _repo,
     }
     public async Task<ServiceResult<IEnumerable<UserDto>>> Handle(GetProductsSuppliersByBrandIdQuery request, CancellationToken cancellationToken)
     {
-        var requestUrl = _accessor.HttpContext?.Request;
-        var domainUrl = requestUrl != null ? $"{requestUrl.Scheme}://{requestUrl.Host}" : "";
         var suppliers = await _repo.Query(p => p.BrandId == request.BrandId)
         .Include(p => p.ProductOffers).ThenInclude(po => po.Supplier)
          .GroupBy(p => p.ProductOffers.First().Supplier.Id)
              .Select(g => new UserDto
              {
                  Id = g.Key,
-                 UserImage = $"{domainUrl}/{g.First().ProductOffers.First().Supplier.Image.TrimStart('/')}",
+                 UserImage = g.First().ProductOffers.First().Supplier.Image.TrimStart('/'),
                  FullName = g.First().ProductOffers.First().Supplier.FullName,
                  PhoneNumber = g.First().ProductOffers.First().Supplier.PhoneNumber,
                  Email = g.First().ProductOffers.First().Supplier.Email,

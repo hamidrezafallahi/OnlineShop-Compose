@@ -28,8 +28,6 @@ namespace Application.Handler.QueryHandler
             int pageNumber = request.page ?? 1;
             int pageSize = request.pageSize ?? 10;
             string filter = request.Q;
-            var req = _accessor.HttpContext.Request;
-            string domainUrl = $"{req.Scheme}://{req.Host}";
             IQueryable<User> query;
             if (request.Q is not null && request.Q.Length > 0)
             {
@@ -69,7 +67,7 @@ namespace Application.Handler.QueryHandler
                 PhoneNumber = u.PhoneNumber,
                 UserDescription = u.UserDescription,
                 IsActive=u.IsActive,
-                UserImage = $"{domainUrl}/{u.Image.TrimStart('/')}",
+                UserImage = u.Image.TrimStart('/'),
             }).ToList();
             dynamic? config = null;
 
@@ -94,11 +92,6 @@ namespace Application.Handler.QueryHandler
         }
         public async Task<ServiceResult<UserDto?>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            //var userId = _accessor.HttpContext.GetUserId();
-            //if (userId == null)
-            //    return ServiceResult<UserDto>.Failed("Unauthorized");
-            var req = _accessor.HttpContext.Request;
-            string domainUrl = $"{req.Scheme}://{req.Host}";
             var userDto = await _repo.Query(u => u.Id == request.Id)
             .Select(us => new UserDto
             {
@@ -106,7 +99,7 @@ namespace Application.Handler.QueryHandler
                 Email = us.Email,
                 FullName = us.FullName,
                 PhoneNumber = us.PhoneNumber,
-                UserImage = $"{domainUrl}/{us.Image.TrimStart('/')}",
+                UserImage = us.Image.TrimStart('/'),
                 UserDescription = us.UserDescription,
             })
             .FirstOrDefaultAsync(cancellationToken);
@@ -126,8 +119,6 @@ namespace Application.Handler.QueryHandler
             int pageNumber = request.page ?? 1;
             int pageSize = request.pageSize ?? 10;
             string filter = request.Q;
-            var req = _accessor.HttpContext.Request;
-            string domainUrl = $"{req.Scheme}://{req.Host}";
             IQueryable<UserAddress> query;
             if (request.Q is not null && request.Q.Length > 0)
             {
@@ -218,9 +209,6 @@ namespace Application.Handler.QueryHandler
         }
         public async Task<ServiceResult<List<UserAddressDto>>> Handle(GetUserAddressByUserIdQuery request, CancellationToken cancellationToken)
         {
-            //var userId = _accessor.HttpContext.GetUserId();
-            //if (userId == null)
-            //    return ServiceResult<List<UserAddressDto>>.Failed("Unauthorized");
             var data = await _userAddressRepository
                 .Query(a => a.UserId == request.UserId)
                 .ToListAsync(cancellationToken);
@@ -304,8 +292,6 @@ namespace Application.Handler.QueryHandler
             var pagedUsers = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(ct);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var flatDtos = pagedUsers.Select(c => new SelectOptionDto
             {
                 Id = c.Id,

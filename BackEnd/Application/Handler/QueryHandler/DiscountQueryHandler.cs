@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 
-public class  DiscountQueryHandler(IDiscountRepository _repo,IHttpContextAccessor _accessor, IEntityConfigRepository _configRepo) : 
+public class  DiscountQueryHandler(IDiscountRepository _repo, IEntityConfigRepository _configRepo) : 
     IRequestHandler<GetAllDiscountsQuery, ServiceResult<ListDto<DiscountDto>>>,
     IRequestHandler<GetDiscountByIdQuery, ServiceResult<DiscountDto>>,
     IRequestHandler<GetDiscounts4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
@@ -51,8 +51,6 @@ public class  DiscountQueryHandler(IDiscountRepository _repo,IHttpContextAccesso
             var pagedDiscounts = await query
         .Skip((pageNumber - 1) * pageSize).Take(pageSize)
                 .ToListAsync(cancellationToken);
-            var req = _accessor.HttpContext?.Request;
-            string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
             var dtoList = pagedDiscounts.Select(d => new DiscountDto
             {
                 Id = d.Id,
@@ -114,8 +112,6 @@ public class  DiscountQueryHandler(IDiscountRepository _repo,IHttpContextAccesso
         var pagedDiscounts = await query
     .Skip((pageNumber - 1) * pageSize).Take(pageSize)
             .ToListAsync();
-        var req = _accessor.HttpContext?.Request;
-        string domainUrl = req != null ? $"{req.Scheme}://{req.Host}" : "";
         var flatDtos = pagedDiscounts.Select(c => new SelectOptionDto
         {
             Id = c.Id,
