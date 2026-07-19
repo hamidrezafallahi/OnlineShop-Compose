@@ -2,7 +2,7 @@ import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import landing from '@public/images/landingpage/landing.png';
+import landing from '/public/images/landingpage/landing.png';
 
 export default async  function LandingHero( ) {
   const locale = await getLocale()
