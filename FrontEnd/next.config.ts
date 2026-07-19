@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
 
   // ─── ESLint ──────────────────────────────────────────────────────────────
   eslint: {
-    ignoreDuringBuilds:true,
+    ignoreDuringBuilds: true,
   },
 
   // ─── React ───────────────────────────────────────────────────────────────
@@ -23,19 +23,24 @@ const nextConfig: NextConfig = {
   output: 'standalone',
 
   // ─── Images ──────────────────────────────────────────────────────────────
- images: {
-  remotePatterns: [
-    {
-      protocol: "http",
-      hostname: "localhost",
-      pathname: "/uploads/**",
-    },
-    {
-      protocol: "https",
-      hostname: "yourdomain.com",
-      pathname: "/uploads/**",
-    },
-  ],
+  images: {
+    domains: ["i.pravatar.cc"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "yourdomain.com",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      }
+    ],
 
     // Responsive image sizes for art direction
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
