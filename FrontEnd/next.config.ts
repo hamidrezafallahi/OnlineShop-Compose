@@ -23,46 +23,20 @@ const nextConfig: NextConfig = {
   output: 'standalone',
 
   // ─── Images ──────────────────────────────────────────────────────────────
-  images: {
-    // Configure remote patterns instead of domains (deprecated)
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'localhost',
-        port: '',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: '127.0.0.1',
-        port: '',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '127.0.0.1',
-        port: '',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'https',
-        hostname: process.env.DOMAIN_NAME || 'yourdomain.com',
-        port: '',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'backend',
-        port: '8080',
-        pathname: '/uploads/**',
-      },
-    ],
+ images: {
+  remotePatterns: [
+    {
+      protocol: "http",
+      hostname: "localhost",
+      pathname: "/uploads/**",
+    },
+    {
+      protocol: "https",
+      hostname: "yourdomain.com",
+      pathname: "/uploads/**",
+    },
+  ],
+
     // Responsive image sizes for art direction
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

@@ -2,6 +2,8 @@ import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import landing from '@public/images/landingpage/landing.png';
+
 export default async  function LandingHero( ) {
   const locale = await getLocale()
   return (
@@ -35,7 +37,7 @@ export default async  function LandingHero( ) {
       <div className="relative mt-10 md:mt-0 p-4 animate-scale-in">
         <div className="relative shadow-xl rounded-2xl w-[260px] md:w-[400px] h-[360px] md:h-[520px] overflow-hidden">
           <Image
-            src="https://localhost:7116/uploads/brands/2/35dbc5de-a5b6-4c76-a7b4-41a8c108ca08_6.webp"
+            src={landing}
             alt="Luxury Perfume"
             fill
             className="object-cover hover:scale-105 transition-transform duration-700"
@@ -52,40 +54,3 @@ export default async  function LandingHero( ) {
     </section>
   );
 }
-//  return (
-//     <section className="relative flex justify-center items-center bg-black min-h-[90vh] overflow-hidden text-white">
-//       {/* تصویر بک‌گراند */}
-//       <div
-//         className="absolute inset-0 bg-cover bg-center opacity-60"
-//         style={{ backgroundImage: "url('/images/perfume-hero.jpg')" }}
-//       ></div>
-
-//       {/* گرادیان محو از پایین */}
-//       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-transparent"></div>
-
-//       {/* محتوا */}
-//       <div className="z-10 relative px-6 max-w-2xl text-center">
-//         <h1 className="mb-4 font-light text-5xl md:text-6xl tracking-wide">
-//           عطری که امضای توست
-//         </h1>
-//         <p className="mb-8 text-gray-300 text-lg md:text-xl leading-relaxed">
-//           رایحه‌ای ماندگار از اصالت و ظرافت.
-//           مجموعه‌ای از بهترین عطرهای مردانه و زنانه را کشف کن.
-//         </p>
-//         <div className="flex justify-center items-center gap-4">
-//           <a
-//             href="/products"
-//             className="bg-white hover:bg-gray-200 px-8 py-3 rounded-full font-semibold text-black transition"
-//           >
-//             مشاهده محصولات
-//           </a>
-//           <a
-//             href="/collections"
-//             className="hover:bg-white px-8 py-3 border border-white rounded-full font-semibold hover:text-black transition"
-//           >
-//             کالکشن ویژه
-//           </a>
-//         </div>
-//       </div>
-//     </section>
-//   );
