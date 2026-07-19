@@ -2,8 +2,6 @@ import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import landing from '/public/images/landingpage/landing.png';
-
 export default async  function LandingHero( ) {
   const locale = await getLocale()
   return (
@@ -37,7 +35,7 @@ export default async  function LandingHero( ) {
       <div className="relative mt-10 md:mt-0 p-4 animate-scale-in">
         <div className="relative shadow-xl rounded-2xl w-[260px] md:w-[400px] h-[360px] md:h-[520px] overflow-hidden">
           <Image
-            src={landing}
+            src="/images/landingpage/landing.png"
             alt="Luxury Perfume"
             fill
             className="object-cover hover:scale-105 transition-transform duration-700"
