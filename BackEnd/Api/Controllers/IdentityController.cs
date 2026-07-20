@@ -36,13 +36,22 @@ public class IdentityController : BaseController
         return Ok(result);
     }
 
-    [HttpPost("refresh-token")]  
-    [AllowAnonymous]
-    public async Task<ActionResult<LoginDto>> RefreshToken([FromBody] RefreshTokenCommand command)
+   [HttpPost("refresh-token")]
+public async Task<IActionResult> RefreshToken(
+    [FromBody] RefreshTokenCommand? request)
+{
+    var command = new RefreshTokenCommand
     {
-        var result = await _mediator.Send(command);
-        return Ok(result);
-    }
+        AccessToken = request?.AccessToken ?? Request.Cookies["candyAccess"] ?? "",
+        RefreshToken = request?.RefreshToken ?? Request.Cookies["candyRefresh"] ?? "",
+        Ip = request?.Ip,
+        UserAgent = request?.UserAgent
+    };
+
+    var result = await _mediator.Send(command);
+
+    return Ok(result);
+}
 
     [HttpPut("changepasswordbyadmin")]
     [Authorize(Roles = "SuperAdmin,Admin")]

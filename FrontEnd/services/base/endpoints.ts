@@ -1,1 +1,1 @@
-export const endpoints: string[] = ["unknown","blogs","api","https:"];
+export const endpoints: string[] = ["unknown","blogs","api","https:","http:"];

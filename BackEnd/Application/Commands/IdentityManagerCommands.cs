@@ -28,8 +28,8 @@ namespace Application.Commands
 
         public class RefreshTokenCommand : IRequest<ServiceResult<LoginDto>>
         {
-            public string RefreshToken { get; set; } = default!;
-            public string AccessToken { get; set; } = default!;
+            public string? RefreshToken { get; set; } = default!;
+            public string? AccessToken { get; set; } = default!;
 
             public string? Ip { get; set; }
             public string? UserAgent { get; set; }

@@ -19,6 +19,8 @@ import { setAddress } from '@slice/shoppingCartSlice';
 import { IAddress } from '../type';
 import AddressCart from './addressCart';
 
+const baseUrl = process.env.INTERNAL_API_URL;
+
 export default function ClientAddress() {
 
 
@@ -48,7 +50,7 @@ export default function ClientAddress() {
   const handleAddAddress = async () => {
     try {
       const res = await itemMutate({
-        url: "/api/user/address",
+        url: `/api/address`,
         method: "POST",
         body: newAddress,
       }).unwrap();

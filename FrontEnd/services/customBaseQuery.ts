@@ -11,6 +11,8 @@ import {
   showErrorToast,
 } from '@utils/core';
 
+const baseUrl = process.env.INTERNAL_API_URL;
+
 const mutex = new Mutex();
 
 export async function baseQueryByToken(
@@ -106,10 +108,14 @@ async function baseQueryWithAuth(
 async function refreshAccessToken(): Promise<boolean> {
   try {
     const response = await fetch(
-      "/api/auth/refresh",
+      `/api/Identity/refresh-token`,
       {
         method: "POST",
         credentials: "include",
+         headers: {
+        "Content-Type": "application/json",
+    },
+    body:  JSON.stringify({}),
       }
     );
 

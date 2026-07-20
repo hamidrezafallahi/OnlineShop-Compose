@@ -22,35 +22,36 @@ import { useAppSelector } from '@store/index';
 
 import { IAddress } from '../type';
 
-interface IProps{
-    address:IAddress
-    refetch:()=>void
-    setShowAddForm:Dispatch<SetStateAction<boolean>>
-    setNewAddress:Dispatch<SetStateAction<IAddress>>
-    
+interface IProps {
+  address: IAddress;
+  refetch: () => void;
+  setShowAddForm: Dispatch<SetStateAction<boolean>>;
+  setNewAddress: Dispatch<SetStateAction<IAddress>>;
 }
-function AddressCart({...props}:IProps) {
-const {address,refetch,setNewAddress,setShowAddForm}=props
+function AddressCart({...props}: IProps) {
+  const {address, refetch, setNewAddress, setShowAddForm} = props;
   const t = useTranslations();
-  const [defaultMutate, { isLoading: defaultLoading }] = useGetConditionallyMutation();
-  const [deleteMutate, { isLoading: deleteLoading }] = useGetConditionallyMutation();
-    const dispatch = useDispatch();
+  const [defaultMutate, {isLoading: defaultLoading}] =
+    useGetConditionallyMutation();
+  const [deleteMutate, {isLoading: deleteLoading}] =
+    useGetConditionallyMutation();
+  const dispatch = useDispatch();
   const selectedAddress = useAppSelector(
     (state) => state.withPersist.ShoppingCart.address,
-    shallowEqual
+    shallowEqual,
   );
   const handleEditAddress = (addr: IAddress) => {
     setShowAddForm(true);
-    setNewAddress({ ...addr, isEdit: true });
+    setNewAddress({...addr, isEdit: true});
   };
   const handleSetDefault = async (addressId: number) => {
     try {
       const res = await defaultMutate({
         url: `/api/Address/set-default`,
         method: "PUT",
-        body:{
-          id: addressId
-        }
+        body: {
+          id: addressId,
+        },
       }).unwrap();
 
       if (res.isSuccess) {
@@ -61,7 +62,7 @@ const {address,refetch,setNewAddress,setShowAddForm}=props
   const handleDeleteAddress = async (addressId: number) => {
     try {
       const res = await deleteMutate({
-        url: `/api/user/address/${addressId}`,
+        url: `/api/address/${addressId}`,
         method: "DELETE",
       }).unwrap();
 
@@ -71,87 +72,79 @@ const {address,refetch,setNewAddress,setShowAddForm}=props
     } catch {}
   };
 
-
-
   return (
-                  <div
-                    className={`p-4 rounded-lg bg-zinc-900 border cursor-pointer space-y-3 ${
-                      selectedAddress?.id === address.id
-                        ? "border-primary shadow-primary shadow-lg"
-                        : "border-gray-700"
-                    }`}
-                    onClick={() => dispatch(setAddress({ address }))}
-                  >
-                    {/* --- اطلاعات آدرس --- */}
-                    <div className="flex justify-between items-center">
-                      <div className="space-y-1 text-sm">
-                        <div>
-                          {address.name} {address.phoneNumber}
-                        </div>
-    
-                        <div className="text-gray-400 text-xs">
-                          {address.postalCode} {address.fullAddress}
-                        </div>
-    
-                        <div className="text-gray-400 text-xs">{address.state}</div>
-                      </div>
-    
-                      {/* لیبل نمایش Default */}
-                      {address.isDefault && (
-                        <span className="text-primary text-xs">
-                          {t("general.default")}
-                        </span>
-                      )}
-                    </div>
-    
-                    {/* --- چک‌باکس پیش‌فرض (Footer کارت) --- */}
-                    <div className="flex justify-between items-center gap-2 pt-2 border-zinc-800 border-t">
-                      <div className="flex justify-between items-center gap-2">
-                        <span className="text-gray-400 text-xs">
-                          {t("address.chooseAsDefault")}
-                        </span>
-                        {defaultLoading ? (
-                          <SpinnerIcon />
-                        ) : (
-                          <Checkbox
-                            checked={address.isDefault}
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) => handleSetDefault(address.id!)}
-                            className="bg-zinc-800 p-2 rounded"
-                          />
-                        )}
-                      </div>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteAddress(address.id!);
-                        }}
-                        className="flex justify-between items-center gap-2 !bg-transparent"
-                      >
-                        <span className="text-gray-400 text-xs">
-                          {t("general.delete")}
-                        </span>
-                        {deleteLoading ? (
-                          <SpinnerIcon />
-                        ) : (
-                          <Trash2Icon config={{ stroke: "#e11d48" }} />
-                        )}
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditAddress(address);
-                        }}
-                        className="flex justify-between items-center gap-2 !bg-transparent"
-                      >
-                        <span className="text-gray-400 text-xs">
-                          {t("general.edit")}
-                        </span>
-                        <EditIcon />
-                      </Button>
-                    </div>
-                  </div>
-  )
+    <div
+      className={`p-4 rounded-lg bg-zinc-900 border cursor-pointer space-y-3 ${
+        selectedAddress?.id === address.id
+          ? "border-primary shadow-primary shadow-lg"
+          : "border-gray-700"
+      }`}
+      onClick={() => dispatch(setAddress({address}))}
+    >
+      {/* --- اطلاعات آدرس --- */}
+      <div className="flex justify-between items-center">
+        <div className="space-y-1 text-sm">
+          <div>
+            {address.name} {address.phoneNumber}
+          </div>
+
+          <div className="text-gray-400 text-xs">
+            {address.postalCode} {address.fullAddress}
+          </div>
+
+          <div className="text-gray-400 text-xs">{address.state}</div>
+        </div>
+
+        {/* لیبل نمایش Default */}
+        {address.isDefault && (
+          <span className="text-primary text-xs">{t("general.default")}</span>
+        )}
+      </div>
+
+      {/* --- چک‌باکس پیش‌فرض (Footer کارت) --- */}
+      <div className="flex justify-between items-center gap-2 pt-2 border-zinc-800 border-t">
+        <div className="flex justify-between items-center gap-2">
+          <span className="text-gray-400 text-xs">
+            {t("address.chooseAsDefault")}
+          </span>
+          {defaultLoading ? (
+            <SpinnerIcon />
+          ) : (
+            <Checkbox
+              checked={address.isDefault}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => handleSetDefault(address.id!)}
+              className="bg-zinc-800 p-2 rounded"
+            />
+          )}
+        </div>
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeleteAddress(address.id!);
+          }}
+          className="flex justify-between items-center gap-2 !bg-transparent"
+        >
+          <span className="text-gray-400 text-xs">{t("general.delete")}</span>
+          {deleteLoading ? (
+            <SpinnerIcon />
+          ) : (
+            <Trash2Icon config={{stroke: "#e11d48"}} />
+          )}
+        </Button>
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEditAddress(address);
+          }}
+          className="flex justify-between items-center gap-2 !bg-transparent"
+        >
+          <span className="text-gray-400 text-xs">{t("general.edit")}</span>
+          <EditIcon />
+        </Button>
+      </div>
+    </div>
+  );
 }
 
-export default AddressCart
+export default AddressCart;

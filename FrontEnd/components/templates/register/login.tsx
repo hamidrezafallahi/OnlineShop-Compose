@@ -35,7 +35,7 @@ import {
   TokenPayload,
 } from './type';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+// const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 ;
 
 export function LoginForm({
@@ -74,7 +74,7 @@ export function LoginForm({
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-          const res = await fetch(`${baseUrl}/api/Identity/login`, {
+          const res = await fetch(`/api/Identity/login`, {
       method: 'POST',
       headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export function LoginForm({
 
       const syncCartResponse: IBaseQueryResponse<SynchronousResponse> =
         await syncCart({
-          url:`${baseUrl}/api/Carts/sync`,
+          url:`/api/Carts/sync`,
           body: {
             clientItems: ShoppingCart?.products?.length
               ? ShoppingCart.products.map((i) => ({
