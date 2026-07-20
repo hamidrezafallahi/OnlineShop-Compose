@@ -11,6 +11,8 @@ import ProductsCarousel from '@components/molecules/productsCarousel';
 import { ILandingProduct } from '@models/product';
 import { useGetData } from '@services/base';
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
 const TABS = [
   { key: 'BestSeller', label: 'پرفروش‌ترین‌ها' },
   { key: 'TheNewest', label: 'جدیدترین‌ها' },
@@ -23,7 +25,7 @@ export default function TheMostProducts() {
   const locale = useLocale();
 
   const { data, isLoading, isFetching } = useGetData<ILandingProduct[], any>({
-    url: `/api/Products/landings?${activeTab}=true`,
+    url: `${baseUrl}/api/Products/landings?${activeTab}=true`,
   });
 
   useEffect(() => {

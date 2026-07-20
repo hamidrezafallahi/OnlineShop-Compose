@@ -127,6 +127,7 @@ namespace Api
                     policy =>
                     {
                         policy.WithOrigins(
+                "http://localhost",
                 "http://localhost:3000",
                 "http://localhost:3001"
             )
@@ -147,8 +148,8 @@ app.UseForwardedHeaders();
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                app.UseCors("AllowFrontend");
             }
+                app.UseCors("AllowFrontend");
             app.IntializeDatabase();
             app.UseStaticFiles();
             app.UseMiddleware<BlacklistMiddleware>();

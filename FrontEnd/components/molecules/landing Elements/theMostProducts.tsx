@@ -9,6 +9,7 @@ import Link from 'next/link';
 
 import { ILandingProduct } from '@models/product';
 import { useGetData } from '@services/base';
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 import ProductsCarousel from '../productsCarousel';
 
@@ -16,7 +17,7 @@ function TheMostProducts() {
   const [activeTab, setActiveTab] = useState("BestSeller");
   const [content, setContent] = useState<ILandingProduct[]>();
   const { data, isLoading, isFetching } = useGetData<ILandingProduct[], any>({
-    url: `/api/Products/landings?${activeTab}=true`,
+    url: `${baseUrl}/api/Products/landings?${activeTab}=true`,
   });
   const locale = useLocale();
   useEffect(() => {

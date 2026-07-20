@@ -10,6 +10,8 @@ import {
   SelectProps,
 } from '../customSelect';
 
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export interface DynamicSelectProps extends SelectProps {
   fetchConfig: { api: string };
   fetchSize?: number;
@@ -26,8 +28,7 @@ const DynamicSelect = React.forwardRef<HTMLDivElement, DynamicSelectProps>(
     const [page, setPage] = React.useState<number>(1);
     const locale = useLocale();
     const prevConfigRef = React.useRef(fetchConfig);
-
-    const url = new URL(fetchConfig.api);
+    const url = new URL(`${baseUrl}/${fetchConfig.api}`);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", String(fetchSize));
     Object.entries(fetchConfig).forEach(([k, v]) => {

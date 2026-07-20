@@ -69,7 +69,7 @@ export async function getById(entity: string, id: string): Promise<Record<string
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
-  const res = await fetch(`${baseUrl}api/EntityConfigs/entityFormConfig/${entity}`, {
+  const res = await fetch(`${baseUrl}/api/EntityConfigs/entityFormConfig/${entity}`, {
    
     // next: {
     //   revalidate: 1,
