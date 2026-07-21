@@ -6,6 +6,7 @@ import {
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query';
 import {
+  createCookie,
   deleteCookie,
   getTokens,
   showErrorToast,
@@ -38,6 +39,7 @@ export async function baseQueryByToken(
 
         if (!refreshed) {
           deleteCookie("candyAccess");
+          deleteCookie("candyRefresh");
 
           // if (typeof window !== "undefined") {
           //   window.location.href =
@@ -125,7 +127,14 @@ async function refreshAccessToken(): Promise<boolean> {
 
     const data = await response.json();
 
-    return data.success === true;
+    // Route Handler returns { isSuccess: true, data: { accessToken } }
+     if (data.isSuccess && data.data?.accessToken) {
+      createCookie("candyAccess", data.data.accessToken, 6);
+      createCookie("candyRefresh", data.data.refreshToken, 6);
+      return true;
+    }
+
+    return false;
   } catch (err) {
     console.error("Refresh token error:", err);
 

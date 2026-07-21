@@ -66,8 +66,7 @@ export default function ClientAddress() {
   };
 
   const handleFetchEditAddress = async () => {
-    console.log(newAddress)
-    try {
+     try {
       const res = await editMutate({
         url: `/api/address`,
         method: "PUT",

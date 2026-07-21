@@ -18,9 +18,7 @@ export async function getAll<T>(
   if (filter !== undefined) params.append("q", String(filter));
   if (onlyActives !== undefined) params.append("onlyActives", String(onlyActives));
   const url = `${baseUrl}/api/${entity}?${params.toString()}`;
-  console.log("getAll", page, pageSize, byConfig, filter, onlyActives, url, entity)
-  // console.log(url,entity)
-  try {
+   try {
     const res = await fetch(url, { cache: "no-store", next: { tags: [entity] } });
     const text = await res.text();
     return JSON.parse(text) as PagedResponse<T>;
@@ -64,8 +62,7 @@ export async function getById(entity: string, id: string): Promise<Record<string
     //, {
       cache: "no-store",
     });
-    console.log(res)
-  const data: Promise<ApiResponse<any>> = await res.json();
+   const data: Promise<ApiResponse<any>> = await res.json();
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
@@ -82,7 +79,6 @@ export async function getFormConfigByEntityName(entity: string) {
     cache: "no-store",
   });
   const data = await res.json();
-  console.log(data)
-  return data.data;
+   return data.data;
 }
 

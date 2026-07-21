@@ -196,8 +196,7 @@ export const ShoppingCartReducer = createSlice({
           (acc: number, item) => acc + (item.finalPrice*item.quantity),
           0,
         );
-        console.log((total * amount)/100);
-        state.finalTotal = isPercent
+         state.finalTotal = isPercent
           ? total - (total * amount) / 100
           : total - amount;
         state.discountCodeAmount = isPercent

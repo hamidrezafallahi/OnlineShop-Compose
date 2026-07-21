@@ -9,8 +9,7 @@ export default function TagTemplate({
 }: {
   Tag: ITag;
 }) {
-  console.log(Tag)
-  return (
+   return (
     <>
       <div className="text-center">
         <TagCard tag={{ id: Tag.id, name: Tag.name }} />{" "}

@@ -30,10 +30,8 @@ function ShippingMethod() {
   };
 useEffect(() => {
   if (data?.isSuccess) {
-    console.log(data)
-    setMethods(data?.data?.records??[]);
-
-    const method =
+     setMethods(data?.data?.records??[]);
+     const method =
       data.data.records.find((m: IShippingMethod) => m.isDefault) ??
       data.data.records[0];
 

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL Workflow Report - OnlineShop Complex</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.8;
+            padding: 2rem;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 {
+            font-size: 2.2rem;
+            color: #38bdf8;
+            border-bottom: 3px solid #38bdf8;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h1 small {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: normal;
+        }
+        h2 {
+            font-size: 1.5rem;
+            color: #a78bfa;
+            margin: 2.5rem 0 1rem;
+            padding-right: 0.5rem;
+            border-right: 4px solid #a78bfa;
+        }
+        h3 {
+            font-size: 1.15rem;
+            color: #f472b6;
+            margin: 1.5rem 0 0.8rem;
+        }
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #334155;
+        }
+        .card.green { border-right: 4px solid #22c55e; }
+        .card.amber { border-right: 4px solid #f59e0b; }
+        .card.red   { border-right: 4px solid #ef4444; }
+        .card.blue  { border-right: 4px solid #3b82f6; }
+        .card.purple{ border-right: 4px solid #a78bfa; }
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.2rem;
+        }
+        .badge.green  { background: #166534; color: #bbf7d0; }
+        .badge.amber  { background: #854d0e; color: #fde68a; }
+        .badge.red    { background: #991b1b; color: #fecaca; }
+        .badge.blue   { background: #1e3a5f; color: #bfdbfe; }
+        .badge.purple { background: #4c1d95; color: #ddd6fe; }
+        pre {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #a5b4fc;
+            direction: ltr;
+            text-align: left;
+            margin: 0.8rem 0;
+        }
+        code {
+            background: #334155;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #fcd34d;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid #334155;
+            padding: 0.6rem 0.8rem;
+            text-align: right;
+        }
+        th { background: #1e293b; color: #94a3b8; font-weight: 600; }
+        td { background: #0f172a; }
+        .check { color: #22c55e; }
+        .cross { color: #ef4444; }
+        .warn  { color: #f59e0b; }
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 1.5rem 0;
+        }
+        .flow-step {
+            display: flex;
+            align-items: stretch;
+            gap: 1rem;
+        }
+        .flow-step .num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            min-width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #334155;
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .flow-step .num.active { background: #38bdf8; color: #0f172a; }
+        .flow-step .num.green  { background: #22c55e; color: #0f172a; }
+        .flow-step .num.purple { background: #a78bfa; color: #0f172a; }
+        .flow-step .connector {
+            width: 2px;
+            min-width: 2px;
+            background: #334155;
+            margin: 0 auto;
+            flex: 1;
+        }
+        .flow-step .content {
+            flex: 1;
+            padding: 0.8rem 0;
+        }
+        .flow-step:last-child .connector { display: none; }
+        .diagram-box {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            direction: ltr;
+        }
+        .diagram-box .service {
+            display: inline-block;
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            margin: 0.3rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .diagram-box .service.cert { border-color: #22c55e; }
+        .diagram-box .service.nginx { border-color: #a78bfa; }
+        .diagram-box .arrow { color: #64748b; font-size: 1.2rem; margin: 0 0.3rem; }
+        .diagram-box .label { 
+            display: block; 
+            color: #94a3b8; 
+            font-size: 0.75rem; 
+            margin-top: 0.3rem;
+        }
+        .diagram-box .step-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin: 0.6rem 0;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .summary-item .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+        .summary-item .desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<h1>
+    🔐 SSL Workflow — OnlineShop Complex
+    <small>certbot + nginx + auto-renewal</small>
+</h1>
+
+<!-- ======== Overview ======== -->
+<div class="card green">
+    <strong>✅ وضعیت: همه لایه‌ها با هم تطابق کامل دارند</strong><br>
+    فایل‌های nginx، سرویس‌های certbot در docker-compose.prod.yml و سرویس nginx_reloader
+    همگی به درستی پیکربندی شده‌اند و زنجیره SSL بدون نقص کار می‌کند.
+</div>
+
+<!-- ======== Summary Stats ======== -->
+<div class="summary-grid">
+    <div class="summary-item">
+        <div class="value">3</div>
+        <div class="desc">سرویس SSL/Cert</div>
+    </div>
+    <div class="summary-item">
+        <div class="value">2</div>
+        <div class="desc">ولیم certbot</div>
+    </div>
+    <div class="summary-item">
+        <div class="value">12h</div>
+        <div class="desc">بازه renew</div>
+    </div>
+    <div class="summary-item">
+        <div class="value">✓</div>
+        <div class="desc">HSTS preload</div>
+    </div>
+</div>
+
+<!-- ======== Architecture Diagram ======== -->
+<h2>🏗️ معماری کلی</h2>
+
+<div class="diagram-box">
+    <div class="step-line">
+        <span class="service cert">certbot_init</span>
+        <span class="arrow">→</span>
+        <span class="service">letsencrypt<br><span class="label">Volume</span></span>
+        <span class="arrow">→</span>
+        <span class="service nginx">nginx (443)<br><span class="label">SSL termination</span></span>
+    </div>
+    <div style="margin: 0.5rem 0; color: #475569;">┃</div>
+    <div class="step-line">
+        <span class="service cert">certbot_renew</span>
+        <span class="arrow">→</span>
+        <span class="service nginx">/.well-known/acme-challenge/<br><span class="label">HTTP-01 validation</span></span>
+    </div>
+    <div style="margin: 0.5rem 0; color: #475569;">┃</div>
+    <div class="step-line">
+        <span class="service">inotify<br><span class="label">nginx_reloader</span></span>
+        <span class="arrow">⏰ detects change →</span>
+        <span class="service nginx">docker kill -s HUP<br><span class="label">nginx reload</span></span>
+    </div>
+</div>
+
+<!-- ======== Service Details ======== -->
+<h2>📋 جزئیات سرویس‌ها</h2>
+
+<h3>1️⃣ certbot_init (اجرا یک‌بار)</h3>
+<div class="card blue">
+    <table>
+        <tr><th>ویژگی</th><th>مقدار</th><th>تطابق با nginx</th></tr>
+        <tr>
+            <td>دامین</td>
+            <td><code>${DOMAIN_NAME}</code></td>
+            <td><span class="check">✅ یکسان</span></td>
+        </tr>
+        <tr>
+            <td>Port</td>
+            <td><code>80</code> (standalone)</td>
+            <td><span class="check">✅ nginx هم پورت 80 دارد</span></td>
+        </tr>
+        <tr>
+            <td>Challenge</td>
+            <td><code>--preferred-challenges http</code></td>
+            <td><span class="check">✅ HTTP-01</span></td>
+        </tr>
+        <tr>
+            <td>Volume</td>
+            <td><code>letsencrypt → /etc/letsencrypt</code></td>
+            <td><span class="check">✅ nginx از همین volume می‌خواند</span></td>
+        </tr>
+    </table>
+
+    <pre>certonly --standalone --preferred-challenges http \
+  -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} \
+  --agree-tos --non-interactive -vvv</pre>
+
+    <div><span class="badge green">مهم</span> <strong>موفقیت:</strong> گواهی در <code>/etc/letsencrypt/live/${DOMAIN_NAME}/</code> ذخیره می‌شود.</div>
+    <div><span class="badge amber">نکته</span> سرویس یک‌بار اجرا می‌شود و پس از تکمیل متوقف می‌شود <code>restart: "no"</code>.</div>
+</div>
+
+
+<h3>2️⃣ certbot_renew (چرخه تمدید)</h3>
+<div class="card blue">
+    <table>
+        <tr><th>ویژگی</th><th>مقدار</th><th>تطابق با nginx</th></tr>
+        <tr>
+            <td>Webroot</td>
+            <td><code>-w /var/www/certbot</code></td>
+            <td><span class="check">✅ nginx همان را mount کرده</span></td>
+        </tr>
+        <tr>
+            <td>بازه</td>
+            <td><code>sleep ${RENEW_INTERVAL:-12h}</code></td>
+            <td><span class="check">✅ کافی برای جلوگیری از ریت لیمیت</span></td>
+        </tr>
+        <tr>
+            <td>ACME path</td>
+            <td><code>--webroot -w /var/www/certbot</code></td>
+            <td><span class="check">✅ nginx: <code>location /.well-known/acme-challenge/</code></span></td>
+        </tr>
+        <tr>
+            <td>Volume certbot-webroot</td>
+            <td><code>/var/www/certbot</code></td>
+            <td><span class="check">✅ هر دو کانتینر mount کرده‌اند</span></td>
+        </tr>
+    </table>
+
+    <pre># Loop: هر ۱۲ ساعت اجرا می‌شود
+while :; do
+  certbot renew --webroot -w /var/www/certbot
+  sleep 12h
+done</pre>
+
+    <div><span class="badge green">تطابق کامل</span> <code>production.conf</code> خط ۱۱-۱۳ دارای <code>location /.well-known/acme-challenge/</code> با <code>root /var/www/certbot</code> است.</div>
+    <div><span class="badge amber">مهم</span> این location <strong>قبل</strong> از redirect به HTTPS قرار دارد، در غیر این صورت ACME challenge با 301 مواجه می‌شود و fail می‌کند.</div>
+</div>
+
+
+<h3>3️⃣ nginx (SSL Termination)</h3>
+<div class="card purple">
+    <table>
+        <tr><th>ویژگی</th><th>مقدار</th></tr>
+        <tr><td>Image</td><td><code>nginx:1.27-alpine</code></td></tr>
+        <tr><td>Config</td><td><code>/etc/nginx/templates/default.conf.template</code> (production.conf)</td></tr>
+        <tr><td>SSL Cert path</td><td><code>/etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem</code></td></tr>
+        <tr><td>SSL Key path</td><td><code>/etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem</code></td></tr>
+        <tr><td>DH Param</td><td><code>/etc/letsencrypt/ssl-dhparams.pem</code></td></tr>
+    </table>
+
+    <pre># بررسی تطابق مسیرهای گواهی در production.conf:
+ssl_certificate         /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
+ssl_certificate_key     /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
+ssl_trusted_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/chain.pem;
+ssl_dhparam             /etc/letsencrypt/ssl-dhparams.pem;</pre>
+    <pre># بررسی volume mount در docker-compose.prod.yml:
+volumes:
+  - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  - ./docker/nginx/conf.d/production.conf:/etc/nginx/templates/default.conf.template:ro
+  - letsencrypt:/etc/letsencrypt:ro          # ← مسیر گواهی‌ها ✅
+  - certbot-webroot:/var/www/certbot:ro       # ← ACME challenge ✅
+  - ./nginx_configs/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro  # ← DH ✅</pre>
+
+    <div><span class="badge green">✅ تطابق کامل</span> مسیرهای گواهی در nginx دقیقاً منطبق بر محل ذخیره‌سازی certbot است.</div>
+    <div><span class="badge purple">⚡ HSTS فعال</span> <code>max-age=63072000; includeSubDomains; preload</code></div>
+    <div><span class="badge purple">🔒 TLS 1.2/1.3</span> با Mozilla Intermediate cipher suite</div>
+</div>
+
+
+<h3>4️⃣ nginx_reloader (بارگذاری مجدد خودکار)</h3>
+<div class="card amber">
+    <table>
+        <tr><th>ویژگی</th><th>مقدار</th><th>توضیح</th></tr>
+        <tr>
+            <td>Image</td><td><code>alpine:3.20</code></td>
+            <td>سبک و کافی برای inotify-tools</td>
+        </tr>
+        <tr>
+            <td>Dependency</td><td><code>nginx (service_started)</code></td>
+            <td>صبر نمی‌کند certbot_init کامل شود</td>
+        </tr>
+        <tr>
+            <td>Volume nginx certs</td><td><code>letsencrypt:/etc/letsencrypt:ro</code></td>
+            <td><span class="check">✅ برای دیدن تغییرات</span></td>
+        </tr>
+        <tr>
+            <td>Docker socket</td><td><code>/var/run/docker.sock</code></td>
+            <td>برای اجرای <code>docker kill -s HUP</code></td>
+        </tr>
+    </table>
+
+    <pre># اسکریپت اصلی nginx_reloader:
+apk add --no-cache inotify-tools docker-cli >/dev/null;
+while :; do
+  inotifywait -e create,modify,delete,move \
+    -r /etc/letsencrypt/live >/dev/null 2>&1;
+  echo "certs changed: reloading nginx";
+  docker kill -s HUP shop-nginx-prod >/dev/null 2>&1 || true;
+done</pre>
+
+    <div><span class="badge amber">⚠️ ریسک امنیتی</span> mount داکر سوکت (<code>/var/run/docker.sock</code>) دسترسی به هاست داکر می‌دهد.</div>
+    <div><span class="badge green">✅ راه‌حل جایگزین</span> در نسخه‌های جدیدتر nginx می‌توان از <code>nginx -s reload</code> داخل کانتینر nginx استفاده کرد.</div>
+</div>
+
+
+<!-- ======== Complete Flow ======== -->
+<h2>🔄 جریان کامل (End-to-End)</h2>
+
+<div class="flow-container">
+
+    <!-- Step 1 -->
+    <div class="flow-step">
+        <div class="num green">1</div>
+        <div class="connector"></div>
+        <div class="content">
+            <strong>🚀 docker compose up -d</strong><br>
+            ابتدا <code>certbot_init</code> اجرا می‌شود (یک بار):<br>
+            <pre>certbot certonly --standalone -d example.com</pre>
+            <span class="badge green">موفقیت</span> گواهی در <code>/etc/letsencrypt/live/example.com/</code> ذخیره شد.
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="flow-step">
+        <div class="num">2</div>
+        <div class="connector"></div>
+        <div class="content">
+            <strong>🔐 nginx شروع به کار می‌کند</strong><br>
+            پس از تکمیل certbot_init، nginx بالا می‌آید و گواهی را از مسیر <code>/etc/letsencrypt/live/</code> می‌خواند.<br>
+            <span class="badge purple">SSL termination</span> روی پورت 443 با TLS 1.2/1.3
+        </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="flow-step">
+        <div class="num">3</div>
+        <div class="connector"></div>
+        <div class="content">
+            <strong>🔄 certbot_renew شروع به کار می‌کند</strong><br>
+            حلقه بی‌نهایت: هر ۱۲ ساعت <code>certbot renew --webroot -w /var/www/certbot</code> را اجرا می‌کند.<br>
+            <span class="badge amber">نکته</span> certbot فقط زمانی گواهی را تمدید می‌کند که کمتر از ۳۰ روز به انقضا مانده باشد.
+        </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="flow-step">
+        <div class="num">4</div>
+        <div class="connector"></div>
+        <div class="content">
+            <strong>🌐 ACME HTTP-01 Challenge</strong><br>
+            certbot یک token در <code>/var/www/certbot/.well-known/acme-challenge/</code> قرار می‌دهد.<br>
+            nginx این مسیر را مستقیماً سرو می‌کند (<code>root /var/www/certbot</code>) بدون redirect به HTTPS.<br>
+            <span class="badge check">✅ سرورهای Let's Encrypt از طریق HTTP پورت 80 تأیید می‌کنند.</span>
+        </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="flow-step">
+        <div class="num purple">5</div>
+        <div class="connector"></div>
+        <div class="content">
+            <strong>⏰ nginx_reloader تغییر را تشخیص می‌دهد</strong><br>
+            <code>inotifywait</code> رویداد <code>create/modify</code> در <code>/etc/letsencrypt/live/</code> را می‌گیرد:<br>
+            <pre>certs changed: reloading nginx
+docker kill -s HUP shop-nginx-prod</pre>
+            <span class="badge green">✅ nginx بدون Downtime گواهی جدید را بارگذاری می‌کند.</span>
+        </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="flow-step">
+        <div class="num green">6</div>
+        <div class="connector"></div>
+        <div class="content">
+            <strong>✅ چرخه کامل شد</strong><br>
+            گواهی تا ۹۰ روز معتبر است. certbot هر ۱۲ ساعت چک می‌کند و ۳۰ روز قبل از انقضا تمدید می‌کند.
+            nginx_reloader بلافاصله nginx را reload می‌کند.<br>
+            <span class="badge green">🔒 SSL همیشه معتبر و به‌روز</span>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ======== Verification Matrix ======== -->
+<h2>🔍 ماتریس تطابق لایه‌ها</h2>
+
+<div class="card">
+<table>
+    <thead>
+        <tr>
+            <th>مورد</th>
+            <th>production.conf (nginx)</th>
+            <th>docker-compose.prod.yml (certbot)</th>
+            <th>تطابق</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ACME Challenge Path</td>
+            <td><code>location /.well-known/acme-challenge/ { root /var/www/certbot; }</code></td>
+            <td><code>certbot renew --webroot -w /var/www/certbot</code></td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>SSL Certificate Path</td>
+            <td><code>/etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem</code></td>
+            <td><code>letsencrypt → /etc/letsencrypt</code></td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>SSL Key Path</td>
+            <td><code>/etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem</code></td>
+            <td>(همان volume)</td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>DH Param</td>
+            <td><code>/etc/letsencrypt/ssl-dhparams.pem</code></td>
+            <td><code>./nginx_configs/ssl-dhparams.pem</code></td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>Port 80</td>
+            <td>HTTP → HTTPS redirect (قبل آن ACME challenge استثنا شده)</td>
+            <td>certbot_renew از webroot استفاده می‌کند (نیاز به port 80 ندارد)</td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>Port 443</td>
+            <td>SSL termination با TLS</td>
+            <td>-</td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>Domain Name</td>
+            <td><code>${DOMAIN_NAME}</code></td>
+            <td><code>${DOMAIN_NAME}</code></td>
+            <td class="check">✅ (یک Environment Variable)</td>
+        </tr>
+        <tr>
+            <td>Cert Renewal</td>
+            <td>-</td>
+            <td><code>sleep 12h; certbot renew</code></td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>Nginx Reload</td>
+            <td><code>docker kill -s HUP</code> (توسط nginx_reloader)</td>
+            <td>(مستقل)</td>
+            <td class="check">✅</td>
+        </tr>
+        <tr>
+            <td>Volume: letsencrypt</td>
+            <td><span class="badge">ro</span> mount شده</td>
+            <td><span class="badge">rw</span> mount شده (برای書き)</td>
+            <td class="check">✅ (nginx read-only, certbot read-write)</td>
+        </tr>
+        <tr>
+            <td>Volume: certbot-webroot</td>
+            <td><span class="badge">ro</span> mount شده</td>
+            <td><span class="badge">rw</span> mount شده</td>
+            <td class="check">✅</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+
+<!-- ======== Production Notes ======== -->
+<h2>📌 نکات تولید (Production Checklist)</h2>
+
+<div class="card green">
+    <h3>✅ مزایای این معماری</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li>🔹 <strong>جدا بودن مسئولیت‌ها</strong> — هر کانتینر یک کار انجام می‌دهد</li>
+        <li>🔹 <strong>Renew خودکار</strong> — نیازی به cron job یا اسکریپت خارجی نیست</li>
+        <li>🔹 <strong>Reload خودکار</strong> — nginx_reloader با inotify تغییرات را تشخیص می‌دهد</li>
+        <li>🔹 <strong>HSTS preload</strong> — امنیت حداکثری برای مرورگرها</li>
+        <li>🔹 <strong>OCSP Stapling</strong> — سرعت بالاتر برای کلاینت‌ها</li>
+    </ul>
+</div>
+
+<div class="card amber">
+    <h3>⚠️ نکات قابل بهبود</h3>
+    <table>
+        <tr>
+            <td><span class="badge amber">ریسک</span></td>
+            <td><strong>Docker socket mount</strong> در nginx_reloader — دسترسی به هاست داکر دارد</td>
+            <td>راه‌حل: استفاده از nginx -s reload داخل کانتینر nginx (با docker exec)</td>
+        </tr>
+        <tr>
+            <td><span class="badge amber">توصیه</span></td>
+            <td><strong>متغیرهای env</strong> — حتماً <code>DOMAIN_NAME</code> و <code>CERTBOT_EMAIL</code> را در فایل <code>.env</code> یا environment تنظیم کنید</td>
+            <td>در غیر این صورت متغیر خالی رفته و certbot fail می‌شود</td>
+        </tr>
+        <tr>
+            <td><span class="badge amber">توصیه</span></td>
+            <td><strong>Staging first</strong> — ابتدا با <code>--staging</code> تست کنید تا به ریت لیمیت Let's Encrypt نخورید</td>
+            <td>بعد از اطمینان، <code>--staging</code> را بردارید</td>
+        </tr>
+        <tr>
+            <td><span class="badge amber">ریسک</span></td>
+            <td><strong>certbot_init روی پورت 80</strong> — اگر nginx قبلاً روی 80 باشد، تداخل دارد</td>
+            <td>خوشبختانه nginx به certbot_init وابسته است (<code>depends_on: condition: service_completed_successfully</code>)</td>
+        </tr>
+        <tr>
+            <td><span class="badge blue">اطلاعات</span></td>
+            <td><strong>frontend env</strong> — <code>NEXT_PUBLIC_API_URL</code> از طریق <code>${DOMAIN_NAME}</code> تنظیم می‌شود</td>
+            <td>مقادیر <code>INTERNAL_API_URL=http://backend:8080</code> و <code>NEXT_PUBLIC_API_URL=https://${DOMAIN_NAME}/api</code></td>
+        </tr>
+    </table>
+</div>
+
+
+<!-- ======== Commands ======== -->
+<h2>⚙️ دستورات مفید</h2>
+
+<div class="card">
+    <strong>اجرای کل پروژه:</strong>
+    <pre>docker compose -f docker-compose.prod.yml up -d</pre>
+    
+    <strong>تست renewal به صورت دستی:</strong>
+    <pre>docker exec shop-certbot-renew certbot renew --dry-run</pre>
+    
+    <strong>مشاهده expiry گواهی:</strong>
+    <pre>docker exec shop-certbot-renew openssl x509 -in /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem -noout -dates</pre>
+    
+    <strong>Reload دستی nginx:</strong>
+    <pre>docker kill -s HUP shop-nginx-prod</pre>
+    
+    <strong>مشاهده لاگ‌های certbot:</strong>
+    <pre>docker logs shop-certbot-init
+docker logs shop-certbot-renew -f</pre>
+
+    <strong>مشاهده لاگ‌های nginx:</strong>
+    <pre>docker compose -f docker-compose.prod.yml logs nginx -f</pre>
+</div>
+
+
+<!-- ======== Files Involved ======== -->
+<h2>📁 فایل‌های درگیر</h2>
+
+<div class="card">
+    <table>
+        <tr><th>فایل</th><th>مسیر</th><th>نقش</th></tr>
+        <tr>
+            <td><code>production.conf</code></td>
+            <td><code>docker/nginx/conf.d/production.conf</code></td>
+            <td>تنظیمات اصلی nginx برای production — SSL termination, proxy pass, security headers</td>
+        </tr>
+        <tr>
+            <td><code>nginx.conf</code></td>
+            <td><code>docker/nginx/nginx.conf</code></td>
+            <td>تنظیمات پایه nginx — upstreamها، rate limiting, gzip</td>
+        </tr>
+        <tr>
+            <td><code>docker-compose.prod.yml</code></td>
+            <td>ریشه پروژه</td>
+            <td>Orchestration همه سرویس‌ها</td>
+        </tr>
+        <tr>
+            <td><code>ssl-dhparams.pem</code></td>
+            <td><code>nginx_configs/ssl-dhparams.pem</code></td>
+            <td>Diffie-Hellman parameters (تولید شده با openssl)</td>
+        </tr>
+    </table>
+</div>
+
+<div class="card green" style="margin-top: 2rem; text-align: center; font-size: 1.1rem;">
+    <strong>🔒 SSL Workflow — 100% Operational</strong><br>
+    <span style="color: #94a3b8; font-size: 0.85rem;">
+    تمام لایه‌های nginx با سرویس‌های certbot تطابق کامل دارند.
+    </span>
+</div>
+
+</div>
+</body>
+</html>

@@ -80,7 +80,7 @@ export function LoginForm({
           "Content-Type": "application/json",
         },
       credentials: "include",
-      body:  JSON.stringify(login),  // browser خودش Content-Type: multipart/form-data set می‌کنه
+      body:  JSON.stringify(login),
     });
   
 
@@ -91,7 +91,8 @@ export function LoginForm({
         showErrorToast(data.error);
         return;
       }
-      createCookie("candyAccess",data.data.accessToken)
+      createCookie("candyAccess", data.data.accessToken, 6);
+      createCookie("candyRefresh", data.data.refreshToken, 6);
       const decoded: TokenPayload = jwtDecode(
         data.data.accessToken,
       );

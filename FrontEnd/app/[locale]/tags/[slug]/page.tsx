@@ -76,8 +76,7 @@ export default async function Page(props: {
     next: { revalidate: 36 },
   });
   const TagResponse: SimpleResponse<ITag> = await response.json();
-  console.log("TagResponse", TagResponse);
-  if (!TagResponse.isSuccess) {
+   if (!TagResponse.isSuccess) {
     notFound();
   } else {
     const Tag: ITag = TagResponse.data;
