@@ -35,7 +35,7 @@ services:
   # ─── Backend (ASP.NET) ──────────────────────────────────────────────────────
   backend:
     # استفاده از ایمیج ساخته شده در داکر هاب
-    image: ${DOCKER_USERNAME}/shop-backend:${BACKEND_TAG:-latest}
+    image: hamidrezafalahi/shop-backend:latest
     # build:  # کامنت شده - دیگر نیازی به ساخت محلی نیست
     #   context: ./BackEnd
     #   dockerfile: Dockerfile.prod
@@ -83,7 +83,7 @@ services:
   # ─── Frontend (Next.js) ─────────────────────────────────────────────────────
   frontend:
     # استفاده از ایمیج ساخته شده در داکر هاب
-    image: ${DOCKER_USERNAME}/shop-frontend:${FRONTEND_TAG:-latest}
+    image: hamidrezafalahi/shop-frontend:latest
     # build:  # کامنت شده - دیگر نیازی به ساخت محلی نیست
     #   context: ./FrontEnd
     #   dockerfile: Dockerfile.prod
@@ -100,7 +100,7 @@ services:
       - shop-network-prod
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -197,7 +197,6 @@ services:
         done
       '
     restart: unless-stopped
-  
   # ─── pgAdmin ──────────────────────────────────────────────────────────────
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -247,10 +246,10 @@ volumes:
   uploads_prod:
     name: shop-uploads-prod
   pgadmin_data_prod:  # <-- این خط را اضافه کنید
-    name: shop-pgadmin-data-prod  
+    name: shop-pgadmin-data-prod
   portainer_data_prod:
     name: shop-portainer-data-prod
   letsencrypt:
   certbot-webroot:
   nginx-cache:
-  nginx-logs: 
+  nginx-logs:
