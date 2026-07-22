@@ -1,48 +1,34 @@
 #!/bin/bash
-
+touch /tmp/github-action-worked
 set -e
 
 SERVICE=$1
 
 cd /opt/shop
 
+echo "Pull latest images..."
+
 case "$SERVICE" in
 
 frontend)
-
-    echo "Deploy Frontend"
-
     docker compose -f docker-compose.prod.yml pull frontend
-
-    docker compose -f docker-compose.prod.yml up -d frontend
-
-;;
+    docker compose -f docker-compose.prod.yml up -d --no-deps frontend
+    ;;
 
 backend)
-
-    echo "Deploy Backend"
-
     docker compose -f docker-compose.prod.yml pull backend
-
-    docker compose -f docker-compose.prod.yml up -d backend
-
-;;
+    docker compose -f docker-compose.prod.yml up -d --no-deps backend
+    ;;
 
 all)
-
-    echo "Deploy All"
     docker compose -f docker-compose.prod.yml pull frontend backend
-    docker compose -f docker-compose.prod.yml up -d frontend backend
-;;
+    docker compose -f docker-compose.prod.yml up -d --no-deps frontend backend
+    ;;
 
 *)
-
-    echo "Unknown argument"
-
+    echo "Unknown service"
     exit 1
-
-;;
-
+    ;;
 esac
 
 docker image prune -f
