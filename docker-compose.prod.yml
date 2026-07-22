@@ -147,7 +147,7 @@ services:
       resources:
         limits:
           memory: 128M
-      cpus: "0.3"
+          cpus: "0.3"
   # ─── Certbot (SSL auto-renewal) ───────────────────────────────────────────
   certbot_init:
     container_name: shop-certbot-init
