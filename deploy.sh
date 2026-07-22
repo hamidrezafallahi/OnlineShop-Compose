@@ -1,7 +1,10 @@
 #!/bin/bash
-touch /tmp/github-action-worked
-set -e
+ set -e
+echo "Current directory:"
+pwd
 
+echo "Files:"
+ls -la 
 SERVICE=$1
 
 cd /opt/shop
