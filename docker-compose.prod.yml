@@ -129,7 +129,6 @@ services:
       - uploads_prod:/var/www/uploads:ro
       - nginx-cache:/data/nginx/cache
       - nginx-logs:/var/log/nginx
-      - ./nginx_configs/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
     depends_on:
       backend:
         condition: service_healthy
