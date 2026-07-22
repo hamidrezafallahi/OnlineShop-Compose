@@ -134,17 +134,7 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
 
           script: |
-                  cd /opt/shop
-                
-                  chmod +x deploy.sh
-                
-                  if [ "${{ needs.detect-changes.outputs.frontend }}" = "true" ] && [ "${{ needs.detect-changes.outputs.backend }}" = "true" ]; then
-                      ./deploy.sh all
-                
-                  elif [ "${{ needs.detect-changes.outputs.frontend }}" = "true" ]; then
-                      ./deploy.sh frontend
-                
-                  elif [ "${{ needs.detect-changes.outputs.backend }}" = "true" ]; then
-                      ./deploy.sh backend
-                
-                  fi
+            echo "Connected successfully!"
+            whoami
+            pwd
+            hostname
