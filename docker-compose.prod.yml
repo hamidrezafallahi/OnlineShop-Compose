@@ -155,8 +155,9 @@ services:
     ports:
       - "80:80"
     command: >-
-      certonly --webroot /var/www/certbot --preferred-challenges http
-      -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} --agree-tos --non-interactive --keep-until-expiring -vvv
+      certonly --webroot --webroot-path=/var/www/certbot --preferred-challenges http
+      -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} --agree-tos --non-interactive
+      --keep-until-expiring -vvv
     volumes:
       - letsencrypt:/etc/letsencrypt
       - certbot-webroot:/var/www/certbot
