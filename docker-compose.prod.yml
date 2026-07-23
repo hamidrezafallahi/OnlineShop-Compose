@@ -155,10 +155,11 @@ services:
     ports:
       - "80:80"
     command: >-
-      certonly --webroot --preferred-challenges http
-      -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} --agree-tos --non-interactive -vvv
+      certonly --webroot /var/www/certbot --preferred-challenges http
+      -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} --agree-tos --non-interactive --keep-until-expiring -vvv
     volumes:
       - letsencrypt:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
     networks:
       - shop-network-prod
     restart: "no"
@@ -243,11 +244,14 @@ volumes:
     name: shop-postgres-data-prod
   uploads_prod:
     name: shop-uploads-prod
-  pgadmin_data_prod:  # <-- این خط را اضافه کنید
+  pgadmin_data_prod:
     name: shop-pgadmin-data-prod
   portainer_data_prod:
     name: shop-portainer-data-prod
   letsencrypt:
+    name: onlineshop-compose_letsencrypt
   certbot-webroot:
+    name: shop-certbot-webroot-prod
   nginx-cache:
+    name: shop-nginx-cache-prod
   nginx-logs:
