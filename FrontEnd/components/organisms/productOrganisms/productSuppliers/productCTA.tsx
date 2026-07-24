@@ -16,7 +16,7 @@ export default function ProductCTA({ id,productId }: { id: number;productId:numb
     if (isAuthenticated) {
       console.log(id)
       const syncCartResponse = await addToShoppingCart({
-        url: "/api/CartItems",
+        url: "/CartItems",
         body: {
           productId,
           productOfferId: id,

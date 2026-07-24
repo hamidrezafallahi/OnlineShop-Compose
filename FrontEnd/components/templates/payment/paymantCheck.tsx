@@ -30,7 +30,7 @@ export default function PaymentCheck() {
 
 //       try {
 //         // فراخوانی API برای تأیید پرداخت
-//         const response = await fetch('/api/verify-payment', {
+//         const response = await fetch('/verify-payment', {
 //           method: 'POST',
 //           headers: {
 //             'Content-Type': 'application/json',

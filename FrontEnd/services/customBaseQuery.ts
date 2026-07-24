@@ -112,7 +112,7 @@ async function baseQueryWithAuth(
 async function refreshAccessToken(): Promise<boolean> {
   try {
     const response = await fetch(
-      `/api/Identity/refresh-token`,
+      `/Identity/refresh-token`,
       {
         method: "POST",
         credentials: "include",

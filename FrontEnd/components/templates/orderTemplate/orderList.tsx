@@ -32,7 +32,7 @@ function OrderList({...props}: OrderListProps) {
   }, [isAuthenticated]);
 
   const { data, isLoading } = useGetData<any, IOrder[]>({
-    url: "/api/Orders/user",
+    url: "/Orders/user",
     skip: !isAuthenticated,
   });
 

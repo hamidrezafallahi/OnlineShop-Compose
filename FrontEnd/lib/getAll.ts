@@ -17,7 +17,7 @@ export async function getAll<T>(
   if (byConfig !== undefined) params.append("byConfig", String(byConfig));
   if (filter !== undefined) params.append("q", String(filter));
   if (onlyActives !== undefined) params.append("onlyActives", String(onlyActives));
-  const url = `${baseUrl}/api/${entity}?${params.toString()}`;
+  const url = `${baseUrl}/${entity}?${params.toString()}`;
    try {
     const res = await fetch(url, { cache: "no-store", next: { tags: [entity] } });
     const text = await res.text();
@@ -66,7 +66,7 @@ export async function getById(entity: string, id: string): Promise<Record<string
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
-  const res = await fetch(`${baseUrl}/api/EntityConfigs/entityFormConfig/${entity}`, {
+  const res = await fetch(`${baseUrl}/EntityConfigs/entityFormConfig/${entity}`, {
    
     // next: {
     //   revalidate: 1,

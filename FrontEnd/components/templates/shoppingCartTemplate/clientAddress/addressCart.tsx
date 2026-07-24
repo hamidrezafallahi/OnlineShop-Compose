@@ -47,7 +47,7 @@ function AddressCart({...props}: IProps) {
   const handleSetDefault = async (addressId: number) => {
     try {
       const res = await defaultMutate({
-        url: `/api/Address/set-default`,
+        url: `/Address/set-default`,
         method: "PUT",
         body: {
           id: addressId,
@@ -62,7 +62,7 @@ function AddressCart({...props}: IProps) {
   const handleDeleteAddress = async (addressId: number) => {
     try {
       const res = await deleteMutate({
-        url: `/api/address/${addressId}`,
+        url: `/address/${addressId}`,
         method: "DELETE",
       }).unwrap();
 

@@ -90,7 +90,7 @@ function ProductCard({ product }: { product: IDetailedProductOffer }) {
     if (isAuthenticated) {
       console.log(product)
       const syncCartResponse = await addToShoppingCart({
-        url: "/api/CartItems",
+        url: "/CartItems",
         body: {
           productId: product.id,
           productOfferId: product.id,

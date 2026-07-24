@@ -74,7 +74,7 @@ export function LoginForm({
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-          const res = await fetch(`/api/Identity/login`, {
+          const res = await fetch(`/Identity/login`, {
       method: 'POST',
       headers: {
           "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export function LoginForm({
 
       const syncCartResponse: IBaseQueryResponse<SynchronousResponse> =
         await syncCart({
-          url:`/api/Carts/sync`,
+          url:`/Carts/sync`,
           body: {
             clientItems: ShoppingCart?.products?.length
               ? ShoppingCart.products.map((i) => ({

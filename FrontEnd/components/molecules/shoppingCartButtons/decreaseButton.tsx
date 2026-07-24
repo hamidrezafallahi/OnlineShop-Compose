@@ -22,7 +22,7 @@ function DecreaseButton({ ...props }: ShoppingCartButtonProps) {
   const decreaseHandler = async () => {
     if (isAuthenticated) {
       const syncCartResponse = await itemMutate({
-        url: `/api/CartItems/decrease`,
+        url: `/CartItems/decrease`,
         body: { ProductId: id, ProductOfferId: productOfferId },
       }).unwrap();
       if (syncCartResponse.isSuccess) {

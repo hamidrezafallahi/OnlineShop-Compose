@@ -21,7 +21,7 @@ function IncreaseButton({ ...props }: ShoppingCartButtonProps) {
   const increaseHandler = async () => {
     if (isAuthenticated) {
       const syncCartResponse = await itemMutate({
-        url: "/api/CartItems",
+        url: "/CartItems",
         body: { ProductId: id, ProductOfferId: productOfferId,Quantity:1},
       }).unwrap();
       if (syncCartResponse.isSuccess) {
