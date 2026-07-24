@@ -36,7 +36,7 @@ function buildEntry(
 }
 
 async function fetchSlugs(endpoint: string): Promise<SlugItem[]> {
-  const res = await fetch(`${BASE_URL}/api/${endpoint}`, {
+  const res = await fetch(`${BASE_URL}/${endpoint}`, {
     cache: 'no-store', // مهم: دیگر build-time نیست
   });
 

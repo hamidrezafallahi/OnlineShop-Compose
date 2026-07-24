@@ -144,11 +144,11 @@ namespace Api
             var app = builder.Build();
 app.UseForwardedHeaders();
 
-            if (app.Environment.IsDevelopment())
-            {
+            // if (app.Environment.IsDevelopment())
+            // {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            // }
                 app.UseCors("AllowFrontend");
             app.IntializeDatabase();
             app.UseStaticFiles();

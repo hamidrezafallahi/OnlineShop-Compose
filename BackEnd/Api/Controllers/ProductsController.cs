@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class ProductsController : BaseController
 {
     private readonly IMediator _mediator;

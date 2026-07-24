@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Application.Commands.IdentityManagerCommands;
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class UsersController : BaseController
 {
     private readonly IMediator _mediator;

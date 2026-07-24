@@ -75,7 +75,7 @@ export default async function Page({
 
   try {
     const response = await fetch(
-      `${baseUrl}/api/Products?page=${PageNumber}&PageSize=${PageRecordCount}`,
+      `${baseUrl}/Products?page=${PageNumber}&PageSize=${PageRecordCount}`,
       {
         cache: 'no-store',
       }

@@ -16,7 +16,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const { slug, locale = 'fa' } = resolvedParams;
-    const response = await fetch(`${baseUrl}/api/Categories/${slug}`, {
+    const response = await fetch(`${baseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
     const result = await response.json();
@@ -59,7 +59,7 @@ export default async function Page({
 }) {
   try {
     const { slug, locale } = await params;
-    const response = await fetch(`${baseUrl}/api/Categories/${slug}`, {
+    const response = await fetch(`${baseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
 

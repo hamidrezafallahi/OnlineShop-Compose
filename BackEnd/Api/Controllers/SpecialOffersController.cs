@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class SpecialOffersController : BaseController
 {
     private readonly IMediator _mediator;

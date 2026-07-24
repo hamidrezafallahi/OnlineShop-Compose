@@ -90,8 +90,6 @@ services:
     environment:
       NODE_ENV: production
       INTERNAL_API_URL: ${INTERNAL_API_URL:-http://backend:8080}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://${DOMAIN_NAME}/api}
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://${DOMAIN_NAME}}
     depends_on:
       backend:
         condition: service_healthy
