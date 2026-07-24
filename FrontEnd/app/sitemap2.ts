@@ -29,7 +29,7 @@
 // }
 
 // async function fetchSlugs(endpoint: string): Promise<SlugItem[]> {
-//     const res = await fetch(`${BASE_URL}/${endpoint}`, {
+//     const res = await fetch(`${BASE_URL}/api/${endpoint}`, {
 //         // برای اینکه در زمان بیلد کش نشه یا برعکس، بسته به نیازت تنظیم کن
 //         next: { revalidate: 3600 },
 //     });

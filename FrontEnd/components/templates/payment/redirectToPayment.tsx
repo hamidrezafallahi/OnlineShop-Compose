@@ -30,7 +30,7 @@ const t = useTranslations()
 
 //       try {
 //         // فراخوانی API برای تأیید پرداخت
-//         const response = await fetch('/verify-payment', {
+//         const response = await fetch('/api/verify-payment', {
 //           method: 'POST',
 //           headers: {
 //             'Content-Type': 'application/json',

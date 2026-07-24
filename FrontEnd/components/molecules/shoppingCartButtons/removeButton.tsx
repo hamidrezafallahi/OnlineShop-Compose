@@ -22,7 +22,7 @@ function RemoveButton({ ...props }: ShoppingCartButtonProps ) {
   const removeHandler = async (id: number) => {
     if (isAuthenticated) {
       const syncCartResponse = await itemMutate({
-        url: `/CartItems/removeProductFromCart/${cartItemId}`,
+        url: `/api/CartItems/removeProductFromCart/${cartItemId}`,
         method: "DELETE",
       }).unwrap();
       if (syncCartResponse.isSuccess) {

@@ -43,7 +43,7 @@ export default function CommentAndRate({ ...props }: TCommentAndRate) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSetRate = async (e: number) => {
     const res = await mutateRate({
-      url: "/Rates",
+      url: "/api/Rates",
       body: {
         targetId: TargetId,
         targetType: TargetType,

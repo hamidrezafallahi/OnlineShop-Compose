@@ -123,7 +123,7 @@ function ProductCard({ product }: { product: ILandingProduct }) {
      console.log("clicked");
     if (isAuthenticated) {
       const syncCartResponse = await addToShoppingCart({
-        url: "/CartItems",
+        url: "/api/CartItems",
         body: {
           productId: product.id,
           productOfferId: product.bestOfferId,
