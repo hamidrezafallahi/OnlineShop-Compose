@@ -3,10 +3,9 @@ import { Metadata } from 'next';
 
 import CustomPagination from '@components/molecules/pagination';
 import { SimpleProductCard } from '@components/molecules/productCard';
+import { apiBaseUrl } from '@lib/api';
 import { PagedResponse } from '@models/base';
 import { IProduct } from '@models/product';
-
-const baseUrl = process.env.INTERNAL_API_URL;
 
 // ===== 2. تولید Metadata =====
 export async function generateMetadata({
@@ -75,7 +74,7 @@ export default async function Page({
 
   try {
     const response = await fetch(
-      `${baseUrl}/Products?page=${PageNumber}&PageSize=${PageRecordCount}`,
+      `${apiBaseUrl}/Products?page=${PageNumber}&PageSize=${PageRecordCount}`,
       {
         cache: 'no-store',
       }

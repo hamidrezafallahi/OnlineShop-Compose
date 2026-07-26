@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl';
 import { useDispatch } from 'react-redux';
 
 import { SpinnerIcon } from '@components/atoms/iconComponents';
+import { apiBaseUrl } from '@lib/api';
 import {
   useGetConditionallyMutation,
   useGetData,
@@ -19,14 +20,12 @@ import { setAddress } from '@slice/shoppingCartSlice';
 import { IAddress } from '../type';
 import AddressCart from './addressCart';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export default function ClientAddress() {
 
 
   const t = useTranslations();
   const { data, isLoading, refetch } = useGetData<IAddress[], any>({
-    url: "/api/Address/ByUser",
+    url: `${apiBaseUrl}/api/Address/ByUser`,
     method: "GET",
   });
   const [itemMutate, { isLoading: addLoading }] = useGetConditionallyMutation();

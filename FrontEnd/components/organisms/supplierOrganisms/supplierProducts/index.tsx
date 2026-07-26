@@ -1,16 +1,16 @@
 import React from 'react';
 
+import { apiBaseUrl } from '@lib/api';
 import { ApiResponse } from '@models/base';
 import { IDetailedProductOffer } from '@models/product';
 
 import SupplierProductsCarousel from './supplierProductsCarousel';
 
-const baseUrl = process.env.INTERNAL_API_URL;
 export async function SupplierProducts(props: {
   id: number; // IDetailedProduct[]
 }) {
   const { id } = props;
-  const response = await fetch(`${baseUrl}/api/productOffers/by-seller/${id}`, {
+  const response = await fetch(`${apiBaseUrl}/api/productOffers/by-seller/${id}`, {
     next: { revalidate: 36 },
   });
   const res: ApiResponse<IDetailedProductOffer> = await response.json();

@@ -143,7 +143,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     // ===== سایر =====
                     new FormFieldDefinition { Name = "slug", Caption = "Slug", Type = "text", PlaceHolder = "new-product-introduction", Help = "برای آدرس URL بلاگ", Rules = new List<ValidationRule> { new ValidationRule { Rule = "required", Condition = "true", Message = "Slug الزامی است" } } },
                     new FormFieldDefinition { Name = "thumbnailFile", Caption = "تصویر شاخص", Type = "file", PlaceHolder = "تصویر انتخاب کنید", Help = "jpg, png (حداکثر 2MB)" },
-                    new FormFieldDefinition { Name = "authorId", Caption = "نویسنده", Type = "dynamicSelect", FetchConfig = new FetchConfig { api = "api/Users/selectOption", fetchFilters = new List<object>() }, Help = "نویسنده بلاگ" }
+                    new FormFieldDefinition { Name = "authorId", Caption = "نویسنده", Type = "dynamicSelect", FetchConfig = new FetchConfig { api = "Users/selectOption", fetchFilters = new List<object>() }, Help = "نویسنده بلاگ" }
                 }),
                 IsActive = true,
                     CreatedAt = new DateTime(2026, 1, 1),
@@ -281,7 +281,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "parentCategoryId",
                         Caption = "دسته والد",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Categories/selectOption",fetchFilters=["id"]},
+                        FetchConfig =new FetchConfig{api="Categories/selectOption",fetchFilters=["id"]},
                         PlaceHolder = "در صورت وجود، دسته والد را انتخاب کنید",
                         Help = "می‌توانید این دسته را به عنوان زیرمجموعه یک دسته دیگر تعیین کنید"
                     },
@@ -451,7 +451,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "categoryId",
                         Caption = "دسته‌بندی",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Categories/selectOption",fetchFilters=[]},
+                        FetchConfig =new FetchConfig{api="Categories/selectOption",fetchFilters=[]},
                         PlaceHolder = "دسته‌بندی محصول را انتخاب کنید",
                         Help = "محصول به کدام دسته تعلق دارد",
                         Rules = new List<ValidationRule>
@@ -464,7 +464,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "brandId",
                         Caption = "برند",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Brands/selectOption",fetchFilters=[]},
+                        FetchConfig =new FetchConfig{api="Brands/selectOption",fetchFilters=[]},
                         PlaceHolder = "برند محصول را انتخاب کنید",
                         Help = "محصول به کدام برند تعلق دارد",
                         Rules = new List<ValidationRule>()
@@ -669,7 +669,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "userId",
                         Caption = "شناسه کاربر",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Users/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="Users/selectOption",fetchFilters=[] },
                         PlaceHolder = "شناسه کاربر را وارد کنید",
                         Help = "در صورتی که انتخاب نکنید برای خودتان این آدرس ثبت میشود",
                         Rules = new List<ValidationRule>
@@ -879,7 +879,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productId",
                         Caption = "انتخاب محصول",
                         Type = "dynamicSelect",
-                        FetchConfig = new FetchConfig { api = "api/Products/selectOption", fetchFilters = [] },
+                        FetchConfig = new FetchConfig { api = "Products/selectOption", fetchFilters = [] },
                         PlaceHolder = "محصول را انتخاب کنید",
                         Help = "انتخاب محصول برای تخفیف",
                         Rules = new List<ValidationRule>
@@ -892,7 +892,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productOfferId",
                         Caption = "انتخاب سفارش",
                         Type = "dynamicSelect",
-                        FetchConfig = new FetchConfig { api = "api/productOffers/selectOption", fetchFilters = ["productId"] },
+                        FetchConfig = new FetchConfig { api = "productOffers/selectOption", fetchFilters = ["productId"] },
                         PlaceHolder = " سفارش را انتخاب کنید",
                         Help = " سفارش را انتخاب کنید",
                         Rules = new List<ValidationRule>
@@ -905,7 +905,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "discountId",
                         Caption = "تخفیف",
                         Type = "dynamicSelect",
-                        FetchConfig = new FetchConfig { api = "api/discounts/selectOption", fetchFilters = [] },
+                        FetchConfig = new FetchConfig { api = "discounts/selectOption", fetchFilters = [] },
                         PlaceHolder = "تخفیف را انتخاب کنید",
                         Help = "انتخاب تخفیف برای محصول",
                         Rules = new List<ValidationRule>
@@ -945,7 +945,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productId",
                         Caption = "انتخاب محصول",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Products/selectOption",fetchFilters=[]},
+                        FetchConfig =new FetchConfig{api="Products/selectOption",fetchFilters=[]},
                         PlaceHolder = "محصول را انتخاب کنید",
                         Help = "تصویر برای کدام محصول است",
                         Rules = new List<ValidationRule>
@@ -1010,7 +1010,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productId",
                         Caption = "محصول",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Products/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="Products/selectOption",fetchFilters=[] },
                         PlaceHolder = " محصول را انتخاب کنید",
                         Help = " محصول را انتخاب کنید",
                         Rules = new List<ValidationRule>
@@ -1023,7 +1023,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productOfferId",
                         Caption = "انتخاب سفارش",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/productOffers/selectOption",fetchFilters=["productId"] },
+                        FetchConfig =new FetchConfig{api="productOffers/selectOption",fetchFilters=["productId"] },
                         PlaceHolder = " سفارش را انتخاب کنید",
                         Help ="تگ مربوط به کدام سفارش است",
                         Rules = new List<ValidationRule>
@@ -1036,7 +1036,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "tagId",
                         Caption = "تگ",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/tags/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="tags/selectOption",fetchFilters=[] },
                         PlaceHolder = "تگ را انتخاب کنید",
                         Help = "کدام تگ را به محصول اضافه می‌کنید",
                         Rules = new List<ValidationRule>
@@ -1076,7 +1076,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "blogId",
                         Caption = "شناسه مقاله",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Blogs/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="Blogs/selectOption",fetchFilters=[] },
                         PlaceHolder = " مقاله را انتخاب کنید",
                         Help = "به چه مقاله ای تگ وارد شود ؟",
                         Rules = new List<ValidationRule>
@@ -1089,7 +1089,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "tagId",
                         Caption = "تگ",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/tags/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="tags/selectOption",fetchFilters=[] },
                         PlaceHolder = "تگ را انتخاب کنید",
                         Help = "کدام تگ را به مقاله اضافه می‌کنید",
                         Rules = new List<ValidationRule>
@@ -1129,7 +1129,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "userId",
                         Caption = "شناسه کاربر",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/users/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="users/selectOption",fetchFilters=[] },
                         PlaceHolder = " کاربر را انتخاب کنید",
                         Help = "به چه کاربری تگ وارد شود ؟",
                         Rules = new List<ValidationRule>
@@ -1142,7 +1142,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "tagId",
                         Caption = "تگ",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/tags/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="tags/selectOption",fetchFilters=[] },
                         PlaceHolder = "تگ را انتخاب کنید",
                         Help = "کدام تگ را به کاربر اضافه می‌کنید",
                         Rules = new List<ValidationRule>
@@ -1185,7 +1185,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "userId",
                         Caption = "کاربر",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Users/selectOption",fetchFilters=["id"] },
+                        FetchConfig =new FetchConfig{api="Users/selectOption",fetchFilters=["id"] },
                         PlaceHolder = "کاربر مد نظر",
                         Help = "مثلاً:علی این نظر را داده",
                         Rules = new List<ValidationRule>
@@ -1241,7 +1241,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "parentId",
                         Caption = "ریپلای به",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Users/selectOption",fetchFilters=[]  },
+                        FetchConfig =new FetchConfig{api="Users/selectOption",fetchFilters=[]  },
                         PlaceHolder = "تگ را انتخاب کنید",
                         Help = "کدام تگ را به محصول اضافه می‌کنید",
                         Rules = new List<ValidationRule>
@@ -1288,7 +1288,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productId",
                         Caption = "انتخاب محصول",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Products/selectOption",fetchFilters=[]},
+                        FetchConfig =new FetchConfig{api="Products/selectOption",fetchFilters=[]},
                         PlaceHolder = " محصول را انتخاب کنید",
                         Help = "مثلاً: تلویزیون سامسونگ 55 اینچ",
                         Rules = new List<ValidationRule>
@@ -1562,7 +1562,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name ="productId",
                         Caption = "انتخاب محصول",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Products/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="Products/selectOption",fetchFilters=[] },
                         PlaceHolder = " محصول را انتخاب کنید",
                         Help = "مثلاً: تلویزیون سامسونگ 55 اینچ",
                         Rules = new List<ValidationRule>
@@ -1575,7 +1575,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productOfferId",
                         Caption ="انتخاب سفارش",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/productOffers/selectOption",fetchFilters=["productId"] },
+                        FetchConfig =new FetchConfig{api="productOffers/selectOption",fetchFilters=["productId"] },
                         PlaceHolder = " سفارش را انتخاب کنید",
                         Help = " سفارش را انتخاب کنید",
                         Rules = new List<ValidationRule>
@@ -1589,7 +1589,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "discountId",
                         Caption = "انتخاب تخفیف ",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/discounts/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="discounts/selectOption",fetchFilters=[] },
                         PlaceHolder = "مثلا :یلدا",
                         Help = "تخفیف خاصی که می خواهید بر روی سفارش شما اعمال بشه رو انتخاب کنید",
                          Rules = new List<ValidationRule>
@@ -1766,7 +1766,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name ="userId",
                         Caption = "کاربر",
                         Type ="dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Users/selectOption",fetchFilters=[] },
+                        FetchConfig =new FetchConfig{api="Users/selectOption",fetchFilters=[] },
                         PlaceHolder ="کاربر مد نظر",
                         Help ="مثلاً:علی این نظر را داده",
                         Rules = new List<ValidationRule>
@@ -1938,7 +1938,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productId",
                         Caption = "محصول",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Products/selectOption",fetchFilters=[]},
+                        FetchConfig =new FetchConfig{api="Products/selectOption",fetchFilters=[]},
                         PlaceHolder = "شناسه محصول را وارد کنید",
                         Help = "محصولی که به سبد اضافه شده است",
                         Rules = new List<ValidationRule>
@@ -1951,7 +1951,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name = "productOfferId",
                         Caption = "سفارش محصول",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/productOffers/selectOption",fetchFilters=["productId"]},
+                        FetchConfig =new FetchConfig{api="productOffers/selectOption",fetchFilters=["productId"]},
                         PlaceHolder = "سفارش فروش محصول را وارد کنید",
                         Help = "انتخاب سفارشی که از این محصول گذاشته شده",
                         Rules = new List<ValidationRule>
@@ -2195,7 +2195,7 @@ namespace OnlineShop.Infrastructure.Configurations
                         Name ="productId",
                         Caption ="شناسه کالا",
                         Type = "dynamicSelect",
-                        FetchConfig =new FetchConfig{api="api/Products/selectOption",fetchFilters=[]},
+                        FetchConfig =new FetchConfig{api="Products/selectOption",fetchFilters=[]},
                         PlaceHolder = " محصول را انتخاب کنید",
                         Help = "مثلاً: تلویزیون سامسونگ 55 اینچ",
                         Rules = new List<ValidationRule>

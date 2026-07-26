@@ -1,5 +1,6 @@
 import { Mutex } from 'async-mutex';
 
+import { apiBaseUrl } from '@lib/api';
 import {
   BaseQueryApi,
   FetchArgs,
@@ -12,10 +13,6 @@ import {
   showErrorToast,
 } from '@utils/core';
 
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? process.env.INTERNAL_API_URL
-    : "";
 const mutex = new Mutex();
 
 export async function baseQueryByToken(
@@ -79,7 +76,7 @@ async function baseQueryWithAuth(
   extraOptions: {}
 ) {
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl:BASE_URL,
+    baseUrl:apiBaseUrl,
     credentials: "include",
     prepareHeaders: (headers) => {
       const token = getTokens("candyAccess");
@@ -112,7 +109,7 @@ async function baseQueryWithAuth(
 async function refreshAccessToken(): Promise<boolean> {
   try {
     const response = await fetch(
-      `/api/Identity/refresh-token`,
+      `${apiBaseUrl}/Identity/refresh-token`,
       {
         method: "POST",
         credentials: "include",

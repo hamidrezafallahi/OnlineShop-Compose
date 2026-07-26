@@ -5,7 +5,7 @@ import {
   PagedResponse,
 } from '@models/base';
 
-const baseUrl = process.env.INTERNAL_API_URL;
+const apiBaseUrl=process.env.NEXT_PUBLIC_INTERNAL_SERVER_SIDE_API_URL
 
 export async function getAll<T>(
   entity: string,
@@ -17,7 +17,7 @@ export async function getAll<T>(
   if (byConfig !== undefined) params.append("byConfig", String(byConfig));
   if (filter !== undefined) params.append("q", String(filter));
   if (onlyActives !== undefined) params.append("onlyActives", String(onlyActives));
-  const url = `${baseUrl}/${entity}?${params.toString()}`;
+  const url = `${apiBaseUrl}/${entity}?${params.toString()}`;
    try {
     const res = await fetch(url, { cache: "no-store", next: { tags: [entity] } });
     const text = await res.text();
@@ -43,7 +43,7 @@ export async function getAll<T>(
 export async function getById(entity: string, id: string): Promise<Record<string, any>> {
   const cookieStore = await cookies();
   const token = cookieStore.get('candyAccess')?.value;
-  const res = await fetch(`${baseUrl}/${entity}/${id}`, {
+  const res = await fetch(`${apiBaseUrl}/${entity}/${id}`, {
  headers: {
       "Authorization": `Bearer ${token || ''}`,
       "Content-Type": 'application/json'
@@ -66,7 +66,7 @@ export async function getById(entity: string, id: string): Promise<Record<string
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
-  const res = await fetch(`${baseUrl}/EntityConfigs/entityFormConfig/${entity}`, {
+  const res = await fetch(`${apiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`, {
    
     // next: {
     //   revalidate: 1,

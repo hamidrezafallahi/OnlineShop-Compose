@@ -17,6 +17,7 @@ import { Button } from '@components/atoms/defaultElements/customButton';
 import { Checkbox } from '@components/atoms/defaultElements/customCheckbox';
 import { Input } from '@components/atoms/defaultElements/customInput';
 import { Label } from '@components/atoms/defaultElements/label';
+import { apiBaseUrl } from '@lib/api';
 import { cn } from '@lib/utils';
 import { SynchronousResponse } from '@models/product';
 import { useGetConditionallyMutation } from '@services/base';
@@ -74,7 +75,7 @@ export function LoginForm({
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-          const res = await fetch(`/api/Identity/login`, {
+          const res = await fetch(`${apiBaseUrl}/Identity/login`, {
       method: 'POST',
       headers: {
           "Content-Type": "application/json",
@@ -99,7 +100,7 @@ export function LoginForm({
 
       const syncCartResponse: IBaseQueryResponse<SynchronousResponse> =
         await syncCart({
-          url:`/api/Carts/sync`,
+          url:`/Carts/sync`,
           body: {
             clientItems: ShoppingCart?.products?.length
               ? ShoppingCart.products.map((i) => ({

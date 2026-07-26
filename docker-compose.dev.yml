@@ -70,7 +70,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      INTERNAL_API_URL: "${INTERNAL_API_URL:-http://backend:8080}"
+      INTERNAL_API_URL: "${NEXT_PUBLIC_INTERNAL_API_URL:-http://backend:8080}"
     volumes:
       - ./FrontEnd:/app
       - /app/node_modules

@@ -1,13 +1,12 @@
 import React from 'react';
 
 import BrandCard from '@components/molecules/brandCard';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { IBrand } from '@models/brand';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export default async function ProductBrand({ id }: { id: number }) {
-  const response = await fetch(`${baseUrl}/api/Brands/${id}`,{next: { revalidate: 36 }});
+  const response = await fetch(`${apiBaseUrl}/api/Brands/${id}`,{next: { revalidate: 36 }});
   const brands: SimpleResponse<IBrand> = await response.json();
   const brand = brands.data;
   return (

@@ -4,10 +4,9 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import TagTemplate from '@components/templates/tagTemplate';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ITag } from '@models/tag';
-
-const baseUrl = process.env.INTERNAL_API_URL;
 
 // ===== 1. تولید مسیرهای استاتیک =====
 // export async function generateStaticParams() {
@@ -40,7 +39,7 @@ export async function generateMetadata({
   const { slug } = resolvedParams;
 
   const response = await fetch(
-    `${baseUrl}/Tag/getTagByTagId?tagId=${slug}`,
+    `${apiBaseUrl}/Tag/getTagByTagId?tagId=${slug}`,
     { next: { revalidate: 36 } },
   );
   const locale = resolvedParams.locale || "fa";
@@ -72,7 +71,7 @@ export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
-  const response = await fetch(`${baseUrl}/Tags/${slug}`, {
+  const response = await fetch(`${apiBaseUrl}/Tags/${slug}`, {
     next: { revalidate: 36 },
   });
   const TagResponse: SimpleResponse<ITag> = await response.json();

@@ -5,9 +5,10 @@ import {
   menuResponse,
 } from '@models/config';
 
-const baseUrl = process.env.INTERNAL_API_URL;
+import { apiBaseUrl } from './api';
+
 export async function getConfig(configName: string) {
-    const res = await fetch(`${baseUrl}/configs/configName`
+    const res = await fetch(`${apiBaseUrl}/configs/configName`
         , {
             cache: "no-store",
         });
@@ -15,7 +16,7 @@ export async function getConfig(configName: string) {
     return data;
 }
 export async function getMenu() {
-    const res = await fetch(`${baseUrl}/EntityConfigs/menu`
+    const res = await fetch(`${apiBaseUrl}/EntityConfigs/menu`
         , {
             cache: "no-store",
         });

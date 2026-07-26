@@ -1,22 +1,26 @@
-'use client';
+"use client";
 
-import { useLocale } from 'next-intl';
 import { useDispatch } from 'react-redux';
 
+import { apiBaseUrl } from '@lib/api';
 import { useGetConditionallyMutation } from '@services/base';
 import { synchronousCart } from '@slice/shoppingCartSlice';
 import { getCookie } from '@utils/core';
 
-export default function ProductCTA({ id,productId }: { id: number;productId:number }) {
-   const isAuthenticated = Boolean(getCookie("candyAccess"));
-  const locale = useLocale()
-    const [addToShoppingCart] = useGetConditionallyMutation();
-  const dispatch = useDispatch()
- const handleAddToCart = async () => {
+export default function ProductCTA({
+  id,
+  productId,
+}: {
+  id: number;
+  productId: number;
+}) {
+  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const [addToShoppingCart] = useGetConditionallyMutation();
+  const dispatch = useDispatch();
+  const handleAddToCart = async () => {
     if (isAuthenticated) {
-      console.log(id)
       const syncCartResponse = await addToShoppingCart({
-        url: "/api/CartItems",
+        url: `${apiBaseUrl}/CartItems`,
         body: {
           productId,
           productOfferId: id,
@@ -33,8 +37,9 @@ export default function ProductCTA({ id,productId }: { id: number;productId:numb
   return (
     <div className="flex gap-3 mt-4">
       <button
-      onClick={handleAddToCart}
-      className="bg-primary px-6 py-3 rounded-xl text-white">
+        onClick={handleAddToCart}
+        className="bg-primary px-6 py-3 rounded-xl text-white"
+      >
         افزودن به سبد
       </button>
       {/* <button className="px-6 py-3 border rounded-xl">

@@ -4,14 +4,13 @@ import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { IUser } from '@models/user';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export async function BrandSuppliers({ id }: { id: number }) {
   const response = await fetch(
-    `${baseUrl}/api/Brands/getProductsSuppliersByBrandId/${id}`,
+    `${apiBaseUrl}/api/Brands/getProductsSuppliersByBrandId/${id}`,
     {
       cache: "no-store",
     },

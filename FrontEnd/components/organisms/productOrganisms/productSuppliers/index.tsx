@@ -1,18 +1,19 @@
 import { getLocale } from 'next-intl/server';
 
+import { apiBaseUrl } from '@lib/api';
+
 import {
   ISupplier,
   SupplierCardGrid,
 } from './supplierCard';
 
-const baseUrl = process.env.INTERNAL_API_URL;
 export async function ProductSupplierExtended({
   productId,
 }: {
   productId: string;
 }) {
   const response = await fetch(
-    `${baseUrl}/api/productOffers/by-product/${productId}`,
+    `${apiBaseUrl}/api/productOffers/by-product/${productId}`,
     {
       next: { revalidate: 36 },
     },

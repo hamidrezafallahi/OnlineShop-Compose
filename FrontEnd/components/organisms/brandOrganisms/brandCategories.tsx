@@ -1,14 +1,13 @@
 import React from 'react';
 
 import CategoryCard from '@components/molecules/categoryCart';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ICategory } from '@models/category';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export async function BrandCategories({ id }: { id: number }) {
   const response = await fetch(
-    `${baseUrl}/api/Brands/getProductsCategoriesByBrandId/${id}`,
+    `${apiBaseUrl}/api/Brands/getProductsCategoriesByBrandId/${id}`,
     {
       cache: "no-store",
     },

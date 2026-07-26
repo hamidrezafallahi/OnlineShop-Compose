@@ -1,20 +1,16 @@
 import React from 'react';
 
-import { getLocale } from 'next-intl/server';
-
 import { SimpleProductCard } from '@components/molecules/productCard';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { IProduct } from '@models/product';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export async function BrandProducts({ id }: { id: number }) {
   const response = await fetch(
-    `${baseUrl}/api/Brands/getProductByBrandId/${id}`,{next: { revalidate: 36 }});
+    `${apiBaseUrl}/api/Brands/getProductByBrandId/${id}`,{next: { revalidate: 36 }});
   const productsResponse: SimpleResponse<IProduct[]> = await response.json();
   const products: IProduct[] = productsResponse.data;
-  const locale = await getLocale()
-  return (
+   return (
     <div className="py-10">
       <h2 className="mb-4 font-bold text-xl">محصولات برند</h2>
       <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">

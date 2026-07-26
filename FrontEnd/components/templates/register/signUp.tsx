@@ -10,6 +10,7 @@ import { Button } from '@components/atoms/defaultElements/customButton';
 import { Input } from '@components/atoms/defaultElements/customInput';
 import { Label } from '@components/atoms/defaultElements/label';
 import Uploader from '@components/atoms/defaultElements/uploader';
+import { apiBaseUrl } from '@lib/api';
 import { cn } from '@lib/utils';
 import {
   showErrorToast,
@@ -122,7 +123,7 @@ const handleRegister = async () => {
 
   try {
     // ✅ Fetch دستی - بدون RTK Query
-    const response = await fetch(`/api/Identity/Register`, {
+    const response = await fetch(`${apiBaseUrl}/Identity/Register`, {
       method: 'POST',
       body: formData,  // browser خودش Content-Type: multipart/form-data set می‌کنه
     });

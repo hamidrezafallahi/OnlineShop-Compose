@@ -6,14 +6,14 @@ import {
 } from 'next/cache';
 import { cookies } from 'next/headers';
 
-const baseUrl = process.env.INTERNAL_API_URL;
+import { apiBaseUrl } from './api';
 
 export async function fetchDefault(entity:string,formData:FormData) {
   const id = formData.get('id') as string;
   const isDefault = formData.get('isDefault') === 'true';
   const cookieStore =await cookies();
   const token = cookieStore.get('candyAccess')?.value;
-   const response = await fetch(`${baseUrl}/${entity}/set-default`, {
+   const response = await fetch(`${apiBaseUrl}/${entity}/set-default`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json', 

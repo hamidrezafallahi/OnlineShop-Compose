@@ -1,14 +1,17 @@
 import 'server-only';
 
-const baseUrl = process.env.INTERNAL_API_URL!;
+const apiBaseUrl=process.env.NEXT_PUBLIC_INTERNAL_SERVER_SIDE_API_URL
+
 export async function getSlides<T>(): Promise<T[]> {
-  console.log(`${baseUrl}/Landing/slide`)
-   const res = await fetch(`${baseUrl}/api/Landing/slide`, {
-    cache: 'no-store',
-  });
-
-  if (!res.ok) return [];
-
-  const data = await res.json();
-  return data.data ?? [];
+  try {
+    const url = `${apiBaseUrl}/Landing/slide`;
+    const res = await fetch(url, {
+      cache: "no-store",
+    });
+    const data = await res.json();
+    return data.data ?? [];
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }

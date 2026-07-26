@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
 
 import SupplierTemplate from '@components/templates/supplierTemplate';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { IUser } from '@models/user';
-
-const baseUrl = process.env.INTERNAL_API_URL;
 
 // ===== 1. تولید مسیرهای استاتیک =====
 // export async function generateStaticParams() {
@@ -26,7 +25,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const { slug, locale = "fa" } = resolvedParams;
-    const response = await fetch(`${baseUrl}/Users/${slug}`,{next: { revalidate: 36 }});
+    const response = await fetch(`${apiBaseUrl}/Users/${slug}`,{next: { revalidate: 36 }});
 
     if (response.status === 404) {
       return {
@@ -71,7 +70,7 @@ export default async function Page({
 }) {
   const { slug } = await params;
 
-  const response = await fetch(`${baseUrl}/Users/${slug}`, {
+  const response = await fetch(`${apiBaseUrl}/Users/${slug}`, {
     next: { revalidate: 36 },
   });
 

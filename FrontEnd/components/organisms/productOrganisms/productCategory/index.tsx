@@ -1,13 +1,12 @@
 import React from 'react';
 
 import CategoryCard from '@components/molecules/categoryCart';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ICategory } from '@models/category';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export default async function ProductCategory({ id, }: { id: number }) {
-  const response = await fetch(`${baseUrl}/api/Categories/${id}`,{next: { revalidate: 36 }});
+  const response = await fetch(`${apiBaseUrl}/api/Categories/${id}`,{next: { revalidate: 36 }});
   const category: SimpleResponse<ICategory> = await response.json();
   const cat = category.data;
   return (

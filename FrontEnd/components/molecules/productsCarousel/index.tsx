@@ -13,6 +13,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@components/atoms/iconComponents';
+import { apiBaseUrl } from '@lib/api';
 import { ILandingProduct } from '@models/product';
 import { useGetConditionallyMutation } from '@services/base';
 import {
@@ -123,7 +124,7 @@ function ProductCard({ product }: { product: ILandingProduct }) {
      console.log("clicked");
     if (isAuthenticated) {
       const syncCartResponse = await addToShoppingCart({
-        url: "/api/CartItems",
+        url: `${apiBaseUrl}/CartItems`,
         body: {
           productId: product.id,
           productOfferId: product.bestOfferId,

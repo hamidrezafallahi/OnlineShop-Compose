@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BASE_URL = process.env.INTERNAL_API_URL;
+import { apiBaseUrl } from '@lib/api';
 
 type ChangeFreq =
   | 'always'
@@ -21,22 +21,22 @@ function buildEntry(
   changeFrequency: ChangeFreq
 ) {
   return {
-    url: `${BASE_URL}/${path}`,
+    url: `${apiBaseUrl}/${path}`,
     lastModified: new Date().toISOString(),
     changeFrequency,
     priority,
     alternates: {
       languages: {
-        en: `${BASE_URL}/en/${path}`,
-        fa: `${BASE_URL}/fa/${path}`,
-        'x-default': `${BASE_URL}/en/${path}`,
+        en: `${apiBaseUrl}/en/${path}`,
+        fa: `${apiBaseUrl}/fa/${path}`,
+        'x-default': `${apiBaseUrl}/en/${path}`,
       },
     },
   };
 }
 
 async function fetchSlugs(endpoint: string): Promise<SlugItem[]> {
-  const res = await fetch(`${BASE_URL}/${endpoint}`, {
+  const res = await fetch(`${apiBaseUrl}/${endpoint}`, {
     cache: 'no-store', // مهم: دیگر build-time نیست
   });
 

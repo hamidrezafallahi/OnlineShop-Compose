@@ -3,6 +3,8 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+import { apiBaseUrl } from '@lib/api';
+
 export async function POST() {
     try {
         const cookieStore = await cookies();
@@ -24,7 +26,7 @@ export async function POST() {
         }
 
         const response = await fetch(
-            `api/Identity/refresh-token`,
+            `${apiBaseUrl}/Identity/refresh-token`,
             {
                 method: "POST",
                 headers: {

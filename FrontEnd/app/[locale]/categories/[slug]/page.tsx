@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 
 import CategoryTemplate from '@components/templates/categoryTemplate';
-
-const baseUrl = process.env.INTERNAL_API_URL;
+import { apiBaseUrl } from '@lib/api';
 
 // اجازه تولید صفحات dynamic جدید
 export const dynamicParams = true;
@@ -16,7 +15,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const { slug, locale = 'fa' } = resolvedParams;
-    const response = await fetch(`${baseUrl}/Categories/${slug}`, {
+    const response = await fetch(`${apiBaseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
     const result = await response.json();
@@ -59,7 +58,7 @@ export default async function Page({
 }) {
   try {
     const { slug, locale } = await params;
-    const response = await fetch(`${baseUrl}/Categories/${slug}`, {
+    const response = await fetch(`${apiBaseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
 

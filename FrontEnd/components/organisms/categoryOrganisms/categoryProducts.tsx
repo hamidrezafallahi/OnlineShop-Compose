@@ -3,13 +3,12 @@ import React from 'react';
 import { getLocale } from 'next-intl/server';
 
 import { SimpleProductCard } from '@components/molecules/productCard';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ILandingProduct } from '@models/product';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
 export async function CategoryProducts({id}:{id:number}) {
-    const response = await fetch(`${baseUrl}/api/Products/getProductByCategoryId/${id}`,
+    const response = await fetch(`${apiBaseUrl}/api/Products/getProductByCategoryId/${id}`,
     {
       cache: "no-store",
     },

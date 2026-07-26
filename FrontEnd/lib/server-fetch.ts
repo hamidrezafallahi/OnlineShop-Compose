@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-const baseUrl = process.env.INTERNAL_API_URL;
+import { apiBaseUrl } from './api';
 
 type FetchOptions = {
   endpoint: string;
@@ -22,7 +22,7 @@ export async function authenticatedFetch<T>({
   let refreshToken = cookieStore.get('candyRefresh')?.value;
 
   async function execute(token?: string) {
-    return fetch(`${baseUrl}/${endpoint}`, {
+    return fetch(`${apiBaseUrl}/${endpoint}`, {
       method,
       headers: getHeaders(body, token),
       body: body instanceof FormData
@@ -98,7 +98,7 @@ async function refreshTokens({
 }) {
   try {
     const response = await fetch(
-      `${baseUrl}api/Identity/refresh-token`,
+      `${apiBaseUrl}api/Identity/refresh-token`,
       {
         method: 'POST',
         headers: {

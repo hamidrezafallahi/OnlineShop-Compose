@@ -3,10 +3,9 @@ import React from 'react';
 import { Metadata } from 'next';
 
 import BrandTemplate from '@components/templates/brandTemplate';
+import { apiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { IBrand } from '@models/brand';
-
-const baseUrl = process.env.INTERNAL_API_URL;
 
 // ===== 1. تولید مسیرهای استاتیک =====
 // export async function generateStaticParams() {
@@ -43,7 +42,7 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const { slug } = resolvedParams;
 
-  const response = await fetch(`${baseUrl}/Brands/${slug}`, {
+  const response = await fetch(`${apiBaseUrl}/Brands/${slug}`, {
     cache: "no-store",
   });
   const locale = resolvedParams.locale || "fa"; // استفاده از locale از params
@@ -75,7 +74,7 @@ export default async function Page(props: {
   // Await کردن params
   const { slug, locale } = await props.params;
 
-  const response = await fetch(`${baseUrl}/Brands/${slug}`, {
+  const response = await fetch(`${apiBaseUrl}/Brands/${slug}`, {
     cache: "no-store",
   });
   const brandResponse: SimpleResponse<IBrand> = await response.json()

@@ -12,6 +12,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@components/atoms/iconComponents';
+import { apiBaseUrl } from '@lib/api';
 import { IDetailedProductOffer } from '@models/product';
 import { useGetConditionallyMutation } from '@services/base';
 import {
@@ -90,7 +91,7 @@ function ProductCard({ product }: { product: IDetailedProductOffer }) {
     if (isAuthenticated) {
       console.log(product)
       const syncCartResponse = await addToShoppingCart({
-        url: "/api/CartItems",
+        url: `${apiBaseUrl}/CartItems`,
         body: {
           productId: product.id,
           productOfferId: product.id,

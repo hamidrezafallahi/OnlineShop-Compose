@@ -3,14 +3,13 @@ import React from 'react';
 import Image from 'next/image';
 
 import { StarIcon } from '@components/atoms/iconComponents';
+import { apiBaseUrl } from '@lib/api';
 import {
   EnumTargetType,
   IComment,
 } from '@models/comment';
 
 import CommentAndRate from './CommentAndRate';
-
-const baseUrl = process.env.INTERNAL_API_URL;
 
 export async function SupplierCommentsAndRates(props: {
   params: { slug: string; locale: string };
@@ -19,7 +18,7 @@ export async function SupplierCommentsAndRates(props: {
   const slug = await params.slug;
 
   const response = await fetch(
-    `${baseUrl}/api/Comments/${EnumTargetType.Supplier}/${slug}`,{next: { revalidate: 36 }});
+    `${apiBaseUrl}/api/Comments/${EnumTargetType.Supplier}/${slug}`,{next: { revalidate: 36 }});
   if (!response.ok) return <div>تأمین‌کننده پیدا نشد</div>;
 
   const { data }: { data: IComment[] } = await response.json();
