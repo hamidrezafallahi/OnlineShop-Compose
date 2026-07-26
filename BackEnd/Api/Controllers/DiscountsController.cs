@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Domain.Entities;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class DiscountsController : BaseController
 {
     private readonly IMediator _mediator;

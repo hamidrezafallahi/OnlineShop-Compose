@@ -7,7 +7,7 @@ import {
 
 const baseUrl = process.env.INTERNAL_API_URL;
 export async function getConfig(configName: string) {
-    const res = await fetch(`${baseUrl}/api/configs/configName`
+    const res = await fetch(`${baseUrl}/configs/configName`
         , {
             cache: "no-store",
         });
@@ -15,10 +15,10 @@ export async function getConfig(configName: string) {
     return data;
 }
 export async function getMenu() {
-    const res = await fetch(`${baseUrl}/api/EntityConfigs/menu`
+    const res = await fetch(`${baseUrl}/EntityConfigs/menu`
         , {
             cache: "no-store",
         });
-    const data: menuResponse = await res.json();
+     const data: menuResponse = await res.json();
     return data;
 }

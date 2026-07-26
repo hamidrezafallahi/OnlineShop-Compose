@@ -12,8 +12,10 @@ import {
   showErrorToast,
 } from '@utils/core';
 
-const baseUrl = process.env.INTERNAL_API_URL;
-
+const BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? process.env.INTERNAL_API_URL
+    : "";
 const mutex = new Mutex();
 
 export async function baseQueryByToken(
@@ -77,7 +79,7 @@ async function baseQueryWithAuth(
   extraOptions: {}
 ) {
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl:"",
+    baseUrl:BASE_URL,
     credentials: "include",
     prepareHeaders: (headers) => {
       const token = getTokens("candyAccess");

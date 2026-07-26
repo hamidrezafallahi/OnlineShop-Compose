@@ -13,7 +13,7 @@ export async function fetchDefault(entity:string,formData:FormData) {
   const isDefault = formData.get('isDefault') === 'true';
   const cookieStore =await cookies();
   const token = cookieStore.get('candyAccess')?.value;
-   const response = await fetch(`${baseUrl}api/${entity}/set-default`, {
+   const response = await fetch(`${baseUrl}/${entity}/set-default`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json', 

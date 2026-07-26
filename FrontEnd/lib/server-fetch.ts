@@ -22,7 +22,7 @@ export async function authenticatedFetch<T>({
   let refreshToken = cookieStore.get('candyRefresh')?.value;
 
   async function execute(token?: string) {
-    return fetch(`${baseUrl}api/${endpoint}`, {
+    return fetch(`${baseUrl}/${endpoint}`, {
       method,
       headers: getHeaders(body, token),
       body: body instanceof FormData

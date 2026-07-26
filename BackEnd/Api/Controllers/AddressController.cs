@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/Address")]
+[Route("[controller]")]
 public class AddressController : BaseController
 {
     private readonly IMediator _mediator;

@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class ProductImagesController : BaseController
 {
     private readonly IMediator _mediator;

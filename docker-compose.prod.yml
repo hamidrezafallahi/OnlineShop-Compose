@@ -90,8 +90,6 @@ services:
     environment:
       NODE_ENV: production
       INTERNAL_API_URL: ${INTERNAL_API_URL:-http://backend:8080}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://${DOMAIN_NAME}/api}
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://${DOMAIN_NAME}}
     depends_on:
       backend:
         condition: service_healthy
@@ -121,6 +119,7 @@ services:
       - "${NGINX_SSL_PORT:-443}:443"
     environment:
       - TZ=Asia/Tehran
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/conf.d/production.conf:/etc/nginx/templates/default.conf.template:ro
@@ -155,10 +154,12 @@ services:
     ports:
       - "80:80"
     command: >-
-      certonly --webroot --preferred-challenges http
-      -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} --agree-tos --non-interactive -vvv
+      certonly --webroot --webroot-path=/var/www/certbot --preferred-challenges http
+      -d ${DOMAIN_NAME} -m ${CERTBOT_EMAIL} --agree-tos --non-interactive
+      --keep-until-expiring -vvv
     volumes:
       - letsencrypt:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
     networks:
       - shop-network-prod
     restart: "no"
@@ -205,7 +206,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
-      - "5050:80"
+      - "127.0.0.1:5050:80"
     volumes:
       - pgadmin_data_prod:/var/lib/pgadmin
     networks:
@@ -243,11 +244,14 @@ volumes:
     name: shop-postgres-data-prod
   uploads_prod:
     name: shop-uploads-prod
-  pgadmin_data_prod:  # <-- این خط را اضافه کنید
+  pgadmin_data_prod:
     name: shop-pgadmin-data-prod
   portainer_data_prod:
     name: shop-portainer-data-prod
   letsencrypt:
+    name: onlineshop-compose_letsencrypt
   certbot-webroot:
+    name: shop-certbot-webroot-prod
   nginx-cache:
+    name: shop-nginx-cache-prod
   nginx-logs:
