@@ -74,7 +74,7 @@ export function LoginForm({
 
   const handleLogin = async () => {
     try {
-      alert(`${apiBaseUrl} ${process.env.NODE_ENV} ${process.env.NEXT_PUBLIC_INTERNAL_API_URL} ${process.env.NEXT_PUBLIC_DOMAIN} ${process.env.NEXT_PUBLIC_API_URL}` )
+      alert(`${apiBaseUrl}, ${process.env.NODE_ENV}, ${process.env.NEXT_PUBLIC_INTERNAL_API_URL} ,${process.env.NEXT_PUBLIC_DOMAIN} ,${process.env.NEXT_PUBLIC_API_URL}` )
       setIsLoading(true);
           const res = await fetch(`${apiBaseUrl}/Identity/login`, {
       method: 'POST',
