@@ -142,18 +142,14 @@ namespace Api
 
 
             var app = builder.Build();
-            app.UseForwardedHeaders();
+app.UseForwardedHeaders();
 
             // if (app.Environment.IsDevelopment())
             // {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-    c.RoutePrefix = "swagger"; // یا خالی بذار برای روت اصلی
-});
+                app.UseSwagger();
+                app.UseSwaggerUI();
             // }
-            app.UseCors("AllowFrontend");
+                app.UseCors("AllowFrontend");
             app.IntializeDatabase();
             app.UseStaticFiles();
             app.UseMiddleware<BlacklistMiddleware>();
