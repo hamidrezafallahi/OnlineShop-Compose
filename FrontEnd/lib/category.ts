@@ -6,7 +6,7 @@ import {
   ICategory,
 } from '@models/category';
 
-const apiBaseUrl=process.env.NEXT_PUBLIC_INTERNAL_SERVER_SIDE_API_URL
+const apiBaseUrl=process.env.INTERNAL_SERVER_SIDE_API_URL
 
 export async function getCategories({ queries }: CategoryRequestQueries = { queries: {} as any }) {
   const { ByConfig, IsShowInLanding, Page, PageSize } = (await queries) || {};

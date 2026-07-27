@@ -5,7 +5,7 @@ import {
   PagedResponse,
 } from '@models/base';
 
-const apiBaseUrl=process.env.NEXT_PUBLIC_INTERNAL_SERVER_SIDE_API_URL
+const apiBaseUrl=process.env.INTERNAL_SERVER_SIDE_API_URL
 
 export async function getAll<T>(
   entity: string,
