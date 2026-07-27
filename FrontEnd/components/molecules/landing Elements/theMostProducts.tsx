@@ -16,6 +16,7 @@ import ProductsCarousel from '../productsCarousel';
 function TheMostProducts() {
   const [activeTab, setActiveTab] = useState("BestSeller");
   const [content, setContent] = useState<ILandingProduct[]>();
+  console.log(apiBaseUrl)
   const { data, isLoading, isFetching } = useGetData<ILandingProduct[], any>({
     url: `${apiBaseUrl}/Products/landings?${activeTab}=true`,
   });

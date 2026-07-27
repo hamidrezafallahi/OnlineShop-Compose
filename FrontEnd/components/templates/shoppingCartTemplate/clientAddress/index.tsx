@@ -25,7 +25,7 @@ export default function ClientAddress() {
 
   const t = useTranslations();
   const { data, isLoading, refetch } = useGetData<IAddress[], any>({
-    url: `${apiBaseUrl}/api/Address/ByUser`,
+    url: `${apiBaseUrl}/Address/ByUser`,
     method: "GET",
   });
   const [itemMutate, { isLoading: addLoading }] = useGetConditionallyMutation();
@@ -49,7 +49,7 @@ export default function ClientAddress() {
   const handleAddAddress = async () => {
     try {
       const res = await itemMutate({
-        url: `/api/address`,
+        url: `/address`,
         method: "POST",
         body: newAddress,
       }).unwrap();
@@ -67,7 +67,7 @@ export default function ClientAddress() {
   const handleFetchEditAddress = async () => {
      try {
       const res = await editMutate({
-        url: `/api/address`,
+        url: `/address`,
         method: "PUT",
         body: newAddress,
       }).unwrap();

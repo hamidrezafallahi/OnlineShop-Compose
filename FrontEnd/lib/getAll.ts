@@ -66,8 +66,8 @@ export async function getById(entity: string, id: string): Promise<Record<string
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
+  console.log(`${apiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`)
   const res = await fetch(`${apiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`, {
-   
     // next: {
     //   revalidate: 1,
     //   tags: ["genderFilter", "statusFilter", "speciesFilter"],
@@ -79,6 +79,7 @@ export async function getFormConfigByEntityName(entity: string) {
     cache: "no-store",
   });
   const data = await res.json();
+  console.log(data)
    return data.data;
 }
 

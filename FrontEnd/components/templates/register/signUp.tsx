@@ -22,8 +22,6 @@ import {
   ISignup,
 } from './type';
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-
 export function SignUpForm({ className, setIsLogin, ...props }: IProps) {
   const [signup, setSignup] = useState<ISignup>({
     email: "",

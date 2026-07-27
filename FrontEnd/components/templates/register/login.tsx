@@ -36,7 +36,6 @@ import {
   TokenPayload,
 } from './type';
 
-// const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 ;
 
 export function LoginForm({
@@ -74,8 +73,7 @@ export function LoginForm({
 
   const handleLogin = async () => {
     try {
-      alert(`${apiBaseUrl}, ${process.env.NODE_ENV}, ${process.env.NEXT_PUBLIC_INTERNAL_API_URL} ,${process.env.NEXT_PUBLIC_DOMAIN} ,${process.env.NEXT_PUBLIC_API_URL}` )
-      setIsLoading(true);
+       setIsLoading(true);
           const res = await fetch(`${apiBaseUrl}/Identity/login`, {
       method: 'POST',
       headers: {

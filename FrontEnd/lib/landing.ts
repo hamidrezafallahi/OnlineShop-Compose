@@ -4,8 +4,7 @@ const apiBaseUrl=process.env.INTERNAL_SERVER_SIDE_API_URL
 
 export async function getSlides<T>(): Promise<T[]> {
   try {
-    console.log(apiBaseUrl)
-    const url = `${apiBaseUrl}/Landing/slide`;
+     const url = `${apiBaseUrl}/Landing/slide`;
     const res = await fetch(url, {
       cache: "no-store",
     });

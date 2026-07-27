@@ -29,14 +29,13 @@ export default async function Page({
   });
 
   const res = await getFormConfigByEntityName("Categories");
-
-  return (
+   return (
     <div className="p-6">
       <h1 className="mb-4 font-semibold text-lg">لیست دسته‌بندی‌ها</h1>
-      <AdminCategoryTemplate
+      {res && <AdminCategoryTemplate
         categories={list?.data.records ?? []}
         entityFormConfig={res}
-      />
+      />}
     </div>
   );
 }

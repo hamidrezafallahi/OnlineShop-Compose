@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useLocale } from 'next-intl';
 
+import { apiBaseUrl } from '@lib/api';
 import { DataResponse } from '@models/base';
 import { useGetData } from '@services/base';
 
@@ -9,8 +10,6 @@ import {
   Select,
   SelectProps,
 } from '../customSelect';
-
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export interface DynamicSelectProps extends SelectProps {
   fetchConfig: { api: string };
@@ -28,7 +27,7 @@ const DynamicSelect = React.forwardRef<HTMLDivElement, DynamicSelectProps>(
     const [page, setPage] = React.useState<number>(1);
     const locale = useLocale();
     const prevConfigRef = React.useRef(fetchConfig);
-    const url = new URL(`${baseUrl}/${fetchConfig.api}`);
+    const url = new URL(`${apiBaseUrl}/${fetchConfig.api}`);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", String(fetchSize));
     Object.entries(fetchConfig).forEach(([k, v]) => {
