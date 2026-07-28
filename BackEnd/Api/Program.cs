@@ -10,11 +10,6 @@ using System.Threading.RateLimiting;
 
 namespace Api
 {
-    public interface IDataInitializer
-    {
-        void InitializeData();
-    }//از این استفاده کن برای این که seed data بزنی
-
     public static class helper
     {
         public static IApplicationBuilder IntializeDatabase(this IApplicationBuilder app)
@@ -26,17 +21,62 @@ namespace Api
             if (dbContext is null)
                 return app;
 
-            var pendingMigrations = dbContext.Database.GetPendingMigrations();
+            var pendingMigrations = dbContext.Database.GetPendingMigrations().ToList();
             if (pendingMigrations.Any())
-                dbContext.Database.Migrate();
+            {
+                // Legacy DBs may have been created with EnsureCreated (no __EFMigrationsHistory).
+                // Applying the full initial schema migration would fail; skip Migrate in that case.
+                var appliedAny = dbContext.Database.GetAppliedMigrations().Any();
+                var hasLegacySchema = !appliedAny && TableExists(dbContext, "EntityConfigs");
+                if (!hasLegacySchema)
+                    dbContext.Database.Migrate();
+            }
             else
+            {
                 dbContext.Database.EnsureCreated();
+            }
 
             var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
             foreach (var dataInitializer in dataInitializers)
                 dataInitializer.InitializeData();
 
             return app;
+        }
+
+        private static bool TableExists(AppDbContext dbContext, string tableName)
+        {
+            try
+            {
+                var connection = dbContext.Database.GetDbConnection();
+                var shouldClose = connection.State != System.Data.ConnectionState.Open;
+                if (shouldClose)
+                    connection.Open();
+
+                using var command = connection.CreateCommand();
+                command.CommandText =
+                    """
+                    SELECT EXISTS (
+                        SELECT 1
+                        FROM information_schema.tables
+                        WHERE table_schema = 'public'
+                          AND table_name = @tableName
+                    );
+                    """;
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = "@tableName";
+                parameter.Value = tableName;
+                command.Parameters.Add(parameter);
+
+                var result = command.ExecuteScalar();
+                if (shouldClose)
+                    connection.Close();
+
+                return result is true || result is bool b && b;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
     public class Program

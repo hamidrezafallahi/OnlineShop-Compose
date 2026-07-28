@@ -12,6 +12,13 @@ import CustomPagination from '@components/molecules/pagination';
 function AdminList({ ...props }: any) {
   try {
   const { list, entity } = props;
+  if (!list?.columnsJson || !list?.actionsJson) {
+    return (
+      <div className="p-4 text-red-500">
+        بارگذاری لیست ادمین ناموفق بود. اتصال API را بررسی کنید.
+      </div>
+    );
+  }
   const { records, actionsJson, columnsJson, totalCount } = list;
   const route = useRouter();
   const locale = useLocale();

@@ -66,20 +66,18 @@ export async function getById(entity: string, id: string): Promise<Record<string
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
-  console.log(`${serverApiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`)
-  const res = await fetch(`${serverApiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`, {
-    // next: {
-    //   revalidate: 1,
-    //   tags: ["genderFilter", "statusFilter", "speciesFilter"],
-    // },
-    // }
-
-
-    // ,{
-    cache: "no-store",
-  });
-  const data = await res.json();
-  console.log(data)
-   return data.data;
+  const url = `${serverApiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      console.error(`getFormConfigByEntityName failed: ${res.status} ${url}`);
+      return null;
+    }
+    const data = await res.json();
+    return data?.data ?? null;
+  } catch (e) {
+    console.error(`getFormConfigByEntityName error for ${entity}`, e);
+    return null;
+  }
 }
 

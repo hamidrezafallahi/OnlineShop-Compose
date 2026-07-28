@@ -26,23 +26,27 @@ const DynamicSelect = React.forwardRef<HTMLDivElement, DynamicSelectProps>(
     const [page, setPage] = React.useState<number>(1);
     const locale = useLocale();
     const prevConfigRef = React.useRef(fetchConfig);
-    const endpoint = fetchConfig.api.startsWith("/")
-      ? fetchConfig.api
-      : `/${fetchConfig.api}`;
+    // browserApiBaseUrl is already '/api'; stored paths must be controller-relative
+    // (Users/selectOption). Strip a legacy 'api/' prefix to avoid /api/api/...
+    const normalizedApi = String(fetchConfig?.api ?? '')
+      .replace(/^\/?api\//i, '')
+      .replace(/^\//, '');
+    const endpoint = normalizedApi ? `/${normalizedApi}` : '';
     const params = new URLSearchParams();
 
     params.set("page", String(page));
     params.set("pageSize", String(fetchSize));
-    Object.entries(fetchConfig).forEach(([k, v]) => {
-      if (k !== "api") {
+    Object.entries(fetchConfig ?? {}).forEach(([k, v]) => {
+      if (k !== 'api' && v !== undefined && v !== null) {
         params.set(k, String(v));
       }
     });
     const { data } = useGetData<
       DataResponse<ResponseSelectOption>
     >({
-      url: `${endpoint}?${params.toString()}`,
-      method: "GET",
+      url: endpoint ? `${endpoint}?${params.toString()}` : '',
+      method: 'GET',
+      skip: !endpoint,
     });
     const handleSetPage = () => {
       if (data && data.data.totalPages > page) {

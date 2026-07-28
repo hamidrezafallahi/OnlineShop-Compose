@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export interface FormGeneratorProps {
-  entityFormConfig:IFormConfig ;
+  entityFormConfig: IFormConfig | null;
   defaultValues?: Record<string, any>;
 }
 export interface IFormConfig{

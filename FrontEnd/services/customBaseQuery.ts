@@ -10,6 +10,7 @@ import {
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query';
 import {
+  createCookie,
   deleteCookie,
   getTokens,
   showErrorToast,
@@ -129,6 +130,7 @@ async function refreshAccessToken(): Promise<boolean> {
     const data = await response.json();
 
     if (data.isSuccess && data.data?.accessToken) {
+      createCookie('candyAccess', data.data.accessToken, 1);
       return true;
     }
 

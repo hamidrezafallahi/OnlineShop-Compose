@@ -73,6 +73,7 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<IBlogTagRepository, BlogTagRepository>();
             services.AddScoped<IUserTagRepository, UserTagRepository>();
             services.AddHttpContextAccessor();
+            services.AddScoped<IDataInitializer, EntityConfigApiUrlNormalizer>();
             return services;
         }
     }

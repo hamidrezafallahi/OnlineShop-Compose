@@ -3,15 +3,28 @@ import { NextResponse } from 'next/server';
 
 import { serverApiBaseUrl } from '@lib/api';
 
+const accessCookieOptions = {
+  httpOnly: false,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60,
+};
+
+const refreshCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60 * 24 * 30,
+};
+
 export async function POST() {
   try {
     const cookieStore = await cookies();
 
-    const refreshToken =
-      cookieStore.get('candyRefresh')?.value;
-
-    const accessToken =
-      cookieStore.get('candyAccess')?.value;
+    const refreshToken = cookieStore.get('candyRefresh')?.value;
+    const accessToken = cookieStore.get('candyAccess')?.value;
 
     if (!refreshToken) {
       return NextResponse.json(
@@ -37,50 +50,58 @@ export async function POST() {
       }
     );
 
-    const data = await response.json();
+    let data: {
+      isSuccess?: boolean;
+      data?: {
+        accessToken?: string;
+        refreshToken?: string;
+      };
+    };
 
-    if (!response.ok || !data?.isSuccess) {
-      cookieStore.delete('candyAccess');
-      cookieStore.delete('candyRefresh');
-
+    try {
+      data = await response.json();
+    } catch {
       return NextResponse.json(
+        { isSuccess: false, message: 'Invalid refresh response' },
+        { status: 502 }
+      );
+    }
+
+    if (!response.ok || !data?.isSuccess || !data.data?.accessToken) {
+      const res = NextResponse.json(
         {
           isSuccess: false,
           message: 'Refresh failed',
         },
         { status: 401 }
       );
+      res.cookies.delete('candyAccess');
+      res.cookies.delete('candyRefresh');
+      return res;
     }
 
     const newAccessToken = data.data.accessToken;
     const newRefreshToken = data.data.refreshToken;
 
-    cookieStore.set('candyAccess', newAccessToken, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60,
-    });
-
-    cookieStore.set(
-      'candyRefresh',
-      newRefreshToken,
-      {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-      }
-    );
-
-    return NextResponse.json({
+    const res = NextResponse.json({
       isSuccess: true,
       data: {
         accessToken: newAccessToken,
+        refreshToken: newRefreshToken ?? null,
       },
     });
+
+    res.cookies.set('candyAccess', newAccessToken, accessCookieOptions);
+
+    if (newRefreshToken) {
+      res.cookies.set(
+        'candyRefresh',
+        newRefreshToken,
+        refreshCookieOptions
+      );
+    }
+
+    return res;
   } catch (error) {
     console.error('REFRESH ERROR:', error);
 

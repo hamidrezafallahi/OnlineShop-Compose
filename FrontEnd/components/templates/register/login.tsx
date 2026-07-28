@@ -24,7 +24,7 @@ import { useGetConditionallyMutation } from '@services/base';
 import { IBaseQueryResponse } from '@services/base/type';
 import { synchronousCart } from '@slice/shoppingCartSlice';
 import { useAppSelector } from '@store/index';
-import { showErrorToast } from '@utils/core';
+import { createCookie, showErrorToast } from '@utils/core';
 
 import {
   ILogin,
@@ -88,6 +88,9 @@ export function LoginForm({
         showErrorToast(data.error);
         return;
       }
+
+      createCookie('candyAccess', data.data.accessToken, 1);
+
       const decoded: TokenPayload = jwtDecode(
         data.data.accessToken,
       );

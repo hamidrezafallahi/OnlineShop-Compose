@@ -33,16 +33,6 @@ export default function FormGenerator({
   const locale = useLocale();
   const route = useRouter();
   const t = useTranslations();
-  const formFields: FormField[] = JSON.parse(entityFormConfig.formFieldsJson);
-  const getValidationRules = (field: FormField): RegisterOptions => {
-    const rules: RegisterOptions = {};
-    field.Rules?.forEach((r) => {
-      if (r.Rule === "required" && r.Condition) {
-        rules.required = r.Message || `${field.Caption} is required`;
-      }
-    });
-    return rules;
-  };
   const {
     register,
     handleSubmit,
@@ -54,6 +44,36 @@ export default function FormGenerator({
     watch,
     trigger,
   } = useForm({ mode: "onBlur", defaultValues });
+
+  let formFields: FormField[] = [];
+  let parseError = false;
+  if (entityFormConfig?.formFieldsJson) {
+    try {
+      formFields = JSON.parse(entityFormConfig.formFieldsJson);
+    } catch {
+      parseError = true;
+    }
+  }
+
+  if (!entityFormConfig?.formFieldsJson || parseError) {
+    return (
+      <div className="p-4 text-red-500">
+        {parseError
+          ? 'پیکربندی فرم نامعتبر است.'
+          : 'پیکربندی فرم برای این موجودیت یافت نشد.'}
+      </div>
+    );
+  }
+
+  const getValidationRules = (field: FormField): RegisterOptions => {
+    const rules: RegisterOptions = {};
+    field.Rules?.forEach((r) => {
+      if (r.Rule === "required" && r.Condition) {
+        rules.required = r.Message || `${field.Caption} is required`;
+      }
+    });
+    return rules;
+  };
    const handleAddOrUpdateRecord: SubmitHandler<any> = async (data) => {
      const cleanedData: any = {
       id: data["id"] ? Number(data["id"]) : undefined,

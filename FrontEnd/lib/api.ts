@@ -19,10 +19,13 @@ function ensureApiSuffix(value: string) {
 export const browserApiBaseUrl = '/api';
 export const browserAuthBaseUrl = '/auth';
 
+// Browser always uses same-origin /api (nginx → backend).
+// Server components / Route Handlers must use an absolute internal URL.
+// Relative "/api" in Node fetch is either invalid or hairpins through public nginx (slow/fragile).
 const internalServerOrigin =
   process.env.INTERNAL_SERVER_SIDE_API_URL ??
   process.env.NEXT_PUBLIC_INTERNAL_API_URL ??
-  '';
+  (process.env.NODE_ENV === 'production' ? 'http://backend:8080' : '');
 
 export const serverApiBaseUrl =
   ensureApiSuffix(internalServerOrigin) || browserApiBaseUrl;

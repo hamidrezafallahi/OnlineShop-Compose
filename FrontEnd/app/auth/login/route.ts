@@ -1,7 +1,22 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { serverApiBaseUrl } from '@lib/api';
+
+const accessCookieOptions = {
+  httpOnly: false,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60,
+};
+
+const refreshCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60 * 24 * 30,
+};
 
 export async function POST(req: Request) {
   try {
@@ -18,39 +33,56 @@ export async function POST(req: Request) {
       }
     );
 
-    const data = await response.json();
+    let data: {
+      isSuccess?: boolean;
+      error?: string;
+      data?: {
+        accessToken?: string;
+        refreshToken?: string;
+      };
+    };
 
-    if (!data.isSuccess) {
-      return NextResponse.json(data, { status: 400 });
+    try {
+      data = await response.json();
+    } catch {
+      return NextResponse.json(
+        { isSuccess: false, error: 'Invalid login response' },
+        { status: 502 }
+      );
     }
 
-    const cookieStore = await cookies();
+    if (!response.ok || !data?.isSuccess || !data.data?.accessToken) {
+      return NextResponse.json(
+        data?.isSuccess === false
+          ? data
+          : {
+              isSuccess: false,
+              error: data?.error ?? 'Login failed',
+            },
+        { status: response.ok ? 400 : response.status }
+      );
+    }
 
-    cookieStore.set('candyAccess', data.data.accessToken, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60,
-    });
+    const { accessToken, refreshToken } = data.data;
 
-    cookieStore.set('candyRefresh', data.data.refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    });
-
-    return NextResponse.json({
+    const res = NextResponse.json({
       isSuccess: true,
       data: {
-        accessToken: data.data.accessToken,
+        accessToken,
+        refreshToken: refreshToken ?? null,
       },
     });
+
+    res.cookies.set('candyAccess', accessToken, accessCookieOptions);
+
+    if (refreshToken) {
+      res.cookies.set('candyRefresh', refreshToken, refreshCookieOptions);
+    }
+
+    return res;
   } catch {
     return NextResponse.json(
-      { isSuccess: false },
+      { isSuccess: false, error: 'Login proxy failed' },
       { status: 500 }
     );
   }

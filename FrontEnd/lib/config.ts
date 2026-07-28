@@ -10,18 +10,36 @@ import {
 } from './api';
 
 export async function getConfig(configName: string) {
-    const res = await fetch(`${serverApiBaseUrl}/configs/${configName}`
-        , {
-            cache: "no-store",
-        });
-    const data: configResponse = await res.json();
-    return data;
+  try {
+    const res = await fetch(`${serverApiBaseUrl}/configs/${configName}`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      console.error(`getConfig failed: ${res.status} ${serverApiBaseUrl}/configs/${configName}`);
+      return { config: '' } as configResponse;
+    }
+    return (await res.json()) as configResponse;
+  } catch (e) {
+    console.error(`getConfig error for ${configName}`, e);
+    return { config: '' } as configResponse;
+  }
 }
-export async function getMenu() {
-     const res = await fetch(`${serverApiBaseUrl}/EntityConfigs/menu`
-        , {
-            cache: "no-store",
-        });
-     const data: menuResponse = await res.json();
-    return data;
+
+export async function getMenu(): Promise<menuResponse> {
+  try {
+    const res = await fetch(`${serverApiBaseUrl}/EntityConfigs/menu`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      console.error(
+        `getMenu failed: ${res.status} ${serverApiBaseUrl}/EntityConfigs/menu`,
+      );
+      return { data: [] };
+    }
+    const data = (await res.json()) as menuResponse;
+    return { data: Array.isArray(data?.data) ? data.data : [] };
+  } catch (e) {
+    console.error('getMenu error', e);
+    return { data: [] };
+  }
 }

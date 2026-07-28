@@ -97,7 +97,7 @@ IRequestHandler<DeleteUserCommand, ServiceResult<IdDto>>
         var refreshToken = RefreshToken.Create(
             token: refreshTokenString,
             accessToken: accessToken,
-            accessTokenExpiry: DateTime.UtcNow.AddMinutes(4),
+            accessTokenExpiry: DateTime.UtcNow.AddMinutes(60),
             expiry: DateTime.UtcNow.AddDays(7),
             userId: user.Id,
             createdByIp: ip,
@@ -140,7 +140,7 @@ IRequestHandler<DeleteUserCommand, ServiceResult<IdDto>>
         var newRefreshToken = RefreshToken.Create(
             token: newRefreshTokenString,
             accessToken: newAccessToken,
-            accessTokenExpiry: DateTime.UtcNow.AddMinutes(4),
+            accessTokenExpiry: DateTime.UtcNow.AddMinutes(60),
             expiry: DateTime.UtcNow.AddDays(7),
             userId: existingToken.UserId,
             createdByIp: request.Ip ?? "unknown",

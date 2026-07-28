@@ -72,7 +72,7 @@ export default function Sidebar({ menu, initialOpen = true }: SidebarProps) {
         </div>
 
         <div className="flex flex-col flex-1 gap-2 p-2 min-h-0 overflow-y-auto">
-          {menu.data.map((item, idx) => (
+          {(menu?.data ?? []).map((item, idx) => (
             <Link
               key={idx}
               href={`/${locale}/admin/${item.endPoint}?ByConfig=true`}
