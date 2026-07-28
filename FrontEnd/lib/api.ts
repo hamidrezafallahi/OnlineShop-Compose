@@ -5,4 +5,4 @@ export const apiBaseUrl = isDevelopment
   : "/api";
 export const apiBaseServerSideUrl = isDevelopment
   ? process.env.INTERNAL_SERVER_SIDE_API_URL
-  :  "";
+  :  process.env.INTERNAL_SERVER_SIDE_API_URL;
