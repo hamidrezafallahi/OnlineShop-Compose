@@ -1,84 +1,44 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 
 import ProductBrand from '@components/organisms/productOrganisms/productBrand';
-import ProductCategory
-  from '@components/organisms/productOrganisms/productCategory';
-import {
-  ProductDetailsTabs,
-} from '@components/organisms/productOrganisms/productDetailsTabs';
+import ProductCategory from '@components/organisms/productOrganisms/productCategory';
+import { ProductDetailsTabs } from '@components/organisms/productOrganisms/productDetailsTabs';
 import ProductHero from '@components/organisms/productOrganisms/productHero';
-import {
-  ProductSupplierExtended,
-} from '@components/organisms/productOrganisms/productSuppliers';
+import { ProductSupplierExtended } from '@components/organisms/productOrganisms/productSuppliers';
 import ProductTags from '@components/organisms/productOrganisms/productTags';
+import JsonLd from '@components/molecules/storefront/JsonLd';
 import { serverApiBaseUrl } from '@lib/api';
+import { absoluteUrl, buildPageMetadata } from '@lib/seo';
 
-// === 1. تولید مسیرهای استاتیک ===
-// export async function generateStaticParams() {
-//   try {
-//     const response = await fetch(`${baseUrl}api/Products/getIds`, {
-//       next: { revalidate: 36 } // هر 1 ساعت cache
-//     });
-//     if (!response.ok) {
-//       console.error('Failed to fetch IDs:', response.status);
-//       return [];
-//     }
-
-//     const result = await response.json();
-    
-//     // چندین روش برای دسترسی به data
-//     const data = result.data || result || [];
-    
-//     if (!Array.isArray(data)) {
-//       console.error('Data is not an array:', typeof data);
-//       return [];
-//     }
-
-//     const locales = ['fa', 'en'];
-//     const params = [];
-
-//     // اعتبارسنجی هر آیتم قبل از استفاده
-//     for (const locale of locales) {
-//       for (const item of data) {
-//         // بررسی عمیق‌تر برای id
-//         const itemId = item?.id ?? item?.ID ?? item?.Id;
-        
-//         if (itemId !== undefined && itemId !== null) {
-//           params.push({
-//             locale: locale,
-//             slug: String(itemId), // استفاده از String به جای toString()
-//           });
-//         } else {
-//           console.warn('Invalid item found (no id):', item);
-//         }
-//       }
-//     }  
-//     return params;
-    
-//   } catch (error) {
-//     console.error('Error in generateStaticParams:', error);
-//     return [];
-//   }
-// }
-
-// اجازه تولید صفحات dynamic جدید
 export const dynamicParams = true;
 
-// === 2. تولید Metadata ===
+async function fetchProduct(slug: string) {
+  const response = await fetch(`${serverApiBaseUrl}/Products/${slug}`, {
+    next: { revalidate: 36 },
+  });
+  return response;
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string; locale?: string }>;
 }): Promise<Metadata> {
+  const { slug, locale = 'fa' } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
+
   try {
-    const resolvedParams = await params;
-    const { slug, locale = 'fa' } = resolvedParams;  
-    const response = await fetch(`${serverApiBaseUrl}/Products/${slug}`,{next: { revalidate: 36 }});
+    const response = await fetchProduct(slug);
     if (response.status === 404) {
-      return {
-        title: locale === 'fa' ? "محصول پیدا نشد" : "Product Not Found",
-        description: ""
-      };
+      return buildPageMetadata({
+        locale,
+        path: `products/${slug}`,
+        title: tStore('notFound'),
+        description: tStore('notFoundHint'),
+        noIndex: true,
+      });
     }
 
     if (!response.ok) {
@@ -87,89 +47,91 @@ export async function generateMetadata({
 
     const result = await response.json();
     const product = result.data || result;
-    
-    if (!product) {
-      return {
-        title: locale === 'fa' ? 'محصول' : 'Product',
-        description: '',
-      };
-    }
+    const title =
+      product?.name || product?.title || (locale === 'fa' ? 'محصول' : 'Product');
+    const description = product?.description || '';
+    const image =
+      product?.imageUrls?.[0] || product?.imageUrl || product?.image;
 
-    const title = product.name || product.title || (locale === "fa" ? "محصول" : "Product");
-    const description = product.description || "";
-    const image = product.imageUrls?.[0] || product.imageUrl || product.image;
-
-    return {
+    return buildPageMetadata({
+      locale,
+      path: `products/${slug}`,
       title,
       description,
-      openGraph: {
-        title,
-        description,
-        images: image ? [image] : [],
-        locale: locale === 'fa' ? 'fa_IR' : 'en_US',
-      },
-    };
-  } catch (error) {
-    console.error('Error generating metadata:', error);
-    return {
+      images: [image],
+    });
+  } catch {
+    return buildPageMetadata({
+      locale,
+      path: `products/${slug}`,
       title: 'Product',
       description: '',
-    };
+      noIndex: true,
+    });
   }
 }
 
-// === 3. صفحه محصول ===
 export default async function ProductPage({
   params,
 }: {
   params: Promise<{ slug: string; locale: string }>;
 }) {
+  const { slug, locale } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
+
   try {
-    const { slug, locale } = await params;   
-    const response = await fetch(`${serverApiBaseUrl}/Products/${slug}`, {
-      next: { revalidate: 36 } // ISR
-    });
+    const response = await fetchProduct(slug);
+
     if (response.status === 404) {
       return (
-        <div className="pt-24">
-          <div className="mx-auto px-4 py-20 max-w-7xl text-center">
-            <h1 className="mb-4 font-bold text-3xl">
-              {locale === 'fa' ? 'محصول پیدا نشد' : 'Product Not Found'}
-            </h1>
-            <p className="text-gray-600">
-              {locale === 'fa' 
-                ? 'متأسفانه محصول مورد نظر شما یافت نشد.' 
-                : 'Sorry, the product you are looking for could not be found.'}
-            </p>
+        <div className="store-page">
+          <div className="store-empty">
+            <h1 className="store-empty-title">{tStore('notFound')}</h1>
+            <p className="store-empty-desc">{tStore('notFoundHint')}</p>
+            <Link href={`/${locale}/products`} className="store-btn store-btn-primary mt-4">
+              {tStore('backHome')}
+            </Link>
           </div>
         </div>
       );
     }
+
     const result = await response.json();
     const product = result.data || result;
+    const image =
+      product?.imageUrls?.[0] || product?.imageUrl || product?.image;
+    const productUrl = absoluteUrl(locale, `products/${slug}`);
+
+    const productLd = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name || product.title,
+      description: product.description,
+      image: image ? [image] : undefined,
+      url: productUrl,
+      sku: product.sku || product.id,
+      brand: product.brandName
+        ? { '@type': 'Brand', name: product.brandName }
+        : undefined,
+    };
+
     return (
-      <div className="pt-24">
-        <div className="mx-auto px-4 max-w-7xl">
-          <ProductHero product={product} />
-          <ProductBrand id={product.brandId}/>
-          <ProductCategory id={product.categoryId}/>
-          <ProductTags id={product.id}/>
-          <ProductSupplierExtended productId={slug} />
-          <ProductDetailsTabs product={product} />
-        </div>
-      </div>
+      <article className="store-page !pt-6">
+        <JsonLd data={productLd} />
+        <ProductHero product={product} />
+        <ProductBrand id={product.brandId} />
+        <ProductCategory id={product.categoryId} />
+        <ProductTags id={product.id} />
+        <ProductSupplierExtended productId={slug} />
+        <ProductDetailsTabs product={product} />
+      </article>
     );
-    
   } catch {
     return (
-      <div className="pt-24">
-        <div className="mx-auto px-4 py-20 max-w-7xl text-center">
-          <h1 className="mb-4 font-bold text-3xl">
-            {'خطا در بارگذاری' }
-          </h1>
-          <p className="text-gray-100">
-            { 'متأسفانه در بارگذاری محصول مشکلی پیش آمده است.' }
-          </p>
+      <div className="store-page">
+        <div className="store-empty">
+          <h1 className="store-empty-title">{tStore('loadError')}</h1>
+          <p className="store-empty-desc">{tStore('loadErrorHint')}</p>
         </div>
       </div>
     );

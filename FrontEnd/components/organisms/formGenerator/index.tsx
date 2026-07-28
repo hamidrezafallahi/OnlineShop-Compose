@@ -1,4 +1,5 @@
 "use client";
+
 import React, {
   useEffect,
   useTransition,
@@ -8,6 +9,7 @@ import {
   useLocale,
   useTranslations,
 } from 'next-intl';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   RegisterOptions,
@@ -28,6 +30,7 @@ import {
 export default function FormGenerator({
   entityFormConfig,
   defaultValues,
+  embedded = false,
 }: FormGeneratorProps) {
   const [isPending, startTransition] = useTransition();
   const locale = useLocale();
@@ -57,13 +60,29 @@ export default function FormGenerator({
 
   if (!entityFormConfig?.formFieldsJson || parseError) {
     return (
-      <div className="p-4 text-red-500">
-        {parseError
-          ? 'پیکربندی فرم نامعتبر است.'
-          : 'پیکربندی فرم برای این موجودیت یافت نشد.'}
+      <div className={embedded ? 'flex flex-col gap-4' : 'admin-page'}>
+        <div className="admin-panel admin-empty">
+          <p className="admin-empty-title">
+            {parseError
+              ? t("admin.formParseError")
+              : t("admin.formLoadError")}
+          </p>
+          <Link
+            href={`/${locale}/admin/${entityFormConfig?.endPoint ?? ""}`}
+            className="admin-btn mt-2"
+          >
+            {t("general.back")}
+          </Link>
+        </div>
       </div>
     );
   }
+
+  const displayName =
+    locale !== "fa"
+      ? entityFormConfig.englishDisplayName
+      : entityFormConfig.persianDisplayName;
+  const isEdit = Boolean(defaultValues?.id);
 
   const getValidationRules = (field: FormField): RegisterOptions => {
     const rules: RegisterOptions = {};
@@ -74,8 +93,9 @@ export default function FormGenerator({
     });
     return rules;
   };
-   const handleAddOrUpdateRecord: SubmitHandler<any> = async (data) => {
-     const cleanedData: any = {
+
+  const handleAddOrUpdateRecord: SubmitHandler<any> = async (data) => {
+    const cleanedData: any = {
       id: data["id"] ? Number(data["id"]) : undefined,
     };
     formFields.forEach((field) => {
@@ -134,9 +154,8 @@ export default function FormGenerator({
         body: bodyToSend,
         method: defaultValues?.id ? "PUT" : "POST",
       });
-      console.log("startTransition",res)
       if (res?.isSuccess) {
-        Object.entries(formFields).forEach(([k, v]) => {
+        Object.entries(formFields).forEach(([, v]) => {
           resetField(v.Name, undefined);
           setValue(v.Name, undefined);
         });
@@ -147,16 +166,17 @@ export default function FormGenerator({
 
   const handleResetButton = () => {
     if (defaultValues) {
-      Object.entries(formFields).forEach(([k, v]) => {
+      Object.entries(formFields).forEach(([, v]) => {
         resetField(v.Name, defaultValues[v.Name]);
       });
     } else {
-      Object.entries(formFields).forEach(([k, v]) => {
+      Object.entries(formFields).forEach(([, v]) => {
         resetField(v.Name, undefined);
         setValue(v.Name, undefined);
       });
     }
   };
+
   useEffect(() => {
     if (defaultValues === undefined) {
       formFields.forEach((field) => {
@@ -170,53 +190,81 @@ export default function FormGenerator({
   }, [defaultValues]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={embedded ? 'flex flex-col gap-4' : 'admin-page'}>
       <FormHeader
-        DisplayName={
-          locale !== "fa"
-            ? entityFormConfig.englishDisplayName
-            : entityFormConfig.persianDisplayName
-        }
+        DisplayName={displayName}
         icon={
           <div
+            className="flex justify-center items-center bg-[var(--admin-active)] rounded-xl w-11 h-11 text-primary [&>svg]:w-5 [&>svg]:h-5"
             dangerouslySetInnerHTML={{
               __html: entityFormConfig.entityIconBase64,
             }}
           />
         }
-        isEdit={defaultValues?.id ? true : false}
+        isEdit={isEdit}
         resetField={handleResetButton}
+        backHref={
+          embedded
+            ? undefined
+            : `/${locale}/admin/${entityFormConfig.endPoint}?ByConfig=true`
+        }
       />
+
       <form
         onSubmit={handleSubmit(handleAddOrUpdateRecord)}
-        className="hidden-show-scrollbar gap-4 grid grid-cols-2 bg-white/10 shadow-lg hover:shadow-xl backdrop-blur-md p-4 border border-white/20 rounded-2xl w-full !h-[calc(100dvh-125px)] overflow-y-scroll"
+        className="admin-panel flex flex-col overflow-hidden"
       >
-        {formFields
-          .filter((field) => field.Type !== "hidden")
-          .sort((a, b) => (a.Order || 0) - (b.Order || 0))
-          .map((field, index) => (
-            <label key={index}>
-              {field.Caption}
-              <FormFieldRenderer
-                key={field.Name}
-                field={field}
-                defaultValues={defaultValues}
-                getValues={getValues}
-                watch={watch}
-                setValue={setValue}
-                trigger={trigger}
-                register={register(field.Name, getValidationRules(field))}
-                error={errors[field.Name]?.message as string | undefined}
-              />
-            </label>
-          ))}
-        <Button
-          className="col-span-2 bg-white text-secondary"
-          type="submit"
-          disabled={isPending}
+        <div
+          className={`hidden-show-scrollbar gap-4 sm:gap-5 grid grid-cols-1 md:grid-cols-2 p-4 sm:p-5 md:p-6 overflow-y-auto ${
+            embedded
+              ? 'max-h-[min(70dvh,calc(100dvh-300px))]'
+              : 'max-h-[calc(100dvh-240px)] lg:max-h-[calc(100dvh-220px)]'
+          }`}
         >
-          {isPending ? "..." : t("general.save")}
-        </Button>
+          {formFields
+            .filter((field) => field.Type !== "hidden")
+            .sort((a, b) => (a.Order || 0) - (b.Order || 0))
+            .map((field) => (
+              <div
+                key={field.Name}
+                className={
+                  field.Type === "fileArray" || field.Type === "textarea"
+                    ? "md:col-span-2 min-w-0"
+                    : "min-w-0"
+                }
+              >
+                <FormFieldRenderer
+                  field={field}
+                  defaultValues={defaultValues}
+                  getValues={getValues}
+                  watch={watch}
+                  setValue={setValue}
+                  trigger={trigger}
+                  register={register(field.Name, getValidationRules(field))}
+                  error={errors[field.Name]?.message as string | undefined}
+                />
+              </div>
+            ))}
+        </div>
+
+        <div className="admin-form-actions">
+          <Button
+            type="button"
+            variant="outline"
+            className="admin-btn"
+            onClick={handleResetButton}
+            disabled={isPending}
+          >
+            {t("general.reset")}
+          </Button>
+          <Button
+            className="admin-btn admin-btn-primary sm:min-w-32"
+            type="submit"
+            disabled={isPending}
+          >
+            {isPending ? t("general.saving") : t("general.save")}
+          </Button>
+        </div>
       </form>
     </div>
   );

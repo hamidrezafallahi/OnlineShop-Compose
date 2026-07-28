@@ -1,84 +1,68 @@
-import React from 'react';
-
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
 import TagTemplate from '@components/templates/tagTemplate';
 import { serverApiBaseUrl } from '@lib/api';
+import { buildPageMetadata } from '@lib/seo';
 import { SimpleResponse } from '@models/base';
 import { ITag } from '@models/tag';
 
-// ===== 1. تولید مسیرهای استاتیک =====
-// export async function generateStaticParams() {
-//   const response = await fetch(`${baseUrl}api/Tag/getIds`, {
-//     next: { revalidate: 36 },
-//   });
-//   if (!response.ok) return [];
-//   const { data }: { data: Ids[] } = await response.json();
-//   const locales = ["fa", "en"]; // یا از پیکربندی next-intl بخوانید
-//   const params = [];
-//   for (const locale of locales) {
-//     for (const item of data) {
-//       params.push({
-//         locale: locale,
-//         slug: item.id.toString(),
-//       });
-//     }
-//   }
-//   return params;
-// }
+type Props = {
+  params: Promise<{ slug: string; locale: string }>;
+};
 
-// ===== 2. تولید Metadata =====
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string; locale?: string }>;
-}): Promise<Metadata> {
-  // Await کردن params
-  const resolvedParams = await params;
-  const { slug } = resolvedParams;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
 
-  const response = await fetch(
-    `${serverApiBaseUrl}/Tags/${slug}`,
-    { next: { revalidate: 36 } },
-  );
-  const locale = resolvedParams.locale || "fa";
-  if (response.status === 404) {
-    return locale === "fa"
-      ? { title: "تگ محصول پیدا نشد", description: "" }
-      : { title: "Product Tag Not Found", description: "" };
-  }
-  const res: SimpleResponse<ITag> = await response.json();
-  if (res.isSuccess) {
-    const tag: ITag = res.data;
-    return {
-      title: tag.name,
-      description: tag.name,
-      openGraph: {
-        title: tag.name,
-        description: tag.name,
-        locale: locale === "fa" ? "fa_IR" : "en_US",
-      },
-    };
-  }
-
-  return locale === "fa"
-    ? { title: "تگ پیدا نشد", description: "" }
-    : { title: "Tag Not Found", description: "" };
-}
-
-export default async function Page(props: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await props.params;
   const response = await fetch(`${serverApiBaseUrl}/Tags/${slug}`, {
     next: { revalidate: 36 },
   });
-  const TagResponse: SimpleResponse<ITag> = await response.json();
-   if (!TagResponse.isSuccess) {
-    notFound();
-  } else {
-    const Tag: ITag = TagResponse.data;
-    return <TagTemplate Tag={Tag} />;
+
+  if (response.status === 404) {
+    return buildPageMetadata({
+      locale,
+      path: `tags/${slug}`,
+      title: tStore('notFound'),
+      description: tStore('notFoundHint'),
+      noIndex: true,
+    });
   }
+
+  const res: SimpleResponse<ITag> = await response.json();
+  if (!res.isSuccess) {
+    return buildPageMetadata({
+      locale,
+      path: `tags/${slug}`,
+      title: tStore('notFound'),
+      description: tStore('notFoundHint'),
+      noIndex: true,
+    });
+  }
+
+  return buildPageMetadata({
+    locale,
+    path: `tags/${slug}`,
+    title: res.data.name,
+    description: res.data.name,
+  });
+}
+
+export default async function Page({ params }: Props) {
+  const { slug } = await params;
+  const response = await fetch(`${serverApiBaseUrl}/Tags/${slug}`, {
+    next: { revalidate: 36 },
+  });
+  const tagResponse: SimpleResponse<ITag> = await response.json();
+
+  if (!tagResponse.isSuccess) {
+    notFound();
+  }
+
+  return (
+    <div className="store-page !pt-6">
+      <TagTemplate Tag={tagResponse.data} />
+    </div>
+  );
 }

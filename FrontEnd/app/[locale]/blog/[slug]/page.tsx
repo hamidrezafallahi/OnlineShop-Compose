@@ -1,118 +1,109 @@
-import { Metadata } from 'next';
-import { getLocale } from 'next-intl/server';
-import Head from 'next/head';
-import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import {
   BlogContent,
   HeroSection,
   RelatedArticles,
 } from '@components/templates/blogTemplate';
+import JsonLd from '@components/molecules/storefront/JsonLd';
 import { getBlogBySlug } from '@lib/blog';
+import { serverApiBaseUrl } from '@lib/api';
+import { absoluteUrl, buildPageMetadata } from '@lib/seo';
+import { SimpleResponse } from '@models/base';
 import { IBlog } from '@models/Blog';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 };
 
-// ===== 1. تولید مسیرهای استاتیک =====
-// export async function generateStaticParams() {
-//   try {
-//     const res = await fetch(
-//       `${process.env.INTERNAL_API_URL}api/Blogs/getSlugs`,
-//       {
-//         cache: "no-store",
-//       },
-//     );
-
-//     if (!res.ok) return [];
-//     const response: SimpleResponse<IBlog[]> = await res.json();
-//     if (!response.isSuccess) return [];
-//     return (response.data || []).map((item: any) => ({
-//       slug: item.slug,
-//     }));
-//   } catch (error) {
-//     console.error("Error generating static params:", error);
-//     return [];
-//   }
-// }
-
-// ===== 2. تولید Metadata =====
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const locale = await getLocale();
-  try {
-    const blog = await getBlogBySlug({ params: { slug } });
+  const { slug, locale } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
 
-    if (!blog) {
-      return {
-        title: locale === "fa" ? "مقاله یافت نشد" : "Article Not Found",
-      };
+  try {
+    const res = await fetch(`${serverApiBaseUrl}/Blogs/${slug}`, {
+      cache: 'no-store',
+    });
+    const response: SimpleResponse<IBlog> = await res.json();
+
+    if (!response.isSuccess || !response.data) {
+      return buildPageMetadata({
+        locale,
+        path: `blog/${slug}`,
+        title: tStore('notFound'),
+        description: tStore('notFoundHint'),
+        noIndex: true,
+      });
     }
 
-    return {
-      title: blog.titleFa || blog.titleEn,
-      description: blog.contentFa?.slice(0, 160),
-      openGraph: {
-        title: blog.titleFa || blog.titleEn,
-        description: blog.contentFa?.slice(0, 160),
-        images: blog.thumbnailFile ? [blog.thumbnailFile] : [],
-        locale: locale === "fa" ? "fa_IR" : "en_US",
-        type: "article",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: blog.titleFa || blog.titleEn,
-        description: blog.contentFa?.slice(0, 160),
-        images: blog.thumbnailFile ? [blog.thumbnailFile] : [],
-      },
-    };
-  } catch (error) {
-    return {
-      title: locale === "fa" ? "مقاله" : "Article",
-    };
+    const blog = response.data;
+    const title =
+      locale === 'fa'
+        ? blog.titleFa || blog.titleEn
+        : blog.titleEn || blog.titleFa;
+    const description = (
+      (locale === 'fa' ? blog.metaDescriptionFa : blog.metaDescriptionEn) ||
+      (locale === 'fa' ? blog.excerptFa : blog.excerptEn) ||
+      ''
+    ).slice(0, 160);
+
+    return buildPageMetadata({
+      locale,
+      path: `blog/${slug}`,
+      title,
+      description,
+      images: [blog.thumbnailFile],
+      type: 'article',
+      keywords: (
+        locale === 'fa' ? blog.metaKeywordsFa : blog.metaKeywordsEn
+      )
+        ?.split(',')
+        .map((k) => k.trim())
+        .filter(Boolean),
+    });
+  } catch {
+    return buildPageMetadata({
+      locale,
+      path: `blog/${slug}`,
+      title: tStore('loadError'),
+      description: '',
+      noIndex: true,
+    });
   }
 }
 
-export default async function Page(props: {
-  params: Promise<{ slug: string; locale: string }>;
-}) {
-  // Await کردن params
-  const { slug, locale } = await props.params;
-  let blog: IBlog | null = null;
-  try {
-    blog = await getBlogBySlug({ params: { slug } });
-  } catch (error) {
-    notFound();
-  }
-  if (!blog) {
-    notFound();
-  }
-  return (
-    <>
-      <Head>
-        <title>{blog.titleFa}</title>
-        <meta
-          name="description"
-          content={
-            locale == "fa" ? blog.metaDescriptionFa : blog.metaDescriptionEn
-          }
-        />
-        <meta
-          name="keywords"
-          content={locale == "fa" ? blog.metaKeywordsFa : blog.metaKeywordsEn}
-        />
+export default async function Page({ params }: Props) {
+  const { slug, locale } = await params;
+  const blog = await getBlogBySlug({ params: { slug } });
 
-        {/* OpenGraph برای Social */}
-        <meta property="og:description" content={blog.metaDescriptionFa} />
-      </Head>
-      <article className="pt-24 min-h-screen">
-        <HeroSection blog={blog}  locale={locale} />
-        <BlogContent blog={blog}  locale={locale}/>
-        <RelatedArticles />
-      </article>
-    </>
+  const title =
+    locale === 'fa'
+      ? blog.titleFa || blog.titleEn
+      : blog.titleEn || blog.titleFa;
+
+  const articleLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    image: blog.thumbnailFile ? [blog.thumbnailFile] : undefined,
+    datePublished: blog.createdAt,
+    dateModified: blog.updatedAt || blog.createdAt,
+    inLanguage: locale,
+    url: absoluteUrl(locale, `blog/${slug}`),
+    author: blog.authorName
+      ? { '@type': 'Person', name: blog.authorName }
+      : undefined,
+  };
+
+  return (
+    <article className="store-page !pt-6">
+      <JsonLd data={articleLd} />
+      <HeroSection blog={blog} locale={locale} />
+      <BlogContent blog={blog} locale={locale} />
+      <RelatedArticles />
+    </article>
   );
 }

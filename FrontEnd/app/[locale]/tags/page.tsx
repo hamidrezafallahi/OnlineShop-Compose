@@ -1,10 +1,12 @@
-import React from 'react';
-
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import CustomPagination from '@components/molecules/pagination';
+import EmptyState from '@components/molecules/storefront/EmptyState';
+import PageHeader from '@components/molecules/storefront/PageHeader';
 import TagCard from '@components/molecules/tagCard';
 import { getAll } from '@lib/getAll';
+import { buildPageMetadata } from '@lib/seo';
 import { IProductTag } from '@models/tag';
 
 type Props = {
@@ -12,54 +14,63 @@ type Props = {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale == "fa" ? "لیست تگ ها" : "Tag list",
-    description:
-      locale == "fa" ? "همه تگ ها را اینجا ببینید" : "see all tags here",
-  };
+  const t = await getTranslations({ locale, namespace: 'tagsPage' });
+
+  return buildPageMetadata({
+    locale,
+    path: 'tags',
+    title: t('title'),
+    description: t('description'),
+  });
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Page({ params, searchParams }: Props) {
+  const { locale } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const PageNumber = parseInt((resolvedSearchParams?.page as string) ?? "1");
-  const PageRecordCount = 10;
+  const t = await getTranslations({ locale, namespace: 'tagsPage' });
+  const pageNumber = parseInt((resolvedSearchParams?.page as string) ?? '1');
+  const pageRecordCount = 24;
 
-  const response = await getAll<IProductTag>("ProductTag", {
-    page: PageNumber,
-    pageSize: PageRecordCount,
+  const response = await getAll<IProductTag>('ProductTag', {
+    page: pageNumber,
+    pageSize: pageRecordCount,
     byConfig: false,
   });
 
   const tags: IProductTag[] = response?.data?.records ?? [];
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-7xl">
-      <h1 className="mb-8 font-bold text-3xl text-center">تمام تگ ها</h1>
+    <article className="store-page !pt-6">
+      <PageHeader
+        title={t('title')}
+        description={t('description')}
+        align="center"
+      />
 
       {tags.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-gray-500">تگی یافت نشد.</p>
-        </div>
+        <EmptyState title={t('empty')} description={t('emptyHint')} />
       ) : (
-        <div className="flex flex-wrap justify-start items-center gap-4">
-          {tags.map((tag, index) => (
-            <TagCard key={index} tag={{ id: tag.id, name: tag.tagName }} />
+        <div className="store-panel flex flex-wrap gap-3 p-5 md:p-6">
+          {tags.map((tag) => (
+            <TagCard
+              key={tag.id}
+              tag={{ id: tag.id, name: tag.tagName }}
+            />
           ))}
         </div>
       )}
-      <CustomPagination
-        pageSize={PageRecordCount}
-        total={response?.data.totalCount || 0}
-        current={PageNumber}
-      />
-    </div>
+
+      <div className="flex justify-center">
+        <CustomPagination
+          pageSize={pageRecordCount}
+          total={response?.data.totalCount || 0}
+          current={pageNumber}
+        />
+      </div>
+    </article>
   );
 }

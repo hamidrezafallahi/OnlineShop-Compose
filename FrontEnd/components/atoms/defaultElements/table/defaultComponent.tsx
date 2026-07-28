@@ -40,9 +40,10 @@ export default function DefaultComponent({ id, isDefault }: IProps) {
       <input type="hidden" name="isDefault" value={String(isDefault)} />
       
       <Button 
-        className='bg-white' 
+        className='admin-icon-btn !bg-[var(--admin-surface-elevated)] !p-0 !w-9 !h-9' 
         type='submit' 
         disabled={isPending}
+        aria-label="default"
       >
         {isPending ? (
           '...'

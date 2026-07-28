@@ -1,9 +1,7 @@
 import type { MetadataRoute } from 'next';
 
-import {
-  serverApiBaseUrl,
-  siteBaseUrl,
-} from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
+import { absoluteUrl, DEFAULT_LOCALE } from '@lib/seo';
 
 type ChangeFreq =
   | 'always'
@@ -18,46 +16,50 @@ interface SlugItem {
   slug: string;
 }
 
-function buildUrl(path: string) {
-  return path ? `${siteBaseUrl}/${path}` : siteBaseUrl;
-}
-
 function buildEntry(
   path: string,
   priority: number,
   changeFrequency: ChangeFreq
 ): MetadataRoute.Sitemap[number] {
   return {
-    url: buildUrl(path),
+    url: absoluteUrl(DEFAULT_LOCALE, path),
     lastModified: new Date(),
     changeFrequency,
     priority,
     alternates: {
       languages: {
-        en: buildUrl(`en/${path}`),
-        fa: buildUrl(`fa/${path}`),
-        'x-default': buildUrl(`en/${path}`),
+        en: absoluteUrl('en', path),
+        fa: absoluteUrl('fa', path),
+        'x-default': absoluteUrl(DEFAULT_LOCALE, path),
       },
     },
   };
 }
 
-async function fetchSlugs(
-  endpoint: string
-): Promise<SlugItem[]> {
-  const res = await fetch(
-    `${serverApiBaseUrl}/${endpoint}`,
-    {
+async function fetchSlugs(endpoint: string): Promise<SlugItem[]> {
+  try {
+    const res = await fetch(`${serverApiBaseUrl}/${endpoint}`, {
       cache: 'no-store',
-    }
-  );
+    });
 
-  if (!res.ok) {
-    console.error(`Failed to fetch ${endpoint}`);
+    if (!res.ok) {
+      console.error(`Failed to fetch ${endpoint}`);
+      return [];
+    }
+
+    const json = await res.json();
+    const data = Array.isArray(json) ? json : json?.data ?? [];
+    if (!Array.isArray(data)) return [];
+
+    return data
+      .map((item: { slug?: string; id?: string | number }) => ({
+        slug: String(item.slug ?? item.id ?? ''),
+      }))
+      .filter((item: SlugItem) => Boolean(item.slug));
+  } catch (error) {
+    console.error(`Sitemap fetch error (${endpoint}):`, error);
     return [];
   }
-
-  return res.json();
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -72,30 +74,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
 
   return [
-    buildEntry('', 1.0, 'monthly'),
-    buildEntry('products', 0.9, 'weekly'),
-    buildEntry('blogs', 0.9, 'weekly'),
-    buildEntry('brands', 0.9, 'weekly'),
-    buildEntry('categories', 0.9, 'weekly'),
-    buildEntry('suppliers', 0.9, 'weekly'),
-    buildEntry('tags', 0.9, 'weekly'),
+    buildEntry('', 1.0, 'weekly'),
+    buildEntry('products', 0.9, 'daily'),
+    buildEntry('blog', 0.9, 'weekly'),
+    buildEntry('brands', 0.85, 'weekly'),
+    buildEntry('categories', 0.85, 'weekly'),
+    buildEntry('suppliers', 0.8, 'weekly'),
+    buildEntry('tags', 0.7, 'weekly'),
+    buildEntry('discounts', 0.8, 'daily'),
+    buildEntry('register', 0.3, 'monthly'),
     ...products.map((item) =>
-      buildEntry(`products/${item.slug}`, 0.7, 'monthly')
+      buildEntry(`products/${item.slug}`, 0.7, 'weekly')
     ),
-    ...blogs.map((item) =>
-      buildEntry(`blogs/${item.slug}`, 0.7, 'monthly')
-    ),
+    ...blogs.map((item) => buildEntry(`blog/${item.slug}`, 0.65, 'monthly')),
     ...brands.map((item) =>
-      buildEntry(`brands/${item.slug}`, 0.7, 'monthly')
+      buildEntry(`brands/${item.slug}`, 0.65, 'monthly')
     ),
     ...categories.map((item) =>
-      buildEntry(`categories/${item.slug}`, 0.7, 'monthly')
+      buildEntry(`categories/${item.slug}`, 0.65, 'monthly')
     ),
     ...suppliers.map((item) =>
-      buildEntry(`suppliers/${item.slug}`, 0.7, 'monthly')
+      buildEntry(`suppliers/${item.slug}`, 0.6, 'monthly')
     ),
-    ...tags.map((item) =>
-      buildEntry(`tags/${item.slug}`, 0.7, 'monthly')
-    ),
+    ...tags.map((item) => buildEntry(`tags/${item.slug}`, 0.55, 'monthly')),
   ];
 }

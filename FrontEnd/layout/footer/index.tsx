@@ -1,6 +1,8 @@
-"use client";
+'use client';
+
 import React from 'react';
 
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 import {
@@ -12,77 +14,68 @@ import {
   YouTubeIcon,
 } from '@components/atoms/iconComponents';
 
-type FooterLink = {
-  name: string;
-  href: string;
-};
+const SOCIAL = [
+  { icon: <FacebookIcon />, href: 'https://facebook.com', label: 'Facebook' },
+  { icon: <InstagramIcon />, href: 'https://instagram.com', label: 'Instagram' },
+  { icon: <TwitterIcon />, href: 'https://twitter.com', label: 'Twitter' },
+  { icon: <YouTubeIcon />, href: 'https://youtube.com', label: 'YouTube' },
+  { icon: <TelegramIcon />, href: 'https://t.me', label: 'Telegram' },
+  { icon: <WhatsAppIcon />, href: 'https://wa.me', label: 'WhatsApp' },
+] as const;
 
-type FooterColumn = {
-  title: string;
-  links: FooterLink[];
-};
-
-const footerColumns: FooterColumn[] = [
+const COLUMNS = [
   {
-    title: "درباره ما",
+    titleKey: 'shop' as const,
     links: [
-      { name: "داستان ما", href: "/about" },
-      { name: "تماس با ما", href: "/contact" },
-      { name: "فرصت‌های شغلی", href: "/careers" },
+      { href: 'products', labelKey: 'products' as const },
+      { href: 'categories', labelKey: 'categories' as const },
+      { href: 'brands', labelKey: 'brands' as const },
+      { href: 'discounts', labelKey: 'discounts' as const },
     ],
   },
   {
-    title: "راهنمای خرید",
+    titleKey: 'discover' as const,
     links: [
-      { name: "شیوه پرداخت", href: "/payment" },
-      { name: "ارسال و تحویل", href: "/shipping" },
-      { name: "سیاست بازگشت", href: "/return-policy" },
+      { href: 'blog', labelKey: 'blog' as const },
+      { href: 'suppliers', labelKey: 'suppliers' as const },
+      { href: 'tags', labelKey: 'tags' as const },
     ],
   },
   {
-    title: "دسته‌بندی‌ها",
+    titleKey: 'account' as const,
     links: [
-      { name: "عطر زنانه", href: "/categories/women-perfume" },
-      { name: "عطر مردانه", href: "/categories/men-perfume" },
-      { name: "ادکلن‌های لوکس", href: "/categories/luxury" },
+      { href: 'register', labelKey: 'register' as const },
+      { href: 'shoppingCart', labelKey: 'cart' as const },
+      { href: 'order', labelKey: 'orders' as const },
     ],
   },
-  {
-    title: "پشتیبانی",
-    links: [
-      { name: "سوالات متداول", href: "/faq" },
-      { name: "پشتیبانی آنلاین", href: "/support" },
-      { name: "نظرات مشتریان", href: "/testimonials" },
-    ],
-  },
-];
-
-const socialLinks = [
-  { icon: <FacebookIcon />, href: "https://facebook.com" },
-  { icon: <InstagramIcon />, href: "https://instagram.com" },
-  { icon: <TwitterIcon />, href: "https://twitter.com" },
-  { icon: <YouTubeIcon />, href: "https://youtube.com" },
-  { icon: <TelegramIcon />, href: "https://telegram.com" },
-  { icon: <WhatsAppIcon />, href: "https://whatsapp.com" },
-];
+] as const;
 
 const Footer: React.FC = () => {
+  const locale = useLocale();
+  const t = useTranslations('footer');
+  const tBrand = useTranslations('brand');
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="bg-gray-900 pt-12 text-gray-300">
-      <div className="gap-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 mx-auto px-4 container">
-        {/* لوگو و توضیح کوتاه */}
-        <div className="sm:col-span-2 lg:col-span-1">
-          <h2 className="mb-4 font-bold text-white text-2xl">PerfumeStore</h2>
-          <p className="text-gray-400 text-sm">
-            بهترین عطرها با ضمانت اصالت و ارسال سریع. همراه با خدمات مشتریان حرفه‌ای.
+    <footer className="store-footer" role="contentinfo">
+      <div className="gap-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="sm:col-span-2 lg:col-span-2">
+          <h2 className="mb-3 font-bold text-white text-xl sm:text-2xl">
+            {tBrand('name')}
+          </h2>
+          <p className="max-w-md text-sm leading-relaxed opacity-85">
+            {t('tagline')}
           </p>
-          <div className="flex gap-4 mt-4">
-            {socialLinks.map((s, i) => (
+          <div className="flex flex-wrap gap-3 mt-5">
+            {SOCIAL.map((s) => (
               <Link
-                key={i}
+                key={s.label}
                 href={s.href}
                 target="_blank"
-                className="hover:text-white transition"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="inline-flex justify-center items-center opacity-80 hover:opacity-100 rounded-lg w-9 h-9 transition"
               >
                 {s.icon}
               </Link>
@@ -90,18 +83,19 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* ستون لینک‌ها */}
-        {footerColumns.map((col, i) => (
-          <div key={i}>
-            <h3 className="mb-4 font-semibold text-white">{col.title}</h3>
-            <ul className="flex flex-col gap-2 text-sm">
-              {col.links.map((link, j) => (
-                <li key={j}>
+        {COLUMNS.map((col) => (
+          <div key={col.titleKey}>
+            <h3 className="mb-4 font-semibold text-white text-sm tracking-wide">
+              {t(`columns.${col.titleKey}`)}
+            </h3>
+            <ul className="flex flex-col gap-2.5 text-sm">
+              {col.links.map((link) => (
+                <li key={link.href}>
                   <Link
-                    href={link.href}
-                    className="hover:text-white transition"
+                    href={`/${locale}/${link.href}`}
+                    className="opacity-80 hover:opacity-100 transition"
                   >
-                    {link.name}
+                    {t(`links.${link.labelKey}`)}
                   </Link>
                 </li>
               ))}
@@ -110,9 +104,8 @@ const Footer: React.FC = () => {
         ))}
       </div>
 
-      {/* کپی‌رایت */}
-      <div className="mt-12 pt-6 border-gray-800 border-t text-gray-500 text-sm text-center">
-        © {new Date().getFullYear()} PerfumeStore. تمامی حقوق محفوظ است.
+      <div className="mx-auto mt-12 pt-6 px-4 max-w-7xl border-white/10 border-t text-sm text-center opacity-70">
+        {t('copyright', { year, brand: tBrand('name') })}
       </div>
     </footer>
   );

@@ -1,8 +1,13 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import CustomPagination from '@components/molecules/pagination';
+import EmptyState from '@components/molecules/storefront/EmptyState';
+import EntityGrid from '@components/molecules/storefront/EntityGrid';
+import PageHeader from '@components/molecules/storefront/PageHeader';
 import SupplierCard from '@components/molecules/supplierCard';
 import { getAll } from '@lib/getAll';
+import { buildPageMetadata } from '@lib/seo';
 import { IUser } from '@models/user';
 
 type Props = {
@@ -10,45 +15,61 @@ type Props = {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale == "fa" ? "لیست تامین کنندگان" : "supplier list",
-    description:
-      locale == "fa" ? "همه تامین کنندگان را اینجا ببینید" : "see all suppliers here",
-  };
+  const t = await getTranslations({ locale, namespace: 'suppliersPage' });
+
+  return buildPageMetadata({
+    locale,
+    path: 'suppliers',
+    title: t('title'),
+    description: t('description'),
+  });
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Page({ params, searchParams }: Props) {
+  const { locale } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const PageNumber = parseInt((resolvedSearchParams?.Page as string) ?? "1");
-  const PageSize = 10;
+  const t = await getTranslations({ locale, namespace: 'suppliersPage' });
+  const pageNumber = parseInt(
+    ((resolvedSearchParams?.page ?? resolvedSearchParams?.Page) as string) ??
+      '1'
+  );
+  const pageSize = 12;
 
-  const response = await getAll<IUser>("productOffers/suppliers", {
-    page: PageNumber,
-    pageSize: PageSize,
+  const response = await getAll<IUser>('productOffers/suppliers', {
+    page: pageNumber,
+    pageSize,
     byConfig: false,
   });
 
   const suppliers: IUser[] = response?.data.records ?? [];
   const totalCount = response?.data.totalCount ?? 0;
-  const pageNumber = response?.data.pageNumber ?? 0;
+  const currentPage = response?.data.pageNumber ?? pageNumber;
 
   return (
-    <article className="flex flex-col gap-6 p-6 pt-24">
-      <section className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {suppliers.map((s, idx) => (
-          <SupplierCard supplier={s} key={idx} />
-        ))}
-      </section>
+    <article className="store-page !pt-6">
+      <PageHeader title={t('title')} description={t('description')} />
 
-      <CustomPagination pageSize={PageSize} total={totalCount} current={pageNumber} />
+      {suppliers.length === 0 ? (
+        <EmptyState title={t('empty')} description={t('emptyHint')} />
+      ) : (
+        <EntityGrid cols="cards">
+          {suppliers.map((s) => (
+            <SupplierCard supplier={s} key={s.id} />
+          ))}
+        </EntityGrid>
+      )}
+
+      <div className="flex justify-center">
+        <CustomPagination
+          pageSize={pageSize}
+          total={totalCount}
+          current={currentPage}
+        />
+      </div>
     </article>
   );
 }

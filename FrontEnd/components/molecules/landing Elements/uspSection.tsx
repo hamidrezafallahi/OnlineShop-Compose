@@ -1,5 +1,8 @@
-"use client";
+'use client';
+
 import React from 'react';
+
+import { useTranslations } from 'next-intl';
 
 import {
   BadgeCheckIcon,
@@ -9,67 +12,46 @@ import {
   TruckIcon,
 } from '@components/atoms/iconComponents';
 
-type USP = {
-  id: number;
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-};
-
-const uspItems: USP[] = [
-  {
-    id: 1,
-    icon: <TruckIcon />,
-    title: "ارسال رایگان",
-    description: "ارسال رایگان برای سفارش‌های بالای ۵۰۰ هزار تومان",
-  },
-  {
-    id: 2,
-    icon: <PhoneIcon />,
-    title: "پشتیبانی ۲۴ ساعته",
-    description: "در هر ساعت از شبانه‌روز پاسخگوی شما هستیم",
-  },
-  {
-    id: 3,
-    icon: <CashIcon />,
-    title: "پرداخت در محل",
-    description: "امکان پرداخت وجه هنگام تحویل سفارش",
-  },
-  {
-    id: 4,
-    icon: <ShieldCheckIcon />,
-    title: "گارانتی محصولات",
-    description: "تمامی محصولات دارای ضمانت اصالت و سلامت فیزیکی هستند",
-  },
-  {
-    id: 5,
-    icon: <BadgeCheckIcon />,
-    title: "اصالت کالا",
-    description: "فقط عطرهای اورجینال و دارای مجوز عرضه می‌شوند",
-  },
-];
+const USP_KEYS = [
+  { id: 'shipping', icon: <TruckIcon /> },
+  { id: 'support', icon: <PhoneIcon /> },
+  { id: 'cod', icon: <CashIcon /> },
+  { id: 'warranty', icon: <ShieldCheckIcon /> },
+  { id: 'authenticity', icon: <BadgeCheckIcon /> },
+] as const;
 
 const USPSection: React.FC = () => {
-  return (
-    <section className="bg-gray-50 py-16">
-      <div className="mx-auto px-4 text-center container">
-        <h2 className="mb-10 font-bold text-2xl sm:text-3xl">
-          مزیت‌های خرید از فروشگاه ما
-        </h2>
+  const t = useTranslations('usp');
 
-        <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
-          {uspItems.map((usp) => (
-            <div
-              key={usp.id}
-              className="flex flex-col items-center bg-white shadow-sm hover:shadow-md p-6 rounded-2xl transition"
-            >
-              <div className="mb-3">{usp.icon}</div>
-              <h3 className="mb-1 font-semibold text-lg">{usp.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                {usp.description}
-              </p>
-            </div>
-          ))}
+  return (
+    <section className="store-section" aria-labelledby="usp-title">
+      <div className="mx-auto px-4 sm:px-6 max-w-7xl text-center">
+        <div className="store-panel px-4 sm:px-8 py-10 md:py-12">
+          <h2 id="usp-title" className="store-section-title !mb-8">
+            {t('sectionTitle')}
+          </h2>
+
+          <div className="gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+            {USP_KEYS.map((usp) => (
+              <article
+                key={usp.id}
+                className="flex flex-col items-center bg-[var(--store-surface-muted)] hover:bg-[color-mix(in_srgb,var(--primary-color)_6%,white)] p-5 rounded-2xl border border-[var(--store-border)] transition"
+              >
+                <div
+                  className="mb-3 text-[var(--primary-color)]"
+                  aria-hidden
+                >
+                  {usp.icon}
+                </div>
+                <h3 className="mb-1 font-semibold text-[var(--store-text)] text-base">
+                  {t(`items.${usp.id}.title`)}
+                </h3>
+                <p className="text-[var(--store-text-muted)] text-sm leading-relaxed">
+                  {t(`items.${usp.id}.description`)}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

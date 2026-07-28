@@ -79,18 +79,25 @@ export const Tree: React.FC<TreeProps> = ({
       <div key={node.id}>
         <div
           className={`
-            w-full flex items-center justify-between border rounded-md px-1 py-0 cursor-pointer bg-white h-10
-            transition-colors duration-150 
-            ${isSelected ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100  "}
+            w-full flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between
+            rounded-xl px-2 py-2 min-h-11 transition-colors duration-150 cursor-pointer
+            ${isSelected
+              ? "bg-[var(--admin-active)] text-[var(--primary-color)]"
+              : "bg-[var(--admin-surface-elevated)] hover:bg-[var(--admin-hover)] text-[var(--admin-text)]"}
           `}
-          style={{ paddingRight: `${locale == "fa" ? level * 20 + 8:2}px`,paddingLeft: `${locale == "fa" ? 2:level * 20 + 8}px` }}
+          style={{
+            paddingInlineStart: `${level * 12 + 8}px`,
+            paddingInlineEnd: '8px',
+          }}
           onClick={() => {
             if (clickable) toggleSelect(node.id);
             else if (hasChildren) toggleExpand(node.id);
           }}
         >
-          <div className="flex flex-1 justify-start items-center gap-2 px-2 w-full h-full text-sm">
-            <div>{locale == "fa" ? node.persianName : node.englishName}</div>
+          <div className="flex flex-1 justify-start items-center gap-2 min-w-0 text-sm">
+            <div className="truncate">
+              {locale == "fa" ? node.persianName : node.englishName}
+            </div>
             {hasChildren ? (
               <button
                 type="button"
@@ -99,18 +106,24 @@ export const Tree: React.FC<TreeProps> = ({
                   e.preventDefault();
                   toggleExpand(node.id);
                 }}
-                className="text-gray-500 hover:text-gray-700 transition"
+                className="shrink-0 text-[var(--admin-text-muted)] hover:text-[var(--admin-text)] transition"
               >
                 {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
               </button>
-            ) : (
-              <div className="w-4" />
-            )}
+            ) : null}
           </div>
           <div
-            className={`flex h-full !w-30 overflow-hidden items-center gap-2`}
+            className="flex items-center gap-2 shrink-0 overflow-x-auto"
+            onClick={(e) => e.stopPropagation()}
           >
-            <TreeActions node={node} active={isSelected} endPoint={endPoint} onClick={(e)=>{onClick?.(e)}}/>
+            <TreeActions
+              node={node}
+              active={isSelected}
+              endPoint={endPoint}
+              onClick={(e) => {
+                onClick?.(e);
+              }}
+            />
           </div>
         </div>
 
@@ -120,8 +133,7 @@ export const Tree: React.FC<TreeProps> = ({
               isExpanded ? "max-h-[1000px]" : "max-h-0"
             }`}
             style={{
-              paddingRight: `${level + 1 * 20 + 8}px`,
-              borderBottom: `${level + 1}px solid gray`,
+              borderBottom: '1px solid var(--admin-border)',
             }}
           >
             {node.subCategories!.map((child) => renderNode(child, level + 1))}
@@ -132,7 +144,7 @@ export const Tree: React.FC<TreeProps> = ({
   };
 
   return (
-    <div className="bg-white shadow-sm border border-gray-200 rounded-lg w-full sm:w-fit sm:min-w-60">
+    <div className="flex flex-col gap-1.5 bg-[var(--admin-surface-muted)] border border-[var(--admin-border)] rounded-xl p-2 w-full min-w-0 overflow-x-auto">
       {data.map((cat) => renderNode(cat))}
     </div>
   );

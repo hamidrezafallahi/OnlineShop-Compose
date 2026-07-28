@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
 import {
@@ -9,66 +9,112 @@ import {
 } from '@components/atoms/defaultElements/table';
 import CustomPagination from '@components/molecules/pagination';
 
-function AdminList({ ...props }: any) {
-  try {
-  const { list, entity } = props;
+type AdminListProps = {
+  list?: {
+    records?: Record<string, unknown>[];
+    actionsJson?: string;
+    columnsJson?: string;
+    totalCount?: number;
+  };
+  entity: string;
+};
+
+function AdminList({ list, entity }: AdminListProps) {
+  const t = useTranslations();
+  const route = useRouter();
+  const locale = useLocale();
+
   if (!list?.columnsJson || !list?.actionsJson) {
     return (
-      <div className="p-4 text-red-500">
-        بارگذاری لیست ادمین ناموفق بود. اتصال API را بررسی کنید.
+      <div className="admin-page">
+        <div className="admin-panel admin-empty">
+          <p className="admin-empty-title">{t('admin.listLoadError')}</p>
+        </div>
       </div>
     );
   }
-  const { records, actionsJson, columnsJson, totalCount } = list;
-  const route = useRouter();
-  const locale = useLocale();
-  const columns = JSON.parse(columnsJson);
-  const actions = JSON.parse(actionsJson);
-  const optionalColumns: ColumnDef<Record<string, any>>[] = [
+
+  let columns: ColumnDef<Record<string, unknown>>[] = [];
+  let actions: string[] = [];
+
+  try {
+    columns = JSON.parse(list.columnsJson);
+    actions = JSON.parse(list.actionsJson);
+  } catch {
+    return (
+      <div className="admin-page">
+        <div className="admin-panel admin-empty">
+          <p className="admin-empty-title">{t('admin.listLoadError')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { records = [], totalCount = 0 } = list;
+  const optionalColumns: ColumnDef<Record<string, unknown>>[] = [
     ...columns,
     {
-      Header: "عملیات",
-      Accessor: "options",
-      Type: "action",
+      Header: t('general.actions'),
+      Accessor: 'options',
+      Type: 'action',
     },
   ];
-console.log(columns)
-  // اضافه کردن فیلد options به هر رکورد
-  const optionalRecords = records.map((r: any) => ({
+
+  const optionalRecords = records.map((r) => ({
     ...r,
     options: actions,
   }));
+
   const handleChangePage = (page: number, pageSize: number) => {
     route.push(
       `/${locale}/admin/${entity}?ByConfig=true&page=${page}&pageSize=${pageSize}`,
     );
   };
-  const recordHeight = 60;
-  const deviceHeight = window.innerHeight;
-  const recordsPerPage = Math.floor((deviceHeight - 140) / recordHeight);
+
+  const recordHeight = 64;
+  const deviceHeight =
+    typeof window !== 'undefined' ? window.innerHeight : 800;
+  const chromeOffset =
+    typeof window !== 'undefined' && window.innerWidth < 1024 ? 280 : 220;
+  const recordsPerPage = Math.max(
+    5,
+    Math.floor((deviceHeight - chromeOffset) / recordHeight),
+  );
+
   return (
-    <>
-      <div className="flex flex-col items-end gap-2">
+    <div className="admin-page">
+      <header className="admin-page-header">
+        <div>
+          <h1 className="admin-page-title">
+            {t('admin.listTitle', { entity })}
+          </h1>
+          <p className="admin-page-subtitle">{t('admin.listSubtitle')}</p>
+        </div>
+        <span className="admin-badge admin-badge-success">
+          {t('admin.totalRecords', { count: totalCount })}
+        </span>
+      </header>
+
+      <div className="admin-panel overflow-hidden">
         <DataTable
-        actions={actions}
+          actions={actions}
           columns={optionalColumns}
-          data={optionalRecords}
+          data={optionalRecords as unknown as Array<Record<string, unknown> & { id: string | number }>}
           entity={entity}
           pageSize={recordsPerPage}
         />
-        <CustomPagination
-          total={totalCount}
-          showSizeChanger={true}
-          showTitle={true}
-          pageSize={recordsPerPage}
-          onChange={handleChangePage}
-        />
+        <div className="admin-pagination-bar">
+          <CustomPagination
+            total={totalCount}
+            showSizeChanger={true}
+            showTitle={true}
+            pageSize={recordsPerPage}
+            onChange={handleChangePage}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
-} catch (error) {
-   console.log(error)
- }
 }
+
 export default AdminList;
-// [{"Header":"\u0634\u0646\u0627\u0633\u0647","Accessor":"id","Type":"number","Options":["Active","Edit", "Delete"]},{"Header":"\u0639\u0646\u0648\u0627\u0646 \u0641\u0627\u0631\u0633\u06CC","Accessor":"titleFa","Type":"text","Options":["Active","Edit", "Delete"]},{"Header":"\u0639\u0646\u0648\u0627\u0646 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC","Accessor":"titleEn","Type":"text","Options":["Active","Edit", "Delete"]},{"Header":"\u0645\u062D\u062A\u0648\u0627\u06CC \u0641\u0627\u0631\u0633\u06CC","Accessor":"contentFa","Type":"textarea","Options":["Active","Edit", "Delete"]},{"Header":"\u0645\u062D\u062A\u0648\u0627\u06CC \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC","Accessor":"contentEn","Type":"textarea","Options":["Active","Edit", "Delete"]},{"Header":"\u0627\u0633\u0644\u0627\u06AF","Accessor":"slug","Type":"text","Options":["Active","Edit", "Delete"]},{"Header":"\u062A\u0635\u0648\u06CC\u0631 \u0634\u0627\u062E\u0635","Accessor":"thumbnailUrl","Type":"image","Options":["Active","Edit", "Delete"]},{"Header":"\u0634\u0646\u0627\u0633\u0647 \u0646\u0648\u06CC\u0633\u0646\u062F\u0647","Accessor":"authorId","Type":"number", "Options":["Active","Edit", "Delete"]}]

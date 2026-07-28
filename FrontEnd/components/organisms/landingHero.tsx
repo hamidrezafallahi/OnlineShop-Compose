@@ -1,54 +1,61 @@
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default async  function LandingHero( ) {
-  const locale = await getLocale()
-  return (
-    <section className="relative flex md:flex-row flex-col justify-between items-center bg-gradient-to-br from-gray-50 via-white to-gray-100 px-6 md:px-16 w-full min-h-[90vh] overflow-hidden">
-      {/* متن سمت چپ */}
-      <div className="z-10 flex flex-col justify-center items-start space-y-6 max-w-xl md:text-left text-center animate-fade-in-up">
-        <h1 className="font-extrabold text-gray-900 text-4xl md:text-6xl leading-tight">
-          عطر خاصت رو پیدا کن 💫
-        </h1>
-        <p className="text-gray-600 text-lg md:text-xl">
-          مجموعه‌ای از بهترین برندهای عطر با رایحه‌های ماندگار و اصیل برای هر
-          سلیقه.
-        </p>
-        <div className="flex sm:flex-row flex-col gap-4 mt-4">
-          <Link
-            href={`/${locale}/products`}
-            className="bg-black hover:bg-gray-800 px-8 py-3 rounded-full font-medium text-white text-lg transition-all duration-300"
-          >
-            مشاهده محصولات
-          </Link>
-          <Link
-            href={`/${locale}/discounts`}
-            className="hover:bg-black px-8 py-3 border border-black rounded-full font-medium text-black hover:text-white text-lg transition-all duration-300"
-          >
-            تخفیف‌های ویژه
-          </Link>
-        </div>
-      </div>
+export default async function LandingHero() {
+  const locale = await getLocale();
+  const t = await getTranslations('homePage');
 
-      {/* تصویر سمت راست */}
-      <div className="relative mt-10 md:mt-0 p-4 animate-scale-in">
-        <div className="relative shadow-xl rounded-2xl w-[260px] md:w-[400px] h-[360px] md:h-[520px] overflow-hidden">
-          <Image
-            src="/images/landingPage/landing.png"
-            alt="Luxury Perfume"
-            fill
-            className="object-cover hover:scale-105 transition-transform duration-700"
-            priority
+  return (
+    <section className="store-hero" aria-labelledby="home-hero-title">
+      <div className="store-hero-inner">
+        <div className="z-10 flex flex-col items-center md:items-start gap-5 max-w-xl text-center md:text-start">
+          <h1
+            id="home-hero-title"
+            className="font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight text-white"
+          >
+            {t('title')}
+          </h1>
+          <p className="max-w-lg text-white/85 text-base sm:text-lg md:text-xl leading-relaxed">
+            {t('subtitle')}
+          </p>
+          <div className="flex sm:flex-row flex-col gap-3 mt-2 w-full sm:w-auto">
+            <Link
+              href={`/${locale}/products`}
+              className="store-btn store-btn-primary px-7 py-3 text-base"
+            >
+              {t('ctaProducts')}
+            </Link>
+            <Link
+              href={`/${locale}/discounts`}
+              className="store-btn store-btn-ghost px-7 py-3 text-base"
+            >
+              {t('ctaDiscounts')}
+            </Link>
+          </div>
+        </div>
+
+        <div className="relative shrink-0">
+          <div className="relative shadow-2xl rounded-2xl w-[240px] sm:w-[280px] md:w-[380px] h-[320px] sm:h-[380px] md:h-[480px] overflow-hidden ring-1 ring-white/20">
+            <Image
+              src="/images/landingPage/landing.png"
+              alt={t('heroImageAlt')}
+              fill
+              className="object-cover hover:scale-105 transition-transform duration-700"
+              priority
+              sizes="(max-width: 768px) 280px, 380px"
+            />
+          </div>
+          <div
+            className="-top-8 -end-8 absolute opacity-50 blur-3xl rounded-full w-36 h-36"
+            style={{
+              background:
+                'color-mix(in srgb, var(--secondary-color) 70%, transparent)',
+            }}
+            aria-hidden
           />
         </div>
-
-        {/* تزئینی - دایره گرادینتی */}
-        <div className="-top-10 -right-10 absolute bg-gradient-to-tr from-pink-200 to-yellow-100 opacity-60 blur-3xl rounded-full w-40 h-40"></div>
       </div>
-
-      {/* گرادینت تزئینی پس‌زمینه */}
-      <div className="bottom-0 left-0 absolute bg-gradient-to-tr from-purple-200 to-pink-100 opacity-40 blur-3xl rounded-full w-72 h-72"></div>
     </section>
   );
 }

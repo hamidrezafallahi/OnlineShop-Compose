@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 export interface FormGeneratorProps {
   entityFormConfig: IFormConfig | null;
   defaultValues?: Record<string, any>;
+  embedded?: boolean;
 }
 export interface IFormConfig{
     endPoint: string;
@@ -46,4 +47,5 @@ export interface FormField {
   icon: ReactNode;
   isEdit: boolean;
   resetField: () => void;
+  backHref?: string;
 }

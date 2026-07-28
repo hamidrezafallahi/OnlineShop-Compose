@@ -7,7 +7,7 @@ import {
   getFormConfigByEntityName,
 } from '@lib/getAll';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default async function Page({
   searchParams,
@@ -15,27 +15,35 @@ export default async function Page({
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  
-  const page = parseInt((resolvedSearchParams?.page as string) ?? "1");
+
+  const page = parseInt((resolvedSearchParams?.page as string) ?? '1');
   const pageSize = parseInt(
-    (resolvedSearchParams?.pageSize as string) ?? "10000"
+    (resolvedSearchParams?.pageSize as string) ?? '10000',
   );
 
-  const list = await getAll<ITreeContext>("Categories", {
+  const list = await getAll<ITreeContext>('Categories', {
     page,
     pageSize,
     byConfig: true,
     onlyActives: false,
   });
 
-  const res = await getFormConfigByEntityName("Categories");
-   return (
-    <div className="p-6">
-      <h1 className="mb-4 font-semibold text-lg">لیست دسته‌بندی‌ها</h1>
-      {res && <AdminCategoryTemplate
-        categories={list?.data.records ?? []}
-        entityFormConfig={res}
-      />}
-    </div>
+  const res = await getFormConfigByEntityName('Categories');
+
+  if (!res) {
+    return (
+      <div className="admin-page">
+        <div className="admin-panel admin-empty">
+          <p className="admin-empty-title">Form configuration not found</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <AdminCategoryTemplate
+      categories={list?.data.records ?? []}
+      entityFormConfig={res}
+    />
   );
 }

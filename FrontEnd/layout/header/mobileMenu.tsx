@@ -1,77 +1,103 @@
-"use client";
-import React, { useState } from 'react';
+'use client';
 
-import { useLocale } from 'next-intl';
+import React, { useEffect, useState } from 'react';
+
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 
-import {
-  CloseIcon,
-  MenuIcon,
-} from '@components/atoms/iconComponents';
+import { CloseIcon, MenuIcon } from '@components/atoms/iconComponents';
 import LangSwitcher from '@components/molecules/lang';
 import ThemeSwitcher from '@components/molecules/theme';
 
+const LINKS = [
+  { href: '', labelKey: 'home' as const },
+  { href: 'products', labelKey: 'products' as const },
+  { href: 'categories', labelKey: 'categories' as const },
+  { href: 'brands', labelKey: 'brands' as const },
+  { href: 'suppliers', labelKey: 'suppliers' as const },
+  { href: 'tags', labelKey: 'tags' as const },
+  { href: 'discounts', labelKey: 'discounts' as const },
+  { href: 'blog', labelKey: 'blogs' as const },
+  { href: 'shoppingCart', labelKey: 'shopping cart' as const },
+  { href: 'register', labelKey: 'register' as const },
+] as const;
+
 function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
-const locale = useLocale()
-  const toggleMenu = () => setIsOpen((prev) => !prev);
+  const locale = useLocale();
+  const t = useTranslations('header');
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <>
-      {/* دکمه منو */}
       <button
-        onClick={toggleMenu}
-        className="z-[80] relative bg-white/20 backdrop-blur-sm p-2 border rounded-md"
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="store-icon-btn"
+        aria-expanded={isOpen}
+        aria-controls="mobile-nav-drawer"
+        aria-label={t('openMenu')}
       >
         <MenuIcon />
       </button>
 
-      {/* بک‌گراند تار */}
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300 ${
-          isOpen ? "opacity-100 visible z-[60]" : "opacity-0 invisible z-0"
+        className={`fixed inset-0 bg-black/45 backdrop-blur-sm transition-all duration-300 ${
+          isOpen ? 'opacity-100 visible z-[60]' : 'opacity-0 invisible z-0'
         }`}
+        aria-hidden={!isOpen}
       />
 
-      {/* منوی کشویی */}
-      <div
+      <nav
+        id="mobile-nav-drawer"
+        aria-label={t('mainNav')}
         className={`
-          fixed top-20 bottom-0 w-full bg-white bg-opacity-90  shadow-2xl z-[70] p-6
+          fixed top-0 bottom-0 z-[70] flex flex-col gap-4 p-5 w-[min(100%,20rem)]
+          bg-[var(--store-surface-solid)] text-[var(--store-text)] shadow-2xl
           transition-transform duration-300 ease-in-out
-          h-[calc(100dvh-80px)]
           ${
             isOpen
-              ? "translate-x-0 left-0 rtl:translate-x-0 rtl:right-0  "
-              : " -translate-x-full left-0 rtl:translate-x-full rtl:right-0"
+              ? 'translate-x-0 start-0'
+              : '-translate-x-full rtl:translate-x-full start-0'
           }
         `}
       >
-        <div className="flex flex-col gap-6 font-medium text-primary text-lg">
-          <div className="flex justify-between w-full">
-            <button onClick={() => setIsOpen(false)}>
-              <CloseIcon />
-            </button>
-            <div className="flex gap-4">
-              <ThemeSwitcher />
-              <LangSwitcher />
-            </div>
+        <div className="flex justify-between items-center">
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="store-icon-btn"
+            aria-label={t('closeMenu')}
+          >
+            <CloseIcon />
+          </button>
+          <div className="flex gap-2">
+            <ThemeSwitcher />
+            <LangSwitcher />
           </div>
-
-          <Link href={`/${locale}`} className="hover:text-blue-500 transition">
-            صفحه اصلی
-          </Link>
-          <Link href={`/${locale}/products`} className="hover:text-blue-500 transition">
-            محصولات
-          </Link>
-          <Link href={`/${locale}/shoppingCart`} className="hover:text-blue-500 transition">
-            سبد خرید
-          </Link>
-          <Link href={`/${locale}/contactUs`} className="hover:text-blue-500 transition">
-            تماس با ما
-          </Link>
         </div>
-      </div>
+
+        <ul className="flex flex-col gap-1 font-medium text-base">
+          {LINKS.map((item) => (
+            <li key={item.href || 'home'}>
+              <Link
+                href={item.href ? `/${locale}/${item.href}` : `/${locale}`}
+                className="block px-3 py-2.5 rounded-xl hover:bg-[color-mix(in_srgb,var(--primary-color)_10%,transparent)] hover:text-[var(--primary-color)] transition"
+                onClick={() => setIsOpen(false)}
+              >
+                {t(item.labelKey)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </>
   );
 }

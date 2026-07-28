@@ -1,66 +1,74 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import CategoryCard from '@components/molecules/categoryCart';
 import CustomPagination from '@components/molecules/pagination';
+import EmptyState from '@components/molecules/storefront/EmptyState';
+import EntityGrid from '@components/molecules/storefront/EntityGrid';
+import PageHeader from '@components/molecules/storefront/PageHeader';
 import { getAll } from '@lib/getAll';
+import { buildPageMetadata } from '@lib/seo';
 import { ICategory } from '@models/category';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "لیست دسته بندی ها",
-    description: "همه دسته بندی ها را اینجا ببینید",
-  };
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'categoriesPage' });
+
+  return buildPageMetadata({
+    locale,
+    path: 'categories',
+    title: t('title'),
+    description: t('description'),
+  });
 }
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function Page({ params, searchParams }: Props) {
+  const { locale } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : {};
+  const t = await getTranslations({ locale, namespace: 'categoriesPage' });
 
   const page = parseInt(
     (Array.isArray(resolvedSearchParams?.page)
       ? resolvedSearchParams?.page[0]
-      : resolvedSearchParams?.page) ?? "1"
+      : resolvedSearchParams?.page) ?? '1'
   );
   const pageSize = parseInt(
     (Array.isArray(resolvedSearchParams?.pageSize)
       ? resolvedSearchParams?.pageSize[0]
-      : resolvedSearchParams?.pageSize) ?? "10"
+      : resolvedSearchParams?.pageSize) ?? '12'
   );
 
-  const response = await getAll<ICategory>("categories", {
-    page: page,
-    pageSize: pageSize,
+  const response = await getAll<ICategory>('categories', {
+    page,
+    pageSize,
     byConfig: false,
   });
 
   const categories = response?.data.records || [];
 
   return (
-    <article className="flex flex-col gap-6 p-6">
-      <header className="mb-4">
-        <h1 className="mb-2 font-bold text-3xl">دسته‌بندی‌ها</h1>
-        <p className="text-gray-100">تمام دسته‌بندی‌های وب سایت</p>
-      </header>
+    <article className="store-page !pt-6">
+      <PageHeader title={t('title')} description={t('description')} />
 
       {categories.length === 0 ? (
-        <div className="py-8 text-center">
-          <p className="text-gray-200">هیچ دسته‌بندی‌ای یافت نشد.</p>
-        </div>
+        <EmptyState title={t('empty')} description={t('emptyHint')} />
       ) : (
         <>
-          <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {categories.map((cat, index) => (
-              <CategoryCard key={index} category={cat} />
+          <EntityGrid cols="dense">
+            {categories.map((cat) => (
+              <CategoryCard key={cat.id} category={cat} />
             ))}
-          </div>
+          </EntityGrid>
 
           {response && response.data.totalPages > 1 && (
-            <div className="mt-8">
+            <div className="flex justify-center">
               <CustomPagination
                 pageSize={response.data.pageSize}
                 total={response.data.totalCount}

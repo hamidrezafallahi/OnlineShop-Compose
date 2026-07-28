@@ -1,9 +1,15 @@
-User-agent: Googlebot
-Disallow: /private/
-Allow: /private/preview/
-
 User-agent: *
+Allow: /
 Disallow: /api/
 Disallow: /admin/
+Disallow: /*/admin/
+Disallow: /checkout
+Disallow: /*/checkout
+Disallow: /shoppingCart
+Disallow: /*/shoppingCart
+Disallow: /payment
+Disallow: /*/payment
+Disallow: /order
+Disallow: /*/order
 
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://www.hamidrezafalahi.ir/sitemap.xml

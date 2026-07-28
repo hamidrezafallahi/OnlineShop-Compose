@@ -40,9 +40,10 @@ export default function ApproveComponent({ id, isApprove }: IProps) {
       <input type="hidden" name="isApproved" value={String(isApprove)} />
       
       <Button 
-        className='bg-white' 
+        className='admin-icon-btn !bg-[var(--admin-surface-elevated)] !p-0 !w-9 !h-9' 
         type='submit' 
         disabled={isPending}
+        aria-label="approve"
       >
         {isPending ? (
           '...'

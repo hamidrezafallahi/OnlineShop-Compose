@@ -1,11 +1,14 @@
-import React from 'react';
-
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import CustomPagination from '@components/molecules/pagination';
+import EmptyState from '@components/molecules/storefront/EmptyState';
+import EntityGrid from '@components/molecules/storefront/EntityGrid';
+import PageHeader from '@components/molecules/storefront/PageHeader';
 import { getAll } from '@lib/getAll';
+import { buildPageMetadata } from '@lib/seo';
 import { IBrand } from '@models/brand';
 
 type Props = {
@@ -13,78 +16,89 @@ type Props = {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale == "fa" ? "لیست برند ها" : "brands list",
-    description: locale == "fa" ? "همه برند ها را اینجا ببینید" : "see all brands here",
-  };
+  const t = await getTranslations({ locale, namespace: 'brandsPage' });
+
+  return buildPageMetadata({
+    locale,
+    path: 'brands',
+    title: t('title'),
+    description: t('description'),
+  });
 }
 
-export default async function Page({
-  searchParams,
-  params,
-}: Props) {
-  const resolvedParams = await params;
+export default async function Page({ searchParams, params }: Props) {
+  const { locale } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const t = await getTranslations({ locale, namespace: 'brandsPage' });
+  const tStore = await getTranslations({ locale, namespace: 'store' });
 
-  const { locale } = resolvedParams;
-  const page = parseInt((resolvedSearchParams?.page as string) ?? "1");
-  const PageRecordCount = 10;
+  const page = parseInt((resolvedSearchParams?.page as string) ?? '1');
+  const pageRecordCount = 12;
 
-  const response = await getAll<IBrand>("brands", {
-    page: page,
-    pageSize: PageRecordCount,
+  const response = await getAll<IBrand>('brands', {
+    page,
+    pageSize: pageRecordCount,
     byConfig: false,
   });
-  
+
   const brands: IBrand[] = response?.data?.records ?? [];
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-7xl">
-      <h1 className="mb-8 font-bold text-3xl text-center">تمام برندها</h1>
+    <article className="store-page !pt-6">
+      <PageHeader
+        title={t('title')}
+        description={t('description')}
+        align="center"
+      />
 
       {brands.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-gray-500">برندی یافت نشد.</p>
-        </div>
+        <EmptyState title={t('empty')} description={t('emptyHint')} />
       ) : (
-        <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <EntityGrid cols="dense">
           {brands.map((brand, index) => (
             <Link
               href={`/${locale}/brands/${brand.id}`}
-              key={index}
-              className="group relative bg-white shadow-sm hover:shadow-lg p-0 rounded-2xl overflow-hidden text-left transition-shadow"
+              key={brand.id}
+              className="store-card group"
             >
-              <div className="w-full h-40 md:h-44 overflow-hidden">
+              <div className="relative w-full h-40 md:h-44 overflow-hidden">
                 <Image
                   src={brand.logoFile}
                   alt={brand.name}
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform transform"
-                  loading={index < 5 ? "eager" : "lazy"}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading={index < 5 ? 'eager' : 'lazy'}
                   priority={index < 5}
+                  sizes="(max-width: 768px) 50vw, 20vw"
                 />
               </div>
-              <div className="p-4 sm:p-5">
-                <h3 className="font-medium">{brand.name}</h3>
-                <p className="text-gray-500 text-xs">{brand.description}</p>
-                <span className="inline-block mt-3 font-medium text-primary text-sm">
-                  مشاهده برند →
+              <div className="store-card-body">
+                <h2 className="font-semibold text-base">{brand.name}</h2>
+                {brand.description ? (
+                  <p className="line-clamp-2 text-[var(--store-text-muted)] text-xs">
+                    {brand.description}
+                  </p>
+                ) : null}
+                <span className="mt-1 font-medium text-[var(--primary-color)] text-sm">
+                  {tStore('viewBrand')}
                 </span>
               </div>
             </Link>
           ))}
-        </div>
+        </EntityGrid>
       )}
-      <CustomPagination
-        pageSize={PageRecordCount}
-        total={response?.data.totalCount || 0}
-        current={page}
-      />
-    </div>
+
+      <div className="flex justify-center">
+        <CustomPagination
+          pageSize={pageRecordCount}
+          total={response?.data.totalCount || 0}
+          current={page}
+        />
+      </div>
+    </article>
   );
 }

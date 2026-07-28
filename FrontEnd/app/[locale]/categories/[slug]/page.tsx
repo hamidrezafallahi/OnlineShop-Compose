@@ -1,20 +1,21 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import CategoryTemplate from '@components/templates/categoryTemplate';
 import { serverApiBaseUrl } from '@lib/api';
+import { buildPageMetadata } from '@lib/seo';
 
-// اجازه تولید صفحات dynamic جدید
 export const dynamicParams = true;
 
-// === 2. تولید Metadata ===
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string; locale?: string }>;
-}): Promise<Metadata> {
+type Props = {
+  params: Promise<{ slug: string; locale: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
+
   try {
-    const resolvedParams = await params;
-    const { slug, locale = 'fa' } = resolvedParams;
     const response = await fetch(`${serverApiBaseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
@@ -22,58 +23,55 @@ export async function generateMetadata({
     const category = result.data;
 
     if (!category) {
-      return {
-        title: locale === 'fa' ? 'دسته بندی' : 'category',
-        description: '',
-      };
+      return buildPageMetadata({
+        locale,
+        path: `categories/${slug}`,
+        title: tStore('notFound'),
+        description: tStore('notFoundHint'),
+        noIndex: true,
+      });
     }
-    const title = locale === 'fa' ? category.persianName : category.englishName;
-    const description =
-      locale === 'fa' ? category.categoryPersianDesc : category.categoryEnglishDesc;
-    const image = category.CategoryCover;
 
-    return {
+    const title =
+      locale === 'fa' ? category.persianName : category.englishName;
+    const description =
+      locale === 'fa'
+        ? category.categoryPersianDesc
+        : category.categoryEnglishDesc;
+
+    return buildPageMetadata({
+      locale,
+      path: `categories/${slug}`,
       title,
       description,
-      openGraph: {
-        title,
-        description,
-        images: image ? [image] : [],
-        locale: locale === 'fa' ? 'fa_IR' : 'en_US',
-      },
-    };
+      images: [category.CategoryCover || category.categoryCover],
+    });
   } catch {
-    return {
-      title: 'category',
-      description: '',
-    };
+    return buildPageMetadata({
+      locale,
+      path: `categories/${slug}`,
+      title: tStore('loadError'),
+      description: tStore('loadErrorHint'),
+      noIndex: true,
+    });
   }
 }
 
-// === 3. صفحه محصول ===
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ slug: string; locale: string }>;
-}) {
+export default async function Page({ params }: Props) {
+  const { slug, locale } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
+
   try {
-    const { slug, locale } = await params;
     const response = await fetch(`${serverApiBaseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
 
     if (response.status === 404) {
       return (
-        <div className="pt-24">
-          <div className="mx-auto px-4 py-20 max-w-7xl text-center">
-            <h1 className="mb-4 font-bold text-3xl">
-              {locale === 'fa' ? 'محصول پیدا نشد' : 'Product Not Found'}
-            </h1>
-            <p className="text-gray-600">
-              {locale === 'fa'
-                ? 'متأسفانه محصول مورد نظر شما یافت نشد.'
-                : 'Sorry, the product you are looking for could not be found.'}
-            </p>
+        <div className="store-page">
+          <div className="store-empty">
+            <h1 className="store-empty-title">{tStore('notFound')}</h1>
+            <p className="store-empty-desc">{tStore('notFoundHint')}</p>
           </div>
         </div>
       );
@@ -81,15 +79,17 @@ export default async function Page({
 
     const result = await response.json();
     const category = result.data;
-    return <CategoryTemplate category={category} />;
+    return (
+      <div className="store-page !pt-6">
+        <CategoryTemplate category={category} />
+      </div>
+    );
   } catch {
     return (
-      <div className="pt-24">
-        <div className="mx-auto px-4 py-20 max-w-7xl text-center">
-          <h1 className="mb-4 font-bold text-3xl">{'خطا در بارگذاری'}</h1>
-          <p className="text-gray-100">
-            {'متأسفانه در بارگذاری محصول مشکلی پیش آمده است.'}
-          </p>
+      <div className="store-page">
+        <div className="store-empty">
+          <h1 className="store-empty-title">{tStore('loadError')}</h1>
+          <p className="store-empty-desc">{tStore('loadErrorHint')}</p>
         </div>
       </div>
     );

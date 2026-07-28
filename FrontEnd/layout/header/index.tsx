@@ -1,10 +1,8 @@
-"use client";
+'use client';
+
 import React from 'react';
 
-import {
-  useLocale,
-  useTranslations,
-} from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 import { UserIcon } from '@components/atoms/iconComponents';
@@ -14,76 +12,64 @@ import ThemeSwitcher from '@components/molecules/theme';
 import MobileMenu from './mobileMenu';
 import ShoppingCart from './shoppingCart';
 
+const NAV_KEYS = [
+  { href: 'products', labelKey: 'products' as const },
+  { href: 'categories', labelKey: 'categories' as const },
+  { href: 'brands', labelKey: 'brands' as const },
+  { href: 'discounts', labelKey: 'discounts' as const },
+  { href: 'blog', labelKey: 'blogs' as const },
+] as const;
+
 export default function Header() {
   const locale = useLocale();
-
-  const t = useTranslations();
-  const isMobile = window.innerWidth < 431;
+  const t = useTranslations('header');
+  const tBrand = useTranslations('brand');
 
   return (
-    <>
-      {/* <ThemeButton /> */}
+    <header className="store-nav" role="banner">
+      <div className="store-nav-bar">
+        <div className="flex md:hidden items-center gap-2">
+          <MobileMenu />
+        </div>
 
-      <div className="xs:top-4 z-50 fixed inset-0 flex justify-center xs:items-end xs:px-10 xs:pt-4 h-20 transition-all duration-300">
-        <div className="z-50 flex justify-between items-center bg-white/10 shadow-lg hover:shadow-xl backdrop-blur-md p-4 border border-white/20 xs:rounded-2xl w-full h-20 text-center transition-all duration-300">
-          {isMobile ? (
-            <>
-              <MobileMenu />
-              <Link href={`/${locale}`}>brand</Link>
-              <Link href={`/${locale}/register`}>login</Link>
-            </>
-          ) : (
-            <>
-              <Link
-                href={`/${locale}`}
-                className="flex justify-center items-center !bg-transparent h-10"
-              >
-                {t("brand.name")}
-              </Link>
-              <div className="flex gap-4">
-                <Link
-                  href={`/${locale}/products`}
-                  className="flex justify-center items-center !bg-transparent h-10"
-                >
-                  {t("header.men")}
-                </Link>
-                <Link
-                  href={`/${locale}/products`}
-                  className="flex justify-center items-center !bg-transparent h-10"
-                >
-                  {t("header.women")}
-                </Link>
+        <Link
+          href={`/${locale}`}
+          className="font-bold text-base sm:text-lg tracking-tight shrink-0"
+          style={{ color: 'var(--primary-color)' }}
+        >
+          {tBrand('name')}
+        </Link>
 
-                <Link
-                  href={`/${locale}/discounts`}
-                  className="flex justify-center items-center !bg-transparent h-10"
-                >
-                  {t("header.discounts")}
-                </Link>
+        <nav
+          className="hidden md:flex flex-1 justify-center items-center gap-1 lg:gap-2"
+          aria-label={t('mainNav')}
+        >
+          {NAV_KEYS.map((item) => (
+            <Link
+              key={item.href}
+              href={`/${locale}/${item.href}`}
+              className="store-nav-link"
+            >
+              {t(item.labelKey)}
+            </Link>
+          ))}
+        </nav>
 
-                <Link
-                  href={`/${locale}/blog`}
-                  className="flex justify-center items-center !bg-transparent h-10"
-                >
-                  {t("header.blogs")}
-                </Link>
-              </div>
-              <div className="relative flex gap-2">
-                <Link
-                  href={`/${locale}/register`}
-                  aria-label={t("header.register")}
-                  className="flex justify-center items-center bg-white/30 hover:bg-white/40 shadow-black/20 shadow-lg hover:shadow-black/30 hover:shadow-xl backdrop-blur-md border border-white/20 rounded-md xs:rounded-full w-10 h-10 transition-all duration-300"
-                >
-                  <UserIcon />
-                </Link>
-                <ShoppingCart />
-                <ThemeSwitcher />
-                <LangSwitcher />
-              </div>
-            </>
-          )}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <Link
+            href={`/${locale}/register`}
+            aria-label={t('register')}
+            className="store-icon-btn"
+          >
+            <UserIcon />
+          </Link>
+          <ShoppingCart />
+          <div className="hidden sm:flex items-center gap-1.5">
+            <ThemeSwitcher />
+            <LangSwitcher />
+          </div>
         </div>
       </div>
-    </>
+    </header>
   );
 }

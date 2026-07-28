@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { Checkbox } from '@components/atoms/defaultElements/customCheckbox';
 import CustomDatePicker
   from '@components/atoms/defaultElements/customDatePicker';
@@ -9,10 +11,34 @@ import { DynamicSelect } from '@components/atoms/defaultElements/dynamicSelect';
 import Uploader from '@components/atoms/defaultElements/uploader';
 import ImagesInput from '@components/molecules/imagesInput';
 
-// import ReactJson from 'react-json-view';
-// npm i react-json-view
-// npm i @types/react-json-view
 import { FormFieldRendererProps } from './type';
+
+const FieldShell = ({
+  caption,
+  help,
+  error,
+  children,
+  wide,
+}: {
+  caption: string;
+  help?: string;
+  error?: string;
+  children: ReactNode;
+  wide?: boolean;
+}) => (
+  <div className={`admin-field ${wide ? 'md:col-span-2' : ''}`}>
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 sm:gap-2">
+      <label className="admin-field-label">{caption}</label>
+      {help ? (
+        <span className="text-[var(--admin-text-muted)] text-xs leading-relaxed">
+          {help}
+        </span>
+      ) : null}
+    </div>
+    {children}
+    {error ? <p className="admin-field-error">{error}</p> : null}
+  </div>
+);
 
 const FormFieldRenderer = ({
   field,
@@ -24,62 +50,66 @@ const FormFieldRenderer = ({
   watch,
   trigger,
 }: FormFieldRendererProps) => {
-
   switch (field.Type) {
-    case "text":
-    case "number":
-    case "price":
+    case 'text':
+    case 'number':
+    case 'price':
       return (
-        <div className="col-span-2 sm:col-span-1">
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <Input
             placeholder={field.PlaceHolder}
             aria-label={field.Name}
-            type={field.Type === "price" ? "number" : field.Type}
+            type={field.Type === 'price' ? 'number' : field.Type}
             {...register}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-    case "file":
+    case 'file':
       return (
-        <div className="col-span-2 sm:col-span-1 h-10">
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <Uploader
-            value={getValues(field.Name) || ""}
+            value={getValues(field.Name) || ''}
             onChange={(file) => setValue(field.Name, file)}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-    case "textarea":
+    case 'textarea':
       return (
-        <div className="col-span-2 sm:col-span-1">
+        <FieldShell
+          caption={field.Caption}
+          help={field.Help}
+          error={error}
+          wide
+        >
           <Textarea placeholder={field.PlaceHolder} {...register} />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-    case "date":
+    case 'date':
       return (
-        <div className="col-span-2 sm:col-span-1">
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <CustomDatePicker
-            defaultValue={getValues(field.Name) || ""}
+            defaultValue={getValues(field.Name) || ''}
             onChange={(e) => {
               setValue(field.Name, new Date(e as number).toISOString());
             }}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-    case "checkbox":
+    case 'checkbox':
       return (
-        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-          <Checkbox {...register} />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
+          <div className="flex items-center gap-2 bg-[var(--admin-surface-muted)] px-3 py-2.5 border border-[var(--admin-border)] rounded-xl min-h-10">
+            <Checkbox {...register} />
+          </div>
+        </FieldShell>
       );
-    case "select":
-      const options = field.Options?.map((op)=>({label:op.label,value:op.value}))  || [{label:"گزینه ای پیدا نشد",value:''}]
-       return (
-        <div className="col-span-2 sm:col-span-1">
+    case 'select': {
+      const options = field.Options?.map((op) => ({
+        label: op.label,
+        value: op.value,
+      })) || [{ label: 'گزینه ای پیدا نشد', value: '' }];
+      return (
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <Select
             options={options}
             value={watch(field.Name)}
@@ -87,20 +117,22 @@ const FormFieldRenderer = ({
               setValue(field.Name, val);
             }}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-      case "rate":
-        return (
-        <div className="col-span-2 sm:col-span-1">
-        <Rate mode="rate"  value={watch(field.Name) || ""}
+    }
+    case 'rate':
+      return (
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
+          <Rate
+            mode="rate"
+            value={watch(field.Name) || ''}
             onChange={(e) => {
               setValue(field.Name, e);
-            }}/>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+            }}
+          />
+        </FieldShell>
       );
-    case "dynamicSelect":
+    case 'dynamicSelect': {
       let temp = new Object();
       if (
         field.FetchConfig?.fetchFilters &&
@@ -114,7 +146,7 @@ const FormFieldRenderer = ({
                 ? watch(f)
                 : defaultValues &&
                     defaultValues[f] &&
-                    typeof defaultValues[f] == "string" &&
+                    typeof defaultValues[f] == 'string' &&
                     defaultValues[f]?.length > 0
                   ? defaultValues[f]
                   : 0,
@@ -123,77 +155,47 @@ const FormFieldRenderer = ({
       }
       const config = { api: field.FetchConfig?.api, ...temp };
       return (
-        <div className="col-span-2 sm:col-span-1">
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <DynamicSelect
             {...register}
             fetchConfig={config}
-            value={watch(field.Name) || ""}
+            value={watch(field.Name) || ''}
             onChange={(e) => {
               setValue(field.Name, e);
             }}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-    case "fileArray":
+    }
+    case 'fileArray':
       return (
-        <div className="col-span-2">
+        <FieldShell
+          caption={field.Caption}
+          help={field.Help}
+          error={error}
+          wide
+        >
           <ImagesInput
-            // {...register(field.Name, getValidationRules(field))}
-            // getValues={getValues}
             onChange={(
               e: { id: number; file: undefined | File; isMain: boolean }[],
             ) => {
-              const fileArray = e.map((f) => f.file).filter((f) => f); // فقط File ها
+              const fileArray = e.map((f) => f.file).filter((f) => f);
               const isMainArray = e.map((f) => f.isMain);
-              setValue("Images", fileArray);
-              setValue("IsMainImages", isMainArray);
-              trigger("Images");
+              setValue('Images', fileArray);
+              setValue('IsMainImages', isMainArray);
+              trigger('Images');
             }}
           />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
-    //   case "json":
-    // return (
-    //   <div className="col-span-2">
-    //     <label className="block mb-2 font-medium text-sm">
-    //       {field.Caption}
-    //     </label>
-    //     <div className="border rounded-lg h-96 overflow-hidden">
-    //       <ReactJson
-    //         src={watch(field.Name) || {}}
-    //         onEdit={(edit:any) => {
-    //           setValue(field.Name, edit.updated_src);
-    //           trigger(field.Name);
-    //         }}
-    //         onAdd={(add:any) => {
-    //           setValue(field.Name, add.updated_src);
-    //           trigger(field.Name);
-    //         }}
-    //         onDelete={(del:any) => {
-    //           setValue(field.Name, del.updated_src);
-    //           trigger(field.Name);
-    //         }}
-    //         theme="monokai"
-    //         enableClipboard={true}
-    //         displayDataTypes={false}
-    //         displayObjectSize={false}
-    //         collapsed={false}
-    //       />
-    //     </div>
-    //     {error && <p className="mt-1 text-red-500 text-sm">{error}</p>}
-    //   </div>
-    // );
- 
 
     default:
       return (
-        <div className="col-span-2 sm:col-span-1">
+        <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <Input placeholder={field.PlaceHolder} {...register} />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-        </div>
+        </FieldShell>
       );
   }
 };
+
 export default FormFieldRenderer;

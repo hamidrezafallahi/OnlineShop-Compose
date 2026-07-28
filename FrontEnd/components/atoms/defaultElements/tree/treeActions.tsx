@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-import { useLocale } from 'next-intl';
-
 import {
   EditIcon,
   PlusIcon2,
@@ -21,12 +19,9 @@ interface TreeActionsProps {
   onClick: (e: ITreeContext | { parentCategoryId: number }) => void;
 }
 export default function TreeActions({ ...props }: TreeActionsProps) {
-  const { node, active, endPoint, onClick } = props;
-  const locale = useLocale();
+  const { node, endPoint, onClick } = props;
   return (
-    <div
-      className={`relative flex items-center gap-2 end-32 transition-all duration-75 ${locale == "fa" ? active && "-translate-x-32" : active && "translate-x-32"} `}
-    >
+    <div className="relative flex flex-wrap justify-end items-center gap-1.5">
       <EditCategory
         onClick={() => {
           onClick(node);
@@ -44,7 +39,7 @@ export default function TreeActions({ ...props }: TreeActionsProps) {
 }
 const EditCategory = ({ onClick }: { onClick: () => void }) => {
   return (
-    <button onClick={onClick}>
+    <button type="button" onClick={onClick} className="admin-icon-btn !w-8 !h-8">
       <EditIcon />
     </button>
   );
@@ -62,13 +57,18 @@ const DeleteCategory = ({ id, endpoint }: { id: number; endpoint: string }) => {
     }
   };
   return (
-    <button disabled={deleted} onClick={deleteHandler}>
+    <button
+      type="button"
+      disabled={deleted}
+      onClick={deleteHandler}
+      className="admin-icon-btn admin-icon-btn-danger !w-8 !h-8"
+    >
       {isLoading ? (
         <SpinnerIcon config={{ fill: "#999", stroke: "#444" }} />
       ) : deleted ? (
         <TrashbinIcon config={{ stroke: "#888" }} />
       ) : (
-        <TrashbinIcon config={{ stroke: "#f00" }} />
+        <TrashbinIcon config={{ stroke: "var(--error-color)" }} />
       )}
     </button>
   );
@@ -102,7 +102,7 @@ const ActiveCategory = ({
 
 const AddSubCategory = ({ onClick }: { onClick: () => void }) => {
   return (
-    <button onClick={onClick}>
+    <button type="button" onClick={onClick} className="admin-icon-btn !w-8 !h-8">
       <PlusIcon2 />
     </button>
   );

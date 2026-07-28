@@ -1,11 +1,13 @@
-"use client";
+'use client';
+
 import React, {
   useEffect,
   useMemo,
   useState,
 } from 'react';
 
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '@components/atoms/defaultElements/customButton';
 import {
@@ -15,7 +17,7 @@ import {
 
 interface PaginationProps {
   className?: string;
-  current?: number; 
+  current?: number;
   total: number;
   pageSize: number;
   onChange?: (page: number, pageSize: number) => void;
@@ -29,10 +31,10 @@ interface PaginationProps {
 }
 
 const CustomPagination: React.FC<PaginationProps> = ({
-  className = "",
+  className = '',
   current = 1,
   total,
-  pageSize: initialPageSize=10,
+  pageSize: initialPageSize = 10,
   onChange,
   showSizeChanger = false,
   showTitle = false,
@@ -45,36 +47,59 @@ const CustomPagination: React.FC<PaginationProps> = ({
   const [page, setPage] = useState(current);
   const [pageSize, setPageSize] = useState(initialPageSize);
   const isFirstRender = React.useRef(true);
+  const t = useTranslations();
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    setPage(current);
+  }, [current]);
+
+  useEffect(() => {
+    setPageSize(initialPageSize);
+  }, [initialPageSize]);
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const maxVisible = 3;
 
-  // محاسبه صفحات قابل نمایش
   const pages = useMemo(() => {
     const list: (number | string)[] = [];
     if (totalPages <= maxVisible + 2) {
       for (let i = 1; i <= totalPages; i++) list.push(i);
     } else {
-      const left = Math.max(2, page - 2);
-      const right = Math.min(totalPages - 1, page + 2);
+      const left = Math.max(2, page - 1);
+      const right = Math.min(totalPages - 1, page + 1);
       list.push(1);
-      if (left > 2) list.push("jumpPrev");
+      if (left > 2) list.push('jumpPrev');
       for (let i = left; i <= right; i++) list.push(i);
-      if (right < totalPages - 1) list.push("jumpNext");
+      if (right < totalPages - 1) list.push('jumpNext');
       list.push(totalPages);
     }
     return list;
   }, [page, totalPages]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      return; 
+      return;
     }
-    onChange?.(page, pageSize);
+
+    if (onChange) {
+      onChange(page, pageSize);
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', String(page));
+    if (showSizeChanger) {
+      params.set('pageSize', String(pageSize));
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: true });
   }, [page, pageSize]);
 
-  const handlePageChange = (pageSize: number, newPage: number) => {
+  const handlePageChange = (_pageSize: number, newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
     setPage(newPage);
   };
@@ -82,59 +107,64 @@ const CustomPagination: React.FC<PaginationProps> = ({
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = Number(e.target.value);
     setPageSize(newSize);
-    setPage(1); // برگرد به صفحه اول
+    setPage(1);
   };
-const locale = useLocale()
+
   return (
-    <div
-    dir={locale =="fa"? "rtl":"ltr"}
-    className={`flex items-center gap-2 bg-white w-fit rounded-lg px-2 ${className}`}>
-      {/* prev */}
+    <nav
+      dir={locale === 'fa' ? 'rtl' : 'ltr'}
+      className={`flex flex-wrap items-center gap-2 bg-[var(--store-surface-solid)] px-3 py-2 border border-[var(--store-border)] rounded-xl w-fit ${className}`}
+      aria-label="Pagination"
+    >
       <Button
-        className="bg-white m-0 p-1 w-fit"
+        className="admin-icon-btn !m-0 !p-0 !w-8 !h-8"
         disabled={page === 1}
         onClick={() => handlePageChange(pageSize, page - 1)}
+        type="button"
       >
         {prevIcon ?? <ChevronRightIcon />}
       </Button>
 
-      {/* page numbers */}
       {pages.map((p, index) => {
-        if (typeof p === "number") {
+        if (typeof p === 'number') {
           const active = p === page;
           return (
             <Button
               key={index}
               onClick={() => handlePageChange(pageSize, p)}
-              className={`px-3 py-1 rounded ${
-                active ? "bg-blue-500 text-white" : "bg-white hover:bg-gray-100"
+              type="button"
+              className={`!px-3 !py-1 !rounded-lg !min-w-8 ${
+                active
+                  ? 'admin-btn-primary !border-primary'
+                  : 'admin-btn !py-1'
               }`}
+              aria-current={active ? 'page' : undefined}
             >
               {p}
             </Button>
           );
         }
 
-        if (p === "jumpPrev") {
+        if (p === 'jumpPrev') {
           return (
             <span
               key={index}
               onClick={() => handlePageChange(pageSize, Math.max(page - 5, 1))}
-              className="px-2 cursor-pointer"
+              className="px-2 text-[var(--store-text-muted)] cursor-pointer"
             >
               {jumpPrevIcon ?? <span>...</span>}
             </span>
           );
         }
 
-        if (p === "jumpNext") {
+        if (p === 'jumpNext') {
           return (
             <span
               key={index}
               onClick={() =>
                 handlePageChange(pageSize, Math.min(page + 5, totalPages))
               }
-              className="px-2 cursor-pointer"
+              className="px-2 text-[var(--store-text-muted)] cursor-pointer"
             >
               {jumpNextIcon ?? <span>...</span>}
             </span>
@@ -144,23 +174,22 @@ const locale = useLocale()
         return null;
       })}
 
-      {/* next */}
       <Button
-        className="bg-white m-0 p-1 w-fit"
+        className="admin-icon-btn !m-0 !p-0 !w-8 !h-8"
         disabled={page === totalPages}
         onClick={() => handlePageChange(pageSize, page + 1)}
+        type="button"
       >
         {nextIcon ?? <ChevronLeftIcon />}
       </Button>
 
-      {/* انتخاب تعداد رکورد در هر صفحه */}
       {showSizeChanger && (
-        <div className="flex items-center gap-1 ml-2 text-gray-600 text-sm">
-          <span>نمایش در صفحه:</span>
+        <div className="flex items-center gap-1 text-[var(--store-text-muted)] text-sm ms-2">
+          <span>{t('admin.pageSize')}:</span>
           <select
             value={pageSize}
             onChange={handlePageSizeChange}
-            className="p-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 text-sm"
+            className="bg-[var(--store-surface-muted)] p-1 border border-[var(--store-border)] rounded-md focus:outline-none focus:ring-1 focus:ring-primary text-sm"
           >
             {pageSizeOptions.map((size) => (
               <option key={size} value={size}>
@@ -171,13 +200,13 @@ const locale = useLocale()
         </div>
       )}
 
-      {/* نمایش اطلاعات صفحه */}
       {showTitle && (
-        <span className="ml-3 text-gray-500 text-sm">
-          صفحه {page} از {totalPages} مجموع رکورد : {total}
+        <span className="text-[var(--store-text-muted)] text-sm ms-2">
+          {t('admin.page', { page, total: totalPages })} ·{' '}
+          {t('admin.totalRecords', { count: total })}
         </span>
       )}
-    </div>
+    </nav>
   );
 };
 

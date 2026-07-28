@@ -135,4 +135,581 @@ html {
   border-radius: 10px !important;
 }
 
+/* ================== Admin Design System ================== */
+:root {
+  --admin-surface: rgba(255, 255, 255, 0.92);
+  --admin-surface-muted: rgba(255, 255, 255, 0.72);
+  --admin-surface-elevated: #ffffff;
+  --admin-border: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  --admin-text: #14221a;
+  --admin-text-muted: #5b6b61;
+  --admin-hover: color-mix(in srgb, var(--primary-color) 8%, white);
+  --admin-active: color-mix(in srgb, var(--primary-color) 14%, white);
+  --admin-danger-soft: color-mix(in srgb, var(--error-color) 12%, white);
+  --admin-shadow: 0 10px 30px rgba(14, 94, 45, 0.08);
+  --admin-radius: 1rem;
+  --admin-radius-sm: 0.75rem;
+}
+
+[data-theme="dark"] {
+  --admin-surface: rgba(17, 24, 39, 0.92);
+  --admin-surface-muted: rgba(31, 41, 55, 0.88);
+  --admin-surface-elevated: #111827;
+  --admin-border: rgba(255, 255, 255, 0.08);
+  --admin-text: #f3f4f6;
+  --admin-text-muted: #9ca3af;
+  --admin-hover: rgba(255, 255, 255, 0.06);
+  --admin-active: color-mix(in srgb, var(--primary-color) 28%, #111827);
+  --admin-danger-soft: color-mix(in srgb, var(--error-color) 22%, #111827);
+  --admin-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+@layer components {
+  .admin-shell {
+    @apply relative flex flex-col lg:flex-row w-full h-dvh overflow-hidden;
+    color: var(--admin-text);
+  }
+
+  .admin-topbar {
+    @apply lg:hidden sticky top-0 z-30 flex items-center gap-3 px-3 sm:px-4 h-14 shrink-0;
+    background: var(--admin-surface);
+    border-bottom: 1px solid var(--admin-border);
+    box-shadow: var(--admin-shadow);
+    backdrop-filter: blur(12px);
+  }
+
+  .admin-sidebar-backdrop {
+    @apply lg:hidden fixed inset-0 z-40;
+    background: color-mix(in srgb, var(--admin-text) 42%, transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .admin-sidebar {
+    @apply fixed inset-y-0 start-0 z-50 h-dvh shrink-0 transition-transform duration-300 ease-out pointer-events-none;
+    width: min(268px, 88vw);
+    transform: translateX(-105%);
+  }
+
+  [dir="rtl"] .admin-sidebar {
+    transform: translateX(105%);
+  }
+
+  .admin-sidebar.is-open,
+  .admin-sidebar[data-open="true"] {
+    @apply pointer-events-auto;
+    transform: translateX(0);
+  }
+
+  @media (min-width: 1024px) {
+    .admin-sidebar,
+    [dir="rtl"] .admin-sidebar,
+    .admin-sidebar.is-open,
+    .admin-sidebar[data-open="true"] {
+      @apply relative inset-auto z-auto h-screen pointer-events-auto overflow-visible;
+      width: var(--admin-sidebar-width, 268px);
+      transform: none;
+    }
+  }
+
+  .admin-sidebar-panel {
+    @apply flex flex-col h-full;
+    width: 100%;
+    background: var(--admin-surface);
+    border-inline-end: 1px solid var(--admin-border);
+    box-shadow: var(--admin-shadow);
+    backdrop-filter: blur(12px);
+  }
+
+  @media (min-width: 1024px) {
+    .admin-sidebar-panel {
+      width: var(--admin-sidebar-width, 268px);
+      transition: width 300ms ease;
+    }
+  }
+
+  .admin-main {
+    @apply flex flex-col flex-1 min-w-0 min-h-0 overflow-hidden;
+  }
+
+  .admin-main-scroll {
+    @apply flex-1 overflow-auto;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--neutral-color) 55%, transparent) 0%,
+        color-mix(in srgb, var(--neutral-color) 25%, transparent) 100%
+      );
+  }
+
+  .admin-panel {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+    backdrop-filter: blur(12px);
+  }
+
+  .admin-panel-muted {
+    background: var(--admin-surface-muted);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+  }
+
+  .admin-page {
+    @apply flex flex-col gap-4 sm:gap-5 p-3 sm:p-4 md:p-6 w-full min-h-full;
+  }
+
+  .admin-page-header {
+    @apply flex flex-col sm:flex-row sm:flex-wrap justify-between items-stretch sm:items-start gap-3;
+  }
+
+  .admin-page-title {
+    @apply font-semibold text-lg sm:text-xl md:text-2xl tracking-tight;
+    color: var(--admin-text);
+  }
+
+  .admin-page-subtitle {
+    @apply mt-1 text-sm;
+    color: var(--admin-text-muted);
+  }
+
+  .admin-nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200;
+    color: var(--admin-text-muted);
+  }
+
+  .admin-nav-item:hover {
+    background: var(--admin-hover);
+    color: var(--admin-text);
+  }
+
+  .admin-nav-item-active {
+    background: var(--admin-active);
+    color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--primary-color);
+  }
+
+  [dir="rtl"] .admin-nav-item-active {
+    box-shadow: inset -3px 0 0 var(--primary-color);
+  }
+
+  .admin-toolbar {
+    @apply flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-3 p-3 sm:p-4 border-b;
+    border-color: var(--admin-border);
+    background: var(--admin-surface-elevated);
+  }
+
+  .admin-btn {
+    @apply inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200;
+    border: 1px solid var(--admin-border);
+    background: var(--admin-surface-elevated);
+    color: var(--admin-text);
+  }
+
+  .admin-btn:hover {
+    background: var(--admin-hover);
+  }
+
+  .admin-btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+  }
+
+  .admin-btn-primary:hover {
+    filter: brightness(1.05);
+    background: var(--primary-color);
+  }
+
+  .admin-btn-ghost {
+    background: transparent;
+  }
+
+  .admin-btn-danger {
+    background: var(--admin-danger-soft);
+    border-color: color-mix(in srgb, var(--error-color) 30%, transparent);
+    color: var(--error-color);
+  }
+
+  .admin-icon-btn {
+    @apply inline-flex justify-center items-center rounded-lg w-9 h-9 transition-all duration-200;
+    border: 1px solid var(--admin-border);
+    background: var(--admin-surface-elevated);
+    color: var(--admin-text-muted);
+  }
+
+  .admin-icon-btn:hover {
+    background: var(--admin-hover);
+    color: var(--primary-color);
+  }
+
+  .admin-icon-btn-danger:hover {
+    background: var(--admin-danger-soft);
+    color: var(--error-color);
+  }
+
+  .admin-search {
+    @apply relative w-full sm:w-auto min-w-0;
+  }
+
+  .admin-search input {
+    @apply block ps-10 pe-9 py-2.5 rounded-xl w-full sm:w-72 text-sm outline-none transition-all;
+    background: var(--admin-surface-muted);
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+  }
+
+  .admin-search input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 18%, transparent);
+  }
+
+  .admin-table-scroll {
+    @apply w-full overflow-x-auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table {
+    @apply w-full min-w-[640px] text-sm text-center;
+    color: var(--admin-text-muted);
+  }
+
+  .admin-table thead {
+    background: color-mix(in srgb, var(--primary-color) 6%, var(--admin-surface-elevated));
+    color: var(--admin-text);
+  }
+
+  .admin-table th {
+    @apply px-3 py-3 font-semibold whitespace-nowrap;
+  }
+
+  .admin-table tbody tr {
+    @apply border-b transition-colors;
+    border-color: var(--admin-border);
+    background: var(--admin-surface-elevated);
+  }
+
+  .admin-table tbody tr:hover {
+    background: var(--admin-hover);
+  }
+
+  .admin-table td {
+    @apply px-3 py-3;
+  }
+
+  .admin-card-list {
+    @apply flex flex-col gap-3 p-3 sm:p-4 md:hidden;
+  }
+
+  .admin-record-card {
+    @apply flex flex-col gap-3 p-3.5;
+    background: var(--admin-surface-elevated);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+  }
+
+  .admin-record-card-row {
+    @apply flex justify-between items-start gap-3 text-sm;
+  }
+
+  .admin-record-card-label {
+    @apply shrink-0 max-w-[42%] text-start;
+    color: var(--admin-text-muted);
+  }
+
+  .admin-record-card-value {
+    @apply min-w-0 text-end break-words;
+    color: var(--admin-text);
+  }
+
+  .admin-pagination-bar {
+    @apply flex justify-center sm:justify-end p-3 sm:p-4 border-t;
+    border-color: var(--admin-border);
+  }
+
+  .admin-pagination {
+    @apply flex flex-wrap justify-center sm:justify-start items-center gap-2 w-full sm:w-fit;
+    background: var(--admin-surface-elevated);
+    border: 1px solid var(--admin-border);
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .admin-form-actions {
+    @apply flex flex-col-reverse sm:flex-row flex-wrap justify-stretch sm:justify-end items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 md:px-6 py-4 border-t;
+    background: var(--admin-surface-muted);
+    border-color: var(--admin-border);
+  }
+
+  .admin-form-actions .admin-btn,
+  .admin-form-actions button {
+    @apply w-full sm:w-auto;
+  }
+
+  .admin-empty {
+    @apply flex flex-col justify-center items-center gap-2 px-4 sm:px-6 py-12 sm:py-16 text-center;
+    color: var(--admin-text-muted);
+  }
+
+  .admin-empty-title {
+    @apply font-semibold text-base;
+    color: var(--admin-text);
+  }
+
+  .admin-field {
+    @apply flex flex-col gap-2 min-w-0;
+  }
+
+  .admin-field-label {
+    @apply text-sm font-medium;
+    color: var(--admin-text);
+  }
+
+  .admin-field-error {
+    @apply text-xs;
+    color: var(--error-color);
+  }
+
+  .admin-stat-card {
+    @apply flex flex-col gap-2 p-4 sm:p-5 transition-transform duration-200;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    box-shadow: var(--admin-shadow);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .admin-stat-card:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .admin-badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .admin-badge-success {
+    background: color-mix(in srgb, var(--success-color) 16%, white);
+    color: var(--success-color);
+  }
+
+  .admin-badge-warning {
+    background: color-mix(in srgb, var(--warning-color) 18%, white);
+    color: var(--warning-color);
+  }
+
+  [data-theme="dark"] .admin-badge-success,
+  [data-theme="dark"] .admin-badge-warning {
+    background: color-mix(in srgb, currentColor 18%, #111827);
+  }
+}
+
+/* ================== Storefront Design System ================== */
+:root {
+  --store-surface: rgba(255, 255, 255, 0.94);
+  --store-surface-muted: rgba(255, 255, 255, 0.78);
+  --store-surface-solid: #ffffff;
+  --store-border: color-mix(in srgb, var(--primary-color) 16%, transparent);
+  --store-text: #14221a;
+  --store-text-muted: #5b6b61;
+  --store-text-on-dark: #f4f7f5;
+  --store-shadow: 0 12px 36px color-mix(in srgb, var(--primary-color) 12%, transparent);
+  --store-radius: 1.25rem;
+  --store-radius-sm: 0.875rem;
+  --store-hero-overlay: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary-color) 88%, #0a2e18) 0%,
+    color-mix(in srgb, var(--secondary-color) 55%, var(--primary-color)) 100%
+  );
+}
+
+[data-theme="dark"] {
+  --store-surface: rgba(17, 24, 39, 0.92);
+  --store-surface-muted: rgba(31, 41, 55, 0.88);
+  --store-surface-solid: #111827;
+  --store-border: rgba(255, 255, 255, 0.1);
+  --store-text: #f3f4f6;
+  --store-text-muted: #9ca3af;
+  --store-text-on-dark: #f9fafb;
+  --store-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+
+@layer components {
+  .store-page {
+    @apply flex flex-col gap-6 md:gap-8 mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 w-full max-w-7xl min-h-[60vh];
+    color: var(--store-text);
+  }
+
+  .store-page-header {
+    @apply mb-2;
+  }
+
+  .store-eyebrow {
+    @apply text-xs sm:text-sm font-semibold tracking-wide uppercase;
+    color: var(--primary-color);
+  }
+
+  .store-page-title {
+    @apply font-bold text-2xl sm:text-3xl md:text-4xl tracking-tight;
+    color: var(--store-text-on-dark);
+  }
+
+  .store-page-subtitle {
+    @apply max-w-2xl text-sm sm:text-base leading-relaxed;
+    color: color-mix(in srgb, var(--store-text-on-dark) 78%, transparent);
+  }
+
+  .store-panel {
+    background: var(--store-surface);
+    border: 1px solid var(--store-border);
+    border-radius: var(--store-radius);
+    box-shadow: var(--store-shadow);
+    backdrop-filter: blur(10px);
+    color: var(--store-text);
+  }
+
+  .store-card {
+    @apply flex flex-col overflow-hidden transition-all duration-300;
+    background: var(--store-surface-solid);
+    border: 1px solid var(--store-border);
+    border-radius: var(--store-radius);
+    box-shadow: var(--store-shadow);
+    color: var(--store-text);
+  }
+
+  .store-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
+  }
+
+  .store-card-body {
+    @apply flex flex-col gap-2 p-4 sm:p-5;
+  }
+
+  .store-btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200;
+    border: 1px solid var(--store-border);
+    background: var(--store-surface-solid);
+    color: var(--store-text);
+  }
+
+  .store-btn:hover {
+    background: color-mix(in srgb, var(--primary-color) 8%, white);
+  }
+
+  .store-btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+  }
+
+  .store-btn-primary:hover {
+    filter: brightness(1.06);
+  }
+
+  .store-btn-ghost {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--store-text-on-dark) 35%, transparent);
+    color: var(--store-text-on-dark);
+  }
+
+  .store-btn-ghost:hover {
+    background: color-mix(in srgb, white 12%, transparent);
+  }
+
+  .store-empty {
+    @apply flex flex-col justify-center items-center gap-2 px-6 py-16 text-center store-panel;
+  }
+
+  .store-empty-icon {
+    color: color-mix(in srgb, var(--primary-color) 55%, var(--store-text-muted));
+  }
+
+  .store-empty-title {
+    @apply font-semibold text-lg;
+    color: var(--store-text);
+  }
+
+  .store-empty-desc {
+    @apply max-w-md text-sm leading-relaxed;
+    color: var(--store-text-muted);
+  }
+
+  .store-section {
+    @apply py-12 md:py-16;
+  }
+
+  .store-section-title {
+    @apply mb-2 font-bold text-2xl sm:text-3xl tracking-tight;
+    color: var(--store-text);
+  }
+
+  .store-section-subtitle {
+    @apply mb-8 max-w-2xl text-sm sm:text-base;
+    color: var(--store-text-muted);
+  }
+
+  .store-hero {
+    @apply relative overflow-hidden;
+    background: var(--store-hero-overlay);
+    color: var(--store-text-on-dark);
+  }
+
+  .store-hero-inner {
+    @apply relative z-10 flex flex-col md:flex-row items-center justify-between gap-10 mx-auto px-4 sm:px-8 lg:px-16 py-16 md:py-24 w-full max-w-7xl min-h-[72vh];
+  }
+
+  .store-nav {
+    @apply z-50 fixed inset-x-0 top-0 flex justify-center px-3 sm:px-6 pt-3 sm:pt-4;
+  }
+
+  .store-nav-bar {
+    @apply flex justify-between items-center gap-3 px-3 sm:px-5 w-full max-w-7xl h-16 sm:h-[4.5rem] transition-all duration-300;
+    background: color-mix(in srgb, var(--store-surface) 82%, transparent);
+    border: 1px solid var(--store-border);
+    border-radius: var(--store-radius-sm);
+    box-shadow: var(--store-shadow);
+    backdrop-filter: blur(14px);
+    color: var(--store-text);
+  }
+
+  .store-nav-link {
+    @apply inline-flex items-center px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors;
+    color: var(--store-text-muted);
+  }
+
+  .store-nav-link:hover {
+    color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  }
+
+  .store-icon-btn {
+    @apply inline-flex justify-center items-center rounded-xl w-10 h-10 transition-all duration-200;
+    border: 1px solid var(--store-border);
+    background: var(--store-surface-muted);
+    color: var(--store-text);
+  }
+
+  .store-icon-btn:hover {
+    color: var(--primary-color);
+    border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
+  }
+
+  .store-footer {
+    @apply mt-auto pt-14 pb-8;
+    background: color-mix(in srgb, var(--primary-color) 92%, #06140c);
+    color: color-mix(in srgb, white 82%, transparent);
+  }
+
+  .store-footer a:hover {
+    color: #fff;
+  }
+
+  .store-meta-row {
+    @apply flex flex-wrap items-center justify-between gap-3 text-sm;
+    color: color-mix(in srgb, var(--store-text-on-dark) 75%, transparent);
+  }
+}
+
  

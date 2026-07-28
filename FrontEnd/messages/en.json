@@ -1,6 +1,6 @@
 {
-    "brand":{
-    "name":"brand",
+  "brand":{
+    "name":"Candy Rose",
     "icon":"icon"
   },
   "blog":{
@@ -11,40 +11,203 @@
     "conclusion":"Conclusion",
     "share":"Share",
     "createdAt":"Created at",
-    "updatedAt":"Updated at"
-
+    "updatedAt":"Updated at",
+    "title":"Blog",
+    "subtitle":"Guides, reviews, and store news",
+    "empty":"No articles found",
+    "emptyHint":"New posts will appear here soon."
   },
   "header":{
     "men":"Men",
     "women":"Women",
+    "home":"Home",
+    "products":"Products",
+    "categories":"Categories",
+    "brands":"Brands",
+    "suppliers":"Suppliers",
+    "tags":"Tags",
     "discounts":"Discounts",
-    "blogs":"Blogs",
-    "landing page":"go to landing page",
-    "register":"sign up/ login",
-    "shopping cart":"shopping cart",
-    "theme":"change theme",
-    "lang":"change language"
+    "blogs":"Blog",
+    "landing page":"Back to home",
+    "register":"Sign up / Log in",
+    "shopping cart":"Shopping cart",
+    "theme":"Change theme",
+    "lang":"Change language",
+    "mainNav":"Main navigation",
+    "openMenu":"Open menu",
+    "closeMenu":"Close menu"
+  },
+  "footer":{
+    "tagline":"Shop authentic products with transparent pricing and fast delivery.",
+    "copyright":"© {year} {brand}. All rights reserved.",
+    "columns":{
+      "shop":"Shop",
+      "discover":"Discover",
+      "account":"Account"
+    },
+    "links":{
+      "products":"Products",
+      "categories":"Categories",
+      "brands":"Brands",
+      "discounts":"Discounts",
+      "blog":"Blog",
+      "suppliers":"Suppliers",
+      "tags":"Tags",
+      "register":"Sign in / Register",
+      "cart":"Cart",
+      "orders":"Orders"
+    }
+  },
+  "seo":{
+    "homeTitle":"Online Shop | Authentic products",
+    "homeDescription":"Shop authentic products from trusted brands with transparent prices and fast shipping.",
+    "homeKeywords":"online shop,ecommerce,products,brands,discounts"
+  },
+  "store":{
+    "error":"Error",
+    "fetchError":"Failed to load data",
+    "serverError":"There was a problem connecting to the server. Please try again.",
+    "viewBrand":"View brand",
+    "showingCount":"Showing {count} items",
+    "ofTotal":"of {total}",
+    "pageSuffix":" — Page {page}",
+    "notFound":"Not found",
+    "notFoundHint":"The requested item does not exist or was removed.",
+    "loadError":"Loading error",
+    "loadErrorHint":"Something went wrong while loading this page.",
+    "backHome":"Back to home"
+  },
+  "productsPage":{
+    "title":"Products",
+    "description":"Browse products with the best price and quality",
+    "empty":"No products found",
+    "emptyHint":"There are currently no products to display.",
+    "loadError":"Failed to load products"
+  },
+  "categoriesPage":{
+    "title":"Categories",
+    "description":"Explore every category in the store",
+    "empty":"No categories found",
+    "emptyHint":"No categories have been published yet."
+  },
+  "brandsPage":{
+    "title":"Brands",
+    "description":"Discover trusted brands",
+    "empty":"No brands found",
+    "emptyHint":"No brands are available yet."
+  },
+  "tagsPage":{
+    "title":"Tags",
+    "description":"Browse products by tag",
+    "empty":"No tags found",
+    "emptyHint":"No tags have been published yet."
+  },
+  "suppliersPage":{
+    "title":"Suppliers",
+    "description":"Meet our suppliers and sellers",
+    "empty":"No suppliers found",
+    "emptyHint":"No suppliers are available yet."
+  },
+  "discountsPage":{
+    "title":"Discounts",
+    "description":"Special offers and promotions",
+    "empty":"No discounts found",
+    "emptyHint":"There are no active offers right now.",
+    "comingSoon":"Special offers will appear here soon."
+  },
+  "registerPage":{
+    "metaTitle":"Sign in / Register",
+    "metaDescription":"Sign in to your account or create a new one."
+  },
+  "cartPage":{
+    "metaTitle":"Shopping cart",
+    "metaDescription":"Review cart items and continue to checkout."
   },
   "title": {
-    "notification": "اعلان ها"
+    "notification": "Notifications"
   },
   "homePage": {
-    "title": "Hello world!",
-    "about": "Go to the about page"
+    "title": "Find products you love",
+    "subtitle": "Trusted brands, transparent prices, and fast delivery in one place.",
+    "ctaProducts": "Browse products",
+    "ctaDiscounts": "Special offers",
+    "heroImageAlt": "Online shop showcase"
   },
-  "general": {
-     "save": "Save",
-      "new":"New",
-      "list":"List",
-      "default":"Default",
-      "delete":"Delete",
-      "edit":"Edit",
-      "apply":"Apply",
-      "paymentMethod":"Payment method",
-      "loginFirst":"Log in first"
+  "usp": {
+    "sectionTitle": "Why shop with us",
+    "items": {
+      "shipping": {
+        "title": "Free shipping",
+        "description": "Free shipping on orders above the threshold"
+      },
+      "support": {
+        "title": "24/7 support",
+        "description": "We are here whenever you need help"
+      },
+      "cod": {
+        "title": "Cash on delivery",
+        "description": "Pay when your order arrives"
+      },
+      "warranty": {
+        "title": "Product warranty",
+        "description": "Authenticity and quality guaranteed"
+      },
+      "authenticity": {
+        "title": "Authentic goods",
+        "description": "Only original, authorized products"
+      }
+    }
+  },
 
+  "general": {
+    "changePassWord": "Change password",
+    "save": "Save",
+    "saving": "Saving...",
+    "new":"New",
+    "list":"List",
+    "default":"Default",
+    "delete":"Delete",
+    "edit":"Edit",
+    "apply":"Apply",
+    "reset":"Reset",
+    "search":"Search...",
+    "actions":"Actions",
+    "back":"Back",
+    "loading":"Loading...",
+    "paymentMethod":"Payment method",
+    "loginFirst":"Log in first"
   },
-   "register": {
+  "admin": {
+    "dashboard": "Dashboard",
+    "dashboardTitle": "Admin panel",
+    "dashboardSubtitle": "Manage store content, entities, and settings",
+    "welcome": "Welcome",
+    "quickAccess": "Quick access",
+    "quickAccessHint": "Pick an entity from the sidebar or use the shortcuts below.",
+    "openStore": "View storefront",
+    "entities": "Entities",
+    "listTitle": "{entity} list",
+    "listSubtitle": "Search, manage, and edit records",
+    "totalRecords": "{count} records",
+    "selectedCount": "{count} selected",
+    "noData": "No data found",
+    "noDataHint": "No records yet, or your search returned nothing.",
+    "listLoadError": "Failed to load admin list. Check the API connection.",
+    "formLoadError": "Form configuration was not found for this entity.",
+    "formParseError": "Form configuration is invalid.",
+    "createTitle": "Create {entity}",
+    "editTitle": "Edit {entity}",
+    "formSubtitleCreate": "Fill in the details and save",
+    "formSubtitleEdit": "Apply your changes and save",
+    "page": "Page {page} of {total}",
+    "pageSize": "Per page",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "openMenu": "Open admin menu",
+    "closeMenu": "Close admin menu",
+    "menuEmpty": "No menu items available"
+  },
+  "register": {
     "enter":"Enter",
     "enterEmail": "Enter your email below to login to your account",
     "email":"Email",
@@ -53,14 +216,20 @@
     "forgotPassword":"Forgot your password?",
     "signUp":"Sign up",
     "dotHaveAnyAccount":"Don't have an account?",
-    "startSignUp":" Enter your email below to Sign up",
+    "startSignUp":"Enter your email below to Sign up",
+    "emailRequired":"Email is required",
+    "invalidEmail":"Invalid email format",
+    "phoneRequired":"Phone number is required",
+    "invalidPhone":"Invalid phone format (09xxxxxxxxx)",
+    "passwordRequired":"Password is required",
+    "passwordMinLength":"At least 8 characters",
+    "fullNameRequired":"Full name is required",
     "fullName":"Full name",
+    "userDescription":"User description",
     "phoneNumber":"Phone number",
-        "userDescription":"User description",
-
     "phoneNumberPlaceholder":"09*********",
     "register":"Register",
-    "havingAccount":"I have account",
+    "havingAccount":"I have an account",
     "rememberMe":"Remember me",
     "userImage":"User image",
     "success":"Registered successfully",
@@ -188,19 +357,23 @@
     "delivered": "Delivered",
     "cancelled": "Cancelled"
   },
-    "comments":{
+  "comments":{
     "yourComment":"Your comment",
     "yourRate":"Your rate"
   },
-    "category":{
+  "product":{
+    "width":"Width",
+    "height":"Height",
+    "depth":"Depth",
+    "weight":"Weight"
+  },
+  "category":{
     "subCategories":"Sub categories",
     "noSubCategory":"There is no sub category",
     "noCategorySupplier":"There is no category supplier",
     "goToParent":"Go to parent"
-
   },
   "common":{
     "loading":"Loading"
   }
-
 }

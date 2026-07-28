@@ -1,73 +1,65 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import SupplierTemplate from '@components/templates/supplierTemplate';
 import { serverApiBaseUrl } from '@lib/api';
+import { buildPageMetadata } from '@lib/seo';
 import { SimpleResponse } from '@models/base';
 import { IUser } from '@models/user';
 
-// ===== 1. تولید مسیرهای استاتیک =====
-// export async function generateStaticParams() {
-//   const response = await fetch(`${baseUrl}api/productOffers/suppliersIds`,{next: { revalidate: 36 }});
-//   if (!response.ok) return [];
+type Props = {
+  params: Promise<{ slug: string; locale: string }>;
+};
 
-//   const { data }: { data: Ids[] } = await response.json();
-//   return data.map(({ id }) => ({
-//     slug: id.toString(),
-//   }));
-// }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params;
+  const tStore = await getTranslations({ locale, namespace: 'store' });
 
-// ===== 2. تولید Metadata =====
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string; locale?: string }>;
-}): Promise<Metadata> {
   try {
-    const resolvedParams = await params;
-    const { slug, locale = "fa" } = resolvedParams;
-    const response = await fetch(`${serverApiBaseUrl}/Users/${slug}`,{next: { revalidate: 36 }});
+    const response = await fetch(`${serverApiBaseUrl}/Users/${slug}`, {
+      next: { revalidate: 36 },
+    });
 
     if (response.status === 404) {
-      return {
-        title: locale === "fa" ? "تامین کننده پیدا نشد" : "supplier Not Found",
-        description: "",
-      };
+      return buildPageMetadata({
+        locale,
+        path: `suppliers/${slug}`,
+        title: tStore('notFound'),
+        description: tStore('notFoundHint'),
+        noIndex: true,
+      });
     }
+
     const result: SimpleResponse<IUser> = await response.json();
     if (!result.isSuccess) {
-      return {
-        title: locale === "fa" ? "تامین کننده" : "Supplier",
-        description: "",
-      };
+      return buildPageMetadata({
+        locale,
+        path: `suppliers/${slug}`,
+        title: tStore('notFound'),
+        description: '',
+        noIndex: true,
+      });
     }
-    const title = result.data.fullName
-    const description = result.data.userDescription
-    const image = result.data.userImage
-    return {
-       title,
-      description,
-      openGraph: {
-        title,
-        description,
-        images: image??"",
-        locale: locale === 'fa' ? 'fa_IR' : 'en_US',
-      }
-    };
 
+    return buildPageMetadata({
+      locale,
+      path: `suppliers/${slug}`,
+      title: result.data.fullName,
+      description: result.data.userDescription,
+      images: [result.data.userImage],
+    });
   } catch {
-    return {
-      title: "Supplier",
-      description: "",
-    };
+    return buildPageMetadata({
+      locale,
+      path: `suppliers/${slug}`,
+      title: tStore('loadError'),
+      description: '',
+      noIndex: true,
+    });
   }
 }
 
-// ===== 3. صفحه تولید کننده =====
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ locale: string; slug: string }>;
-}) {
+export default async function Page({ params }: Props) {
   const { slug } = await params;
 
   const response = await fetch(`${serverApiBaseUrl}/Users/${slug}`, {
@@ -76,5 +68,9 @@ export default async function Page({
 
   const { data }: { data: IUser } = await response.json();
 
-  return <SupplierTemplate supplier={data} />;
+  return (
+    <div className="store-page !pt-6">
+      <SupplierTemplate supplier={data} />
+    </div>
+  );
 }
