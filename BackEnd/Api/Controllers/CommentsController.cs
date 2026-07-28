@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class CommentsController : BaseController
 {
     private readonly IMediator _mediator;

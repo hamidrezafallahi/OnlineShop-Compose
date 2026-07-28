@@ -1,6 +1,6 @@
 import { getLocale } from 'next-intl/server';
 
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 
 import {
   ISupplier,
@@ -13,7 +13,7 @@ export async function ProductSupplierExtended({
   productId: string;
 }) {
   const response = await fetch(
-    `${apiBaseUrl}/api/productOffers/by-product/${productId}`,
+    `${serverApiBaseUrl}/productOffers/by-product/${productId}`,
     {
       next: { revalidate: 36 },
     },

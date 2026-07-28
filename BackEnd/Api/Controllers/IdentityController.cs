@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using static Application.Commands.IdentityManagerCommands;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class IdentityController : BaseController
 {
     private readonly IMediator _mediator;

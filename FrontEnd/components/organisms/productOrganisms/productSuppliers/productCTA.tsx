@@ -2,7 +2,6 @@
 
 import { useDispatch } from 'react-redux';
 
-import { apiBaseUrl } from '@lib/api';
 import { useGetConditionallyMutation } from '@services/base';
 import { synchronousCart } from '@slice/shoppingCartSlice';
 import { getCookie } from '@utils/core';
@@ -20,7 +19,7 @@ export default function ProductCTA({
   const handleAddToCart = async () => {
     if (isAuthenticated) {
       const syncCartResponse = await addToShoppingCart({
-        url: `${apiBaseUrl}/CartItems`,
+        url: '/CartItems',
         body: {
           productId,
           productOfferId: id,

@@ -18,7 +18,7 @@ interface TreeActionsProps {
   node: ITreeContext;
   active: boolean;
   endPoint: string;
-  onClick: (e: any) => void;
+  onClick: (e: ITreeContext | { parentCategoryId: number }) => void;
 }
 export default function TreeActions({ ...props }: TreeActionsProps) {
   const { node, active, endPoint, onClick } = props;
@@ -54,7 +54,7 @@ const DeleteCategory = ({ id, endpoint }: { id: number; endpoint: string }) => {
   const [deleteApi, { isLoading }] = useCUDDataMutation();
   const deleteHandler = async () => {
     const res = await deleteApi({
-      url: `/api/${endpoint + "/" + id}`,
+      url: `/${endpoint + "/" + id}`,
       method: "DELETE",
     }).unwrap();
     if (res) {
@@ -82,11 +82,11 @@ const ActiveCategory = ({
   endpoint: string;
   active: boolean;
 }) => {
-  const [isActive, setIsActive] = useState(active);
-  const [ActiveApi, { isLoading }] = useCUDDataMutation();
+  const [isActive] = useState(active);
+  const [ActiveApi] = useCUDDataMutation();
   const activeHandler = async (e:boolean) => {
     const res = await ActiveApi({
-      url: `/api/${endpoint + "/active"}`,
+      url: `/${endpoint + "/active"}`,
       body: {
         id,
         isActive: e,

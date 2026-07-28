@@ -6,11 +6,11 @@ import { SimpleResponse } from '@models/base';
 import { IBlog } from '@models/Blog';
 import { showErrorToast } from '@utils/core';
 
-import { apiBaseUrl } from './api';
+import { serverApiBaseUrl } from './api';
 
 export async function getBlogBySlug({ params }: { params: { slug: string } }) {
     const slug = params.slug;
-    const res = await fetch(`${apiBaseUrl}/Blogs/${slug}`, {
+    const res = await fetch(`${serverApiBaseUrl}/Blogs/${slug}`, {
         cache: 'no-store'
     });
     const response:SimpleResponse<IBlog> = await res.json();

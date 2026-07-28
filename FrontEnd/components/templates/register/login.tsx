@@ -17,17 +17,14 @@ import { Button } from '@components/atoms/defaultElements/customButton';
 import { Checkbox } from '@components/atoms/defaultElements/customCheckbox';
 import { Input } from '@components/atoms/defaultElements/customInput';
 import { Label } from '@components/atoms/defaultElements/label';
-import { apiBaseUrl } from '@lib/api';
+import { browserAuthBaseUrl } from '@lib/api';
 import { cn } from '@lib/utils';
 import { SynchronousResponse } from '@models/product';
 import { useGetConditionallyMutation } from '@services/base';
 import { IBaseQueryResponse } from '@services/base/type';
 import { synchronousCart } from '@slice/shoppingCartSlice';
 import { useAppSelector } from '@store/index';
-import {
-  createCookie,
-  showErrorToast,
-} from '@utils/core';
+import { showErrorToast } from '@utils/core';
 
 import {
   ILogin,
@@ -74,7 +71,7 @@ export function LoginForm({
   const handleLogin = async () => {
     try {
        setIsLoading(true);
-          const res = await fetch(`${apiBaseUrl}/Identity/login`, {
+          const res = await fetch(`${browserAuthBaseUrl}/login`, {
       method: 'POST',
       headers: {
           "Content-Type": "application/json",
@@ -91,8 +88,6 @@ export function LoginForm({
         showErrorToast(data.error);
         return;
       }
-      createCookie("candyAccess", data.data.accessToken, 6);
-      createCookie("candyRefresh", data.data.refreshToken, 6);
       const decoded: TokenPayload = jwtDecode(
         data.data.accessToken,
       );

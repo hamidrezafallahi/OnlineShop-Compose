@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
  
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EntityConfigsController : BaseController
 {
     private readonly IMediator _mediator;
@@ -48,7 +48,7 @@ public class EntityConfigsController : BaseController
     }
 
     // ===== Get By EntityName =====
-    [HttpGet("/{url}")]
+    [HttpGet("{url}")]
     public async Task<ActionResult<EntityConfigDto>> GetEntityConfigByName(string url)
     {
         var result = await _mediator.Send(new GetEntityConfigByNameQuery { EntityName = url });

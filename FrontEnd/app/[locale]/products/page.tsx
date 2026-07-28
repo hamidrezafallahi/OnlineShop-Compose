@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 
 import CustomPagination from '@components/molecules/pagination';
 import { SimpleProductCard } from '@components/molecules/productCard';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { PagedResponse } from '@models/base';
 import { IProduct } from '@models/product';
 
@@ -74,7 +74,7 @@ export default async function Page({
 
   try {
     const response = await fetch(
-      `${apiBaseUrl}/Products?page=${PageNumber}&PageSize=${PageRecordCount}`,
+      `${serverApiBaseUrl}/Products?page=${PageNumber}&PageSize=${PageRecordCount}`,
       {
         cache: 'no-store',
       }
@@ -96,7 +96,7 @@ export default async function Page({
       console.error('API returned error:', productsResponse.error);
       products = [];
     }
-  } catch (error) {
+  } catch {
     productsResponse = {
       data: {
         records: [],

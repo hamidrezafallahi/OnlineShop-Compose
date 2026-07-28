@@ -20,8 +20,8 @@ function ShippingMethod() {
     shippingMethod: state.withPersist.ShoppingCart.shippingMethod,
   }));
   const [methods, setMethods] = useState<IShippingMethod[]>([]);
-  const { data, isSuccess } = useGetData<any>({
-    url: "/api/ShippingMethods",
+  const { data } = useGetData<any>({
+    url: "/ShippingMethods",
   });
   const handleChangeShippingMethod = (el:IShippingMethod) => {
     if(shippingMethod?.id !== el.id){

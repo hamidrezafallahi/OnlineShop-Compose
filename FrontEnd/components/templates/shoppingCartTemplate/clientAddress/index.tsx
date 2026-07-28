@@ -10,7 +10,6 @@ import { useTranslations } from 'next-intl';
 import { useDispatch } from 'react-redux';
 
 import { SpinnerIcon } from '@components/atoms/iconComponents';
-import { apiBaseUrl } from '@lib/api';
 import {
   useGetConditionallyMutation,
   useGetData,
@@ -24,8 +23,8 @@ export default function ClientAddress() {
 
 
   const t = useTranslations();
-  const { data, isLoading, refetch } = useGetData<IAddress[], any>({
-    url: `${apiBaseUrl}/Address/ByUser`,
+  const { data, refetch } = useGetData<IAddress[]>({
+    url: '/Address/ByUser',
     method: "GET",
   });
   const [itemMutate, { isLoading: addLoading }] = useGetConditionallyMutation();
@@ -178,9 +177,11 @@ export default function ClientAddress() {
 
             <button
               onClick={() => {
-                newAddress.isEdit
-                  ? handleFetchEditAddress()
-                  : handleAddAddress();
+                if (newAddress.isEdit) {
+                  handleFetchEditAddress();
+                } else {
+                  handleAddAddress();
+                }
               }}
               className="bg-blue-600 hover:bg-blue-700 py-2 rounded w-full"
               disabled={addLoading}

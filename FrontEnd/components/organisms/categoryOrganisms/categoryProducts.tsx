@@ -1,14 +1,12 @@
 import React from 'react';
 
-import { getLocale } from 'next-intl/server';
-
 import { SimpleProductCard } from '@components/molecules/productCard';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ILandingProduct } from '@models/product';
 
 export async function CategoryProducts({id}:{id:number}) {
-    const response = await fetch(`${apiBaseUrl}/api/Products/getProductByCategoryId/${id}`,
+    const response = await fetch(`${serverApiBaseUrl}/Products/getProductByCategoryId/${id}`,
     {
       cache: "no-store",
     },
@@ -16,7 +14,6 @@ export async function CategoryProducts({id}:{id:number}) {
   const productsResponse: SimpleResponse<ILandingProduct[]> = await response.json();
   const products: ILandingProduct[] = productsResponse.data;
   console.log(productsResponse)
-  const locale = await getLocale()
   return (
      <div className="pb-10">
           <h2 className="mb-4 font-bold text-xl">محصولات دسته بندی</h2>

@@ -1,10 +1,10 @@
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ISpecificationResponse } from '@models/product';
 
 export default async function ProductSpecs({ id }: {id:number}) { 
    const response = await fetch(
-      `${apiBaseUrl}/api/Products/getSpecifications/${id}`,
+      `${serverApiBaseUrl}/Products/getSpecifications/${id}`,
       {
         next: { revalidate: 36 }, // ISR
       },

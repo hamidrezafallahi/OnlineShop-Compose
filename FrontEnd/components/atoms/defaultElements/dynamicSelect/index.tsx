@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useLocale } from 'next-intl';
 
-import { apiBaseUrl } from '@lib/api';
 import { DataResponse } from '@models/base';
 import { useGetData } from '@services/base';
 
@@ -27,18 +26,22 @@ const DynamicSelect = React.forwardRef<HTMLDivElement, DynamicSelectProps>(
     const [page, setPage] = React.useState<number>(1);
     const locale = useLocale();
     const prevConfigRef = React.useRef(fetchConfig);
-    const url = new URL(`${apiBaseUrl}/${fetchConfig.api}`);
-    url.searchParams.set("page", String(page));
-    url.searchParams.set("pageSize", String(fetchSize));
+    const endpoint = fetchConfig.api.startsWith("/")
+      ? fetchConfig.api
+      : `/${fetchConfig.api}`;
+    const params = new URLSearchParams();
+
+    params.set("page", String(page));
+    params.set("pageSize", String(fetchSize));
     Object.entries(fetchConfig).forEach(([k, v]) => {
       if (k !== "api") {
-        url.searchParams.set(k, String(v));
+        params.set(k, String(v));
       }
     });
-    const { data, isLoading, isError } = useGetData<
+    const { data } = useGetData<
       DataResponse<ResponseSelectOption>
     >({
-      url: url.href,
+      url: `${endpoint}?${params.toString()}`,
       method: "GET",
     });
     const handleSetPage = () => {

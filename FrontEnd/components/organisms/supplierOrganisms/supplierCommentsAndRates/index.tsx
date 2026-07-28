@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import { StarIcon } from '@components/atoms/iconComponents';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import {
   EnumTargetType,
   IComment,
@@ -18,7 +18,7 @@ export async function SupplierCommentsAndRates(props: {
   const slug = await params.slug;
 
   const response = await fetch(
-    `${apiBaseUrl}/api/Comments/${EnumTargetType.Supplier}/${slug}`,{next: { revalidate: 36 }});
+    `${serverApiBaseUrl}/Comments/${EnumTargetType.Supplier}/${slug}`,{next: { revalidate: 36 }});
   if (!response.ok) return <div>تأمین‌کننده پیدا نشد</div>;
 
   const { data }: { data: IComment[] } = await response.json();

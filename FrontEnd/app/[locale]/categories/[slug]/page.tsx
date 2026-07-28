@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 import CategoryTemplate from '@components/templates/categoryTemplate';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 
 // اجازه تولید صفحات dynamic جدید
 export const dynamicParams = true;
@@ -15,7 +15,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const { slug, locale = 'fa' } = resolvedParams;
-    const response = await fetch(`${apiBaseUrl}/Categories/${slug}`, {
+    const response = await fetch(`${serverApiBaseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
     const result = await response.json();
@@ -42,7 +42,7 @@ export async function generateMetadata({
         locale: locale === 'fa' ? 'fa_IR' : 'en_US',
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'category',
       description: '',
@@ -58,7 +58,7 @@ export default async function Page({
 }) {
   try {
     const { slug, locale } = await params;
-    const response = await fetch(`${apiBaseUrl}/Categories/${slug}`, {
+    const response = await fetch(`${serverApiBaseUrl}/Categories/${slug}`, {
       next: { revalidate: 36 },
     });
 
@@ -82,7 +82,7 @@ export default async function Page({
     const result = await response.json();
     const category = result.data;
     return <CategoryTemplate category={category} />;
-  } catch (error) {
+  } catch {
     return (
       <div className="pt-24">
         <div className="mx-auto px-4 py-20 max-w-7xl text-center">

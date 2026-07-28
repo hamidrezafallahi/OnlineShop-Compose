@@ -2,12 +2,12 @@ import React from 'react';
 
 import { SimpleProductCard } from '@components/molecules/productCard';
 import { ISimpleProduct } from '@components/molecules/productCard/type';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 
 export async function RelatedProductByTag({ tagId }: { tagId: number }) {
   const response = await fetch(
-    `${apiBaseUrl}/api/ProductOfferTags/tag/${tagId}`,{next: { revalidate: 36 }});
+    `${serverApiBaseUrl}/ProductOfferTags/tag/${tagId}`,{next: { revalidate: 36 }});
   const productsResponse: SimpleResponse<ISimpleProduct[]> = await response.json();
   console.log(productsResponse)
   return (

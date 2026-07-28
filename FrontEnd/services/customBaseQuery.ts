@@ -1,13 +1,15 @@
 import { Mutex } from 'async-mutex';
 
-import { apiBaseUrl } from '@lib/api';
+import {
+  browserApiBaseUrl,
+  browserAuthBaseUrl,
+} from '@lib/api';
 import {
   BaseQueryApi,
   FetchArgs,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query';
 import {
-  createCookie,
   deleteCookie,
   getTokens,
   showErrorToast,
@@ -76,7 +78,7 @@ async function baseQueryWithAuth(
   extraOptions: {}
 ) {
   const rawBaseQuery = fetchBaseQuery({
-    baseUrl:apiBaseUrl,
+    baseUrl: browserApiBaseUrl,
     credentials: "include",
     prepareHeaders: (headers) => {
       const token = getTokens("candyAccess");
@@ -109,7 +111,7 @@ async function baseQueryWithAuth(
 async function refreshAccessToken(): Promise<boolean> {
   try {
     const response = await fetch(
-      `${apiBaseUrl}/Identity/refresh-token`,
+      `${browserAuthBaseUrl}/refresh`,
       {
         method: "POST",
         credentials: "include",
@@ -126,10 +128,7 @@ async function refreshAccessToken(): Promise<boolean> {
 
     const data = await response.json();
 
-    // Route Handler returns { isSuccess: true, data: { accessToken } }
-     if (data.isSuccess && data.data?.accessToken) {
-      createCookie("candyAccess", data.data.accessToken, 6);
-      createCookie("candyRefresh", data.data.refreshToken, 6);
+    if (data.isSuccess && data.data?.accessToken) {
       return true;
     }
 

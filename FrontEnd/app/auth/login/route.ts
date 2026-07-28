@@ -1,16 +1,18 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+import { serverApiBaseUrl } from '@lib/api';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
     const response = await fetch(
-      `api/Identity/login`,
+      `${serverApiBaseUrl}/Identity/login`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }
@@ -24,21 +26,19 @@ export async function POST(req: Request) {
 
     const cookieStore = await cookies();
 
-    // access token (اختیاری HttpOnly)
-    cookieStore.set("candyAccess", data.data.accessToken, {
+    cookieStore.set('candyAccess', data.data.accessToken, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
       maxAge: 60 * 60,
     });
 
-    // refresh token (مهم)
-    cookieStore.set("candyRefresh", data.data.refreshToken, {
+    cookieStore.set('candyRefresh', data.data.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
       maxAge: 60 * 60 * 24 * 30,
     });
 
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
         accessToken: data.data.accessToken,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { isSuccess: false },
       { status: 500 }

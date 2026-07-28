@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next';
 
-import { apiBaseUrl } from '@lib/api';
+import { siteBaseUrl } from '@lib/api';
 
-const BASE_URL = apiBaseUrl ?? 'https://www.hamidrezafalahi.ir';
+const BASE_URL = siteBaseUrl;
 
 export default function robots(): MetadataRoute.Robots {
   return {

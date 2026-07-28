@@ -32,7 +32,7 @@ interface TreeProps {
   clickable?: boolean;
   multi?: boolean;
   onSelect?: (selectedIds: number[]) => void;
-  onClick?: (node: ITreeContext) => void;
+  onClick?: (node: ITreeContext | { parentCategoryId: number }) => void;
 }
 
 export const Tree: React.FC<TreeProps> = ({

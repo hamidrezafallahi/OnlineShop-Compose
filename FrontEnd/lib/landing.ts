@@ -1,10 +1,10 @@
 import 'server-only';
 
-const apiBaseUrl=process.env.INTERNAL_SERVER_SIDE_API_URL
+import { serverApiBaseUrl } from './api';
 
 export async function getSlides<T>(): Promise<T[]> {
   try {
-     const url = `${apiBaseUrl}/Landing/slide`;
+     const url = `${serverApiBaseUrl}/Landing/slide`;
     const res = await fetch(url, {
       cache: "no-store",
     });

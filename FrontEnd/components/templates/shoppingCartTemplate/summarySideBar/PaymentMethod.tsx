@@ -17,15 +17,23 @@ export default function PaymentMethod() {
     const t = useTranslations()
   const dispatch = useDispatch();
   const { data } = useGetData<DataResponse<IPaymentMethod>>({
-    url: '/api/paymentMethods',
+    url: '/paymentMethods',
     method: 'GET',
   });
 const handleChangePaymentMethod = (e:string|number)=>{
-dispatch(setPaymentMethod(data?.data.records.find((method) => method.id ===e )!))
+const selectedMethod = data?.data.records.find((method) => method.id === e);
+if (selectedMethod) {
+  dispatch(setPaymentMethod(selectedMethod));
+}
 }
 useEffect(()=>{
   if(data?.isSuccess){
-     dispatch(setPaymentMethod(data?.data.records.find((method) => method.displayOrder == 1)!))
+     const defaultMethod = data.data.records.find(
+      (method) => method.displayOrder == 1
+    );
+    if (defaultMethod) {
+      dispatch(setPaymentMethod(defaultMethod));
+    }
   }
 },[data])
   return (

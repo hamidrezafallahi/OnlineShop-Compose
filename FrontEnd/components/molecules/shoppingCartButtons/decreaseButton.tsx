@@ -3,7 +3,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { SpinnerIcon } from '@components/atoms/iconComponents';
-import { apiBaseUrl } from '@lib/api';
 import { useGetConditionallyMutation } from '@services/base';
 import {
   decreaseFromCart,
@@ -23,7 +22,7 @@ function DecreaseButton({ ...props }: ShoppingCartButtonProps) {
   const decreaseHandler = async () => {
     if (isAuthenticated) {
       const syncCartResponse = await itemMutate({
-        url: `${apiBaseUrl}/CartItems/decrease`,
+        url: '/CartItems/decrease',
         body: { ProductId: id, ProductOfferId: productOfferId },
       }).unwrap();
       if (syncCartResponse.isSuccess) {

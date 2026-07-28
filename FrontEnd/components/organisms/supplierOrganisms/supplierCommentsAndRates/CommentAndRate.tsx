@@ -12,7 +12,6 @@ import {
 import Link from 'next/link';
 import {
   usePathname,
-  useRouter,
 } from 'next/navigation';
 
 import { Button } from '@components/atoms/defaultElements/customButton';
@@ -32,7 +31,6 @@ interface TCommentAndRate {
 }
 export default function CommentAndRate({ ...props }: TCommentAndRate) {
   const { TargetId, TargetType } = props;
-  const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
   const [value, setValue] = useState(0);
@@ -43,7 +41,7 @@ export default function CommentAndRate({ ...props }: TCommentAndRate) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSetRate = async (e: number) => {
     const res = await mutateRate({
-      url: "/api/Rates",
+      url: "/Rates",
       body: {
         targetId: TargetId,
         targetType: TargetType,
@@ -65,7 +63,7 @@ export default function CommentAndRate({ ...props }: TCommentAndRate) {
       return;
     } else {
       const res = await mutateCommand({
-        url: "api/Comments",
+        url: "/Comments",
         body: {
           targetId: TargetId,
           targetType: TargetType,

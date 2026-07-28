@@ -7,7 +7,6 @@ import React, {
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
 
-import { apiBaseUrl } from '@lib/api';
 import { ILandingProduct } from '@models/product';
 import { useGetData } from '@services/base';
 
@@ -16,9 +15,8 @@ import ProductsCarousel from '../productsCarousel';
 function TheMostProducts() {
   const [activeTab, setActiveTab] = useState("BestSeller");
   const [content, setContent] = useState<ILandingProduct[]>();
-  console.log(apiBaseUrl)
-  const { data, isLoading, isFetching } = useGetData<ILandingProduct[], any>({
-    url: `${apiBaseUrl}/Products/landings?${activeTab}=true`,
+  const { data, isLoading, isFetching } = useGetData<ILandingProduct[]>({
+    url: `/Products/landings?${activeTab}=true`,
   });
   const locale = useLocale();
   useEffect(() => {

@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import {
   shallowEqual,
   useDispatch,
@@ -27,12 +26,9 @@ const FinalizeOrder = React.lazy(
   () => import("@components/molecules/finalizeOrder")
 );
 
-function SubmitButton({ ...props }: IProps) {
-  const { locale } = props;
+function SubmitButton(_: IProps) {
   const [itemMutate, { isLoading }] = useGetConditionallyMutation();
   const [modalData, setModalData] = useState<{open:boolean,id:undefined|number}>({open:false,id:undefined});
-  const [syncCart] = useGetConditionallyMutation();
-  const [payResponse] = useGetConditionallyMutation();
   const dispatch = useDispatch();
   const t = useTranslations();
 
@@ -42,12 +38,11 @@ function SubmitButton({ ...props }: IProps) {
     }),
     shallowEqual
   );
-  const route = useRouter();
   const handleSetOrder = async () => {
 
     if (!!ShoppingCart?.address) {
       const order:IBaseQueryResponse<{orderId:number}> = await itemMutate({
-        url: "/api/Orders/CheckoutCart",
+        url: "/Orders/CheckoutCart",
         body: {
           shippingAddressId: ShoppingCart.address.id,
           shippingMethodId: ShoppingCart.shippingMethod?.id,
@@ -122,18 +117,17 @@ function SubmitButton({ ...props }: IProps) {
         >
           <Modal
             open={modalData.open}
-            children={
-              <FinalizeOrder
-              orderId={modalData.id!}
-                onClose={() => {
-                  setModalData({open:false,id:undefined});
-                }}
-              />
-            }
             onClose={() => {
               setModalData({open:false,id:undefined});
             }}
-          />
+          >
+            <FinalizeOrder
+              orderId={modalData.id!}
+              onClose={() => {
+                setModalData({open:false,id:undefined});
+              }}
+            />
+          </Modal>
         </Suspense>
       )}
     </>

@@ -5,13 +5,13 @@ import { getTranslations } from 'next-intl/server';
 import {
   SimpleSupplierCard,
 } from '@components/molecules/supplierCard/simpleSupplierCard';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { PagedResponse } from '@models/base';
 import { IUser } from '@models/user';
 
 export async function CategorySupplierExtended({ id }: { id: number }) {
   const response = await fetch(
-    `${apiBaseUrl}/api/productOffers/getSuppliersByCategoryId?CategoryId=${id}`,
+    `${serverApiBaseUrl}/productOffers/getSuppliersByCategoryId?CategoryId=${id}`,
     {
       cache: "no-store",
     },

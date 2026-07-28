@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/productOffers")]
+[Route("api/[controller]")]
 public class ProductOfferController : BaseController
 {
     private readonly IMediator _mediator;

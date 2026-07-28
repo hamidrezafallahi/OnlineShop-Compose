@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class TagsController : BaseController
 {
     private readonly IMediator _mediator;

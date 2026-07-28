@@ -1,4 +1,4 @@
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import {
   EnumTargetType,
@@ -16,7 +16,7 @@ export default async function ProductComments({ id,locale }: ProductCommentsProp
   if (!id) throw new Error("Product ID is required");
 
   const response = await fetch(
-    `${apiBaseUrl}/api/Comments/${EnumTargetType.Product}/${id}`,
+    `${serverApiBaseUrl}/Comments/${EnumTargetType.Product}/${id}`,
     {
       next: { revalidate: 36 }, // ISR
     },

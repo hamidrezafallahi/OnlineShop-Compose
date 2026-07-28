@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import TagTemplate from '@components/templates/tagTemplate';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { ITag } from '@models/tag';
 
@@ -39,7 +39,7 @@ export async function generateMetadata({
   const { slug } = resolvedParams;
 
   const response = await fetch(
-    `${apiBaseUrl}/Tag/getTagByTagId?tagId=${slug}`,
+    `${serverApiBaseUrl}/Tags/${slug}`,
     { next: { revalidate: 36 } },
   );
   const locale = resolvedParams.locale || "fa";
@@ -71,7 +71,7 @@ export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
-  const response = await fetch(`${apiBaseUrl}/Tags/${slug}`, {
+  const response = await fetch(`${serverApiBaseUrl}/Tags/${slug}`, {
     next: { revalidate: 36 },
   });
   const TagResponse: SimpleResponse<ITag> = await response.json();

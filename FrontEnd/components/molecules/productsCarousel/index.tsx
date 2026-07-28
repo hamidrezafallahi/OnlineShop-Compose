@@ -1,7 +1,6 @@
 "use client";
 import React, {
   useRef,
-  useState,
 } from 'react';
 
 import { useLocale } from 'next-intl';
@@ -13,7 +12,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@components/atoms/iconComponents';
-import { apiBaseUrl } from '@lib/api';
 import { ILandingProduct } from '@models/product';
 import { useGetConditionallyMutation } from '@services/base';
 import {
@@ -32,20 +30,17 @@ export default function ProductsCarousel({
   Loading,
 }: ProductsCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrollPos, setScrollPos] = useState(0);
 
   const scrollAmount = 300;
 
   const scrollLeft = () => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    setScrollPos(scrollRef.current.scrollLeft - scrollAmount);
   };
 
   const scrollRight = () => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    setScrollPos(scrollRef.current.scrollLeft + scrollAmount);
   };
   return (
     <div className="relative w-full">
@@ -124,7 +119,7 @@ function ProductCard({ product }: { product: ILandingProduct }) {
      console.log("clicked");
     if (isAuthenticated) {
       const syncCartResponse = await addToShoppingCart({
-        url: `${apiBaseUrl}/CartItems`,
+        url: '/CartItems',
         body: {
           productId: product.id,
           productOfferId: product.bestOfferId,

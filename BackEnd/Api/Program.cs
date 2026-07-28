@@ -1,12 +1,12 @@
 ﻿using Hangfire;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using OnlineShop.Infrastructure;
+using OnlineShop.Infrastructure.Persistence;
 using System.Text;
 using System.Threading.RateLimiting;
-using Microsoft.OpenApi;
-using Microsoft.AspNetCore.HttpOverrides;
-using OnlineShop.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api
 {
@@ -121,20 +121,25 @@ namespace Api
                 options.AddPolicy("Customer", policy => policy.RequireRole("Customer"));
 
             });
+            var allowedOrigins = builder.Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>()?
+                .Where(origin => !string.IsNullOrWhiteSpace(origin))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray() ?? Array.Empty<string>();
+
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowFrontend",
-                    policy =>
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    if (allowedOrigins.Length > 0)
                     {
-                        policy.WithOrigins(
-                "http://localhost",
-                "http://localhost:3000",
-                "http://localhost:3001"
-            )
-                              .AllowAnyHeader()
-                              .AllowAnyMethod()
-                              .AllowCredentials();
-                    });
+                        policy.WithOrigins(allowedOrigins)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    }
+                });
             });
 
 
@@ -142,14 +147,21 @@ namespace Api
 
 
             var app = builder.Build();
-app.UseForwardedHeaders();
+            app.UseForwardedHeaders();
 
-            // if (app.Environment.IsDevelopment())
-            // {
+            var swaggerEnabled = app.Environment.IsDevelopment() ||
+                builder.Configuration.GetValue<bool>("Swagger:Enabled");
+
+            if (swaggerEnabled)
+            {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            // }
+            }
+
+            if (allowedOrigins.Length > 0)
+            {
                 app.UseCors("AllowFrontend");
+            }
             app.IntializeDatabase();
             app.UseStaticFiles();
             app.UseMiddleware<BlacklistMiddleware>();

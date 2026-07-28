@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers
 {
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
     public class CartsController : BaseController
     {
         private readonly IMediator _mediator;

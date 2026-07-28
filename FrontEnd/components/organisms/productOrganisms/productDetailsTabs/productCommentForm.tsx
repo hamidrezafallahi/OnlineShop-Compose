@@ -33,7 +33,7 @@ const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSetRate = async (e: number) => {
     const res = await mutateRate({
-      url: "api/Rates",
+      url: "/Rates",
       body: {
         targetId: id,
         targetType: EnumTargetType.Product,
@@ -54,7 +54,7 @@ const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
       return;
     } else {
       const res = await mutateCommand({
-        url: "api/Comments",
+        url: "/Comments",
         body: {
           targetId: id,
           targetType: EnumTargetType.Product,

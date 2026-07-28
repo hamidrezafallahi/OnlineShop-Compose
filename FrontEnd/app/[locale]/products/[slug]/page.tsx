@@ -11,7 +11,7 @@ import {
   ProductSupplierExtended,
 } from '@components/organisms/productOrganisms/productSuppliers';
 import ProductTags from '@components/organisms/productOrganisms/productTags';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 
 // === 1. تولید مسیرهای استاتیک ===
 // export async function generateStaticParams() {
@@ -73,7 +73,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const { slug, locale = 'fa' } = resolvedParams;  
-    const response = await fetch(`${apiBaseUrl}/Products/${slug}`,{next: { revalidate: 36 }});
+    const response = await fetch(`${serverApiBaseUrl}/Products/${slug}`,{next: { revalidate: 36 }});
     if (response.status === 404) {
       return {
         title: locale === 'fa' ? "محصول پیدا نشد" : "Product Not Found",
@@ -126,7 +126,7 @@ export default async function ProductPage({
 }) {
   try {
     const { slug, locale } = await params;   
-    const response = await fetch(`${apiBaseUrl}/Products/${slug}`, {
+    const response = await fetch(`${serverApiBaseUrl}/Products/${slug}`, {
       next: { revalidate: 36 } // ISR
     });
     if (response.status === 404) {
@@ -160,7 +160,7 @@ export default async function ProductPage({
       </div>
     );
     
-  } catch (error) {
+  } catch {
     return (
       <div className="pt-24">
         <div className="mx-auto px-4 py-20 max-w-7xl text-center">

@@ -6,14 +6,14 @@ import {
 } from 'next/cache';
 import { cookies } from 'next/headers';
 
-import { apiBaseUrl } from './api';
+import { serverApiBaseUrl } from './api';
 
 export async function approveComment(field:string,formData: FormData) {
   const id = formData.get('id') as string;
   const isApprove = formData.get('isApproved') === 'true';
     const cookieStore =await cookies();
   const token = cookieStore.get('candyAccess')?.value;
-   const response = await fetch(`${apiBaseUrl}/${field}/approve`, {
+   const response = await fetch(`${serverApiBaseUrl}/${field}/approve`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json', 

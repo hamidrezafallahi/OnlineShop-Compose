@@ -6,7 +6,6 @@ import {
   SpinnerIcon,
   Trash2Icon,
 } from '@components/atoms/iconComponents';
-import { apiBaseUrl } from '@lib/api';
 import { useGetConditionallyMutation } from '@services/base';
 import { removeFromCart } from '@slice/shoppingCartSlice';
 import { getCookie } from '@utils/core';
@@ -23,7 +22,7 @@ function RemoveButton({ ...props }: ShoppingCartButtonProps ) {
   const removeHandler = async (id: number) => {
     if (isAuthenticated) {
       const syncCartResponse = await itemMutate({
-        url: `${apiBaseUrl}/CartItems/removeProductFromCart/${cartItemId}`,
+        url: `/CartItems/removeProductFromCart/${cartItemId}`,
         method: "DELETE",
       }).unwrap();
       if (syncCartResponse.isSuccess) {

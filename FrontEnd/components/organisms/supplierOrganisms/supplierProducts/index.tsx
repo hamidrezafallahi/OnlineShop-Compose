@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { ApiResponse } from '@models/base';
 import { IDetailedProductOffer } from '@models/product';
 
@@ -10,7 +10,7 @@ export async function SupplierProducts(props: {
   id: number; // IDetailedProduct[]
 }) {
   const { id } = props;
-  const response = await fetch(`${apiBaseUrl}/api/productOffers/by-seller/${id}`, {
+  const response = await fetch(`${serverApiBaseUrl}/productOffers/by-seller/${id}`, {
     next: { revalidate: 36 },
   });
   const res: ApiResponse<IDetailedProductOffer> = await response.json();

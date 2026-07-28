@@ -1,11 +1,11 @@
 import { Rate } from '@components/atoms/defaultElements/customRate';
-import { apiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { EnumTargetType } from '@models/comment';
 import { IRate } from '@models/rate';
 
 export default async function ProductRate({ id }: {id:number}) {
-  const response = await fetch(`${apiBaseUrl}/api/Rates/average?targetType=${EnumTargetType.Product}&targetId=${id}`,{next: { revalidate: 36 }});
+  const response = await fetch(`${serverApiBaseUrl}/Rates/average?targetType=${EnumTargetType.Product}&targetId=${id}`,{next: { revalidate: 36 }});
   const rate: SimpleResponse<IRate> = await response.json();
   return (
     <div className="flex items-center gap-2">

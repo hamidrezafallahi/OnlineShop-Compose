@@ -3,12 +3,12 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { apiBaseUrl } from './api';
+import { serverApiBaseUrl } from './api';
 
 type FetchOptions = {
   endpoint: string;
   method?: string;
-  body?: any;
+  body?: FormData | Record<string, unknown> | null;
 };
 
 export async function authenticatedFetch<T>({
@@ -22,7 +22,7 @@ export async function authenticatedFetch<T>({
   let refreshToken = cookieStore.get('candyRefresh')?.value;
 
   async function execute(token?: string) {
-    return fetch(`${apiBaseUrl}/${endpoint}`, {
+    return fetch(`${serverApiBaseUrl}/${endpoint}`, {
       method,
       headers: getHeaders(body, token),
       body: body instanceof FormData
@@ -75,7 +75,10 @@ export async function authenticatedFetch<T>({
   return response.json();
 }
 
-function getHeaders(body: any, token?: string) {
+function getHeaders(
+  body: FetchOptions['body'],
+  token?: string
+) {
   const headers: Record<string, string> = {};
 
   if (token) {
@@ -98,7 +101,7 @@ async function refreshTokens({
 }) {
   try {
     const response = await fetch(
-      `${apiBaseUrl}api/Identity/refresh-token`,
+      `${serverApiBaseUrl}/Identity/refresh-token`,
       {
         method: 'POST',
         headers: {
@@ -133,7 +136,7 @@ async function refreshTokens({
   }
 }
 
-function clearTokens(cookieStore: any) {
+function clearTokens(cookieStore: Awaited<ReturnType<typeof cookies>>) {
   cookieStore.delete('candyAccess');
   cookieStore.delete('candyRefresh');
 }

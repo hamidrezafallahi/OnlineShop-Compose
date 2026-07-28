@@ -14,7 +14,8 @@ interface IProps {
 }
 export default function AdminCategoryTemplate({ ...props }: IProps) {
   const { categories, entityFormConfig } = props;
-  const [defaultValues,setDefaultValues]=useState<ITreeContext|undefined>(undefined)
+  const [defaultValues, setDefaultValues] =
+    useState<Partial<ITreeContext> | undefined>(undefined);
   const mapCategoryToContext = (cat: ITreeContext): ITreeContext => ({
     id: cat.id,
     parentCategoryId:cat.parentCategoryId,
@@ -38,7 +39,12 @@ export default function AdminCategoryTemplate({ ...props }: IProps) {
       >
         {t("general.new")}
       </Button>
-      <Tree data={content} clickable endPoint={entityFormConfig.endPoint} onClick={(e:ITreeContext) => setDefaultValues(e)} />
+      <Tree
+        data={content}
+        clickable
+        endPoint={entityFormConfig.endPoint}
+        onClick={(node) => setDefaultValues(node)}
+      />
       <FormGenerator entityFormConfig={entityFormConfig} defaultValues={defaultValues}/>
     </div>
   );
