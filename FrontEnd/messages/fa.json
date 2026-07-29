@@ -205,7 +205,48 @@
     "expandMenu": "باز کردن منو",
     "openMenu": "باز کردن منوی ادمین",
     "closeMenu": "بستن منوی ادمین",
-    "menuEmpty": "منویی برای نمایش وجود ندارد"
+    "menuEmpty": "منویی برای نمایش وجود ندارد",
+    "seoDashboardTitle": "داشبورد پیشرفته سئو",
+    "seoDashboardSubtitle": "مدیریت متمرکز metadata، canonical، robots و اولویت صفحات برای کل فروشگاه",
+    "seoManageRules": "مدیریت قوانین سئو",
+    "seoRulesCount": "قوانین فعال",
+    "seoRulesHint": "قواعد صفحه و الگوهای SEO از همین بخش کنترل می‌شوند.",
+    "seoStrategyTitle": "کنترل متمرکز SEO",
+    "seoStrategyHint": "برای پروژه‌های پیشرفته، نگهداری ruleهای SEO در دیتابیس باعث می‌شود بدون deploy مجدد بتوانید metadata مسیرها، صفحه‌های لیستی و جزئیات را به‌روزرسانی کنید.",
+    "seoQuickActions": "اقدام‌های کلیدی",
+    "seoQuickActionsHint": "از این میان‌برها برای مدیریت ruleها و صفحه‌های مهم سئو استفاده کنید.",
+    "seoWorkflowTitle": "گردش‌کار پیشنهادی",
+    "seoWorkflowDescription": "ابتدا یک rule دقیق یا prefix برای مسیر هدف بسازید، سپس محتوای صفحه را در موجودیت مربوطه تکمیل کنید و در نهایت خروجی metadata را در build و صفحه نهایی بررسی کنید.",
+    "seoWorkflow": {
+      "step1Title": "1. تعریف Rule",
+      "step1Desc": "برای مسیرهایی مثل `products`، `blog` یا `products/some-slug` قانون مجزا بسازید.",
+      "step2Title": "2. تکمیل محتوا",
+      "step2Desc": "برای موجودیت‌هایی مثل `blogs` و `products` عنوان، توضیحات و تصویر مناسب را تکمیل کنید.",
+      "step3Title": "3. اعتبارسنجی خروجی",
+      "step3Desc": "بعد از ذخیره، canonical، robots و Open Graph را در خروجی صفحه و build بررسی کنید."
+    },
+    "seoCards": {
+      "rules": {
+        "title": "قوانین متمرکز SEO",
+        "description": "مدیریت title، description، keywords، canonical و robots برای مسیرها و الگوهای مسیر."
+      },
+      "blogs": {
+        "title": "SEO مقالات",
+        "description": "بهینه‌سازی محتوای بلاگ، slug و فیلدهای متای مقاله‌ها."
+      },
+      "products": {
+        "title": "SEO محصولات",
+        "description": "بازبینی عنوان، توضیحات و تصویر شاخص صفحه‌های محصول."
+      },
+      "categories": {
+        "title": "SEO دسته‌بندی‌ها",
+        "description": "هدایت سئوی صفحه‌های لیستی و ساختار دسته‌بندی‌ها."
+      },
+      "brands": {
+        "title": "SEO برندها",
+        "description": "کنترل سئوی landing page برندها و صفحات فهرست برند."
+      }
+    }
   },
   "register": {
     "enter":"ورود",

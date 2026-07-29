@@ -73,15 +73,6 @@
   --warning-color: #f59e0b;
   --info-color: #3b82f6;
 }
-.shadow-neu {
-  box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
-}
-
-/* نور داخلی روشن */
-.shadow-inner-glow {
-  box-shadow: inset 4px 4px 10px #34d399, inset -4px -4px 10px #a6f4c5;
-}
-
 @layer base {
   :root {
     --sidebar-background: 0 0% 98%;
@@ -103,9 +94,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-}
-
-@layer base {
   * {
     @apply border-border;
   }
@@ -187,11 +175,11 @@ html {
   .admin-sidebar {
     @apply fixed inset-y-0 start-0 z-50 h-dvh shrink-0 transition-transform duration-300 ease-out pointer-events-none;
     width: min(268px, 88vw);
-    transform: translateX(-105%);
+    transform: translate3d(calc(-100% - 1rem), 0, 0);
   }
 
   [dir="rtl"] .admin-sidebar {
-    transform: translateX(105%);
+    transform: translate3d(calc(100% + 1rem), 0, 0);
   }
 
   .admin-sidebar.is-open,
@@ -247,12 +235,6 @@ html {
     border-radius: var(--admin-radius);
     box-shadow: var(--admin-shadow);
     backdrop-filter: blur(12px);
-  }
-
-  .admin-panel-muted {
-    background: var(--admin-surface-muted);
-    border: 1px solid var(--admin-border);
-    border-radius: var(--admin-radius-sm);
   }
 
   .admin-page {
@@ -324,12 +306,6 @@ html {
 
   .admin-btn-ghost {
     background: transparent;
-  }
-
-  .admin-btn-danger {
-    background: var(--admin-danger-soft);
-    border-color: color-mix(in srgb, var(--error-color) 30%, transparent);
-    color: var(--error-color);
   }
 
   .admin-icon-btn {
@@ -421,11 +397,6 @@ html {
   .admin-record-card-value {
     @apply min-w-0 text-end break-words;
     color: var(--admin-text);
-  }
-
-  .admin-pagination-bar {
-    @apply flex justify-center sm:justify-end p-3 sm:p-4 border-t;
-    border-color: var(--admin-border);
   }
 
   .admin-pagination {
@@ -583,10 +554,6 @@ html {
     border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
   }
 
-  .store-card-body {
-    @apply flex flex-col gap-2 p-4 sm:p-5;
-  }
-
   .store-btn {
     @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200;
     border: 1px solid var(--store-border);
@@ -643,11 +610,6 @@ html {
   .store-section-title {
     @apply mb-2 font-bold text-2xl sm:text-3xl tracking-tight;
     color: var(--store-text);
-  }
-
-  .store-section-subtitle {
-    @apply mb-8 max-w-2xl text-sm sm:text-base;
-    color: var(--store-text-muted);
   }
 
   .store-hero {

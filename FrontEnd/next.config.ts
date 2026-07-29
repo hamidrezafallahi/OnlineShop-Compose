@@ -24,7 +24,6 @@ const nextConfig: NextConfig = {
 
   // ─── Images ──────────────────────────────────────────────────────────────
   images: {
-    domains: ["i.pravatar.cc"],
     remotePatterns: [
       {
         protocol: "http",

@@ -86,7 +86,9 @@ namespace OnlineShop.Infrastructure.Configurations
                 CreateSpecialOffersEntity(),
                 CreateLandingSlidesEntity(),
                 CreateRatesEntity(),
-                CreateProductSpecificationsEntity()
+                CreateProductSpecificationsEntity(),
+                CreateSeoSettingsEntity(),
+                CreateSeoDashboardEntity()
             //CreateCartsEntity(),
             //CreateOrdersEntity(),
 
@@ -2229,6 +2231,88 @@ namespace OnlineShop.Infrastructure.Configurations
                     } }),
                 IsActive = true,
                     CreatedAt = new DateTime(2026, 1, 1),
+                CreatedBy = 1,
+                IsDeleted = false
+            };
+        }
+
+        private static object CreateSeoSettingsEntity()
+        {
+            return new
+            {
+                Id = 28,
+                EntityName = "seoSettings",
+                PersianDisplayName = "قوانین سئو",
+                EnglishDisplayName = "SEO Rules",
+                EndPoint = "seoSettings",
+                EntityIconBase64 = @"<svg xmlns=""http://www.w3.org/2000/svg"" fill=""none"" viewBox=""0 0 24 24"" stroke-width=""1.5"" stroke=""currentColor"" class=""size-6""><path stroke-linecap=""round"" stroke-linejoin=""round"" d=""M9 12.75 11.25 15 15 9.75m6 2.25a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"" /></svg>",
+                ActionsJson = JsonSerializer.Serialize(new List<string> { "active", "edit", "delete", "new" }),
+                ColumnsJson = JsonSerializer.Serialize(new List<JsonDefinition>
+                {
+                    new JsonDefinition { Header = "شناسه", Accessor = "id", Type = "number", Sortable = false, Filterable = false },
+                    new JsonDefinition { Header = "مسیر", Accessor = "routePath", Type = "text", Sortable = true, Filterable = true },
+                    new JsonDefinition { Header = "نوع تطبیق", Accessor = "matchType", Type = "text", Sortable = true, Filterable = true },
+                    new JsonDefinition { Header = "عنوان فارسی", Accessor = "titleFa", Type = "text", Sortable = false, Filterable = false },
+                    new JsonDefinition { Header = "Canonical", Accessor = "canonicalPath", Type = "text", Sortable = false, Filterable = false },
+                    new JsonDefinition { Header = "Priority", Accessor = "priority", Type = "number", Sortable = true, Filterable = false }
+                }),
+                FormFieldsJson = JsonSerializer.Serialize(new List<FormFieldDefinition>
+                {
+                    new FormFieldDefinition
+                    {
+                        Name = "routePath",
+                        Caption = "مسیر صفحه",
+                        Type = "text",
+                        PlaceHolder = "مثلاً: products یا products/samsung-tv",
+                        Help = "مسیر را بدون locale وارد کنید. برای صفحه اصلی خالی بگذارید.",
+                        Rules = new List<ValidationRule>
+                        {
+                            new ValidationRule { Rule = "required", Condition = "true", Message = "مسیر صفحه الزامی است" }
+                        }
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "matchType",
+                        Caption = "نوع تطبیق",
+                        Type = "text",
+                        PlaceHolder = "exact یا prefix",
+                        Help = "برای همان مسیر exact و برای تمام زیرمسیرها prefix را وارد کنید"
+                    },
+                    new FormFieldDefinition { Name = "titleFa", Caption = "SEO Title فارسی", Type = "text", PlaceHolder = "عنوان سئوی فارسی" },
+                    new FormFieldDefinition { Name = "titleEn", Caption = "SEO Title انگلیسی", Type = "text", PlaceHolder = "English SEO title" },
+                    new FormFieldDefinition { Name = "descriptionFa", Caption = "Meta Description فارسی", Type = "textarea", PlaceHolder = "حداکثر حدود 160 کاراکتر" },
+                    new FormFieldDefinition { Name = "descriptionEn", Caption = "Meta Description انگلیسی", Type = "textarea", PlaceHolder = "About 160 characters" },
+                    new FormFieldDefinition { Name = "keywordsFa", Caption = "Keywords فارسی", Type = "text", PlaceHolder = "کلمات کلیدی با کاما" },
+                    new FormFieldDefinition { Name = "keywordsEn", Caption = "Keywords انگلیسی", Type = "text", PlaceHolder = "keyword1, keyword2" },
+                    new FormFieldDefinition { Name = "canonicalPath", Caption = "Canonical Path", Type = "text", PlaceHolder = "مثلاً: products/samsung-tv" },
+                    new FormFieldDefinition { Name = "ogImageUrl", Caption = "Open Graph Image", Type = "text", PlaceHolder = "/images/og/default.jpg" },
+                    new FormFieldDefinition { Name = "priority", Caption = "Priority", Type = "number", PlaceHolder = "اعداد بزرگ‌تر اولویت بالاتر دارند" },
+                    new FormFieldDefinition { Name = "robotsIndex", Caption = "Index شود", Type = "checkbox", Help = "اگر خاموش باشد، noindex اعمال می‌شود" },
+                    new FormFieldDefinition { Name = "robotsFollow", Caption = "Follow شود", Type = "checkbox", Help = "اگر خاموش باشد، nofollow اعمال می‌شود" },
+                    new FormFieldDefinition { Name = "notes", Caption = "یادداشت", Type = "textarea", PlaceHolder = "یادداشت داخلی برای تیم محتوا/سئو" }
+                }),
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 1, 1),
+                CreatedBy = 1,
+                IsDeleted = false
+            };
+        }
+
+        private static object CreateSeoDashboardEntity()
+        {
+            return new
+            {
+                Id = 29,
+                EntityName = "seo",
+                PersianDisplayName = "داشبورد سئو",
+                EnglishDisplayName = "SEO Dashboard",
+                EndPoint = "seo",
+                EntityIconBase64 = @"<svg xmlns=""http://www.w3.org/2000/svg"" fill=""none"" viewBox=""0 0 24 24"" stroke-width=""1.5"" stroke=""currentColor"" class=""size-6""><path stroke-linecap=""round"" stroke-linejoin=""round"" d=""M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h12m-9 4.5 3.75-3.75M15 21l3.75-3.75M7.5 12h.008v.008H7.5V12Zm4.5-3h.008v.008H12V9Zm4.5-3h.008v.008H16.5V6Z"" /></svg>",
+                ActionsJson = JsonSerializer.Serialize(new List<string>()),
+                ColumnsJson = JsonSerializer.Serialize(new List<JsonDefinition>()),
+                FormFieldsJson = JsonSerializer.Serialize(new List<FormFieldDefinition>()),
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 1, 1),
                 CreatedBy = 1,
                 IsDeleted = false
             };

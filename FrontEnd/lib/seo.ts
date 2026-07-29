@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 
-import { siteBaseUrl } from '@lib/api';
+import {
+  serverApiBaseUrl,
+  siteBaseUrl,
+} from '@lib/api';
 
 export const DEFAULT_LOCALE = 'fa' as const;
 export const LOCALES = ['fa', 'en'] as const;
@@ -52,7 +55,63 @@ type BuildPageMetadataInput = {
   keywords?: string[];
 };
 
-export function buildPageMetadata({
+type SeoOverride = {
+  title?: string | null;
+  description?: string | null;
+  keywords?: string | null;
+  canonicalPath?: string | null;
+  ogImageUrl?: string | null;
+  robotsIndex?: boolean;
+  robotsFollow?: boolean;
+};
+
+async function getSeoOverride(locale: string, path = ''): Promise<SeoOverride | null> {
+  const normalizedPath = cleanPath(path);
+
+  try {
+    const url = new URL(`${serverApiBaseUrl}/seoSettings/resolve`);
+    url.searchParams.set('path', normalizedPath);
+    url.searchParams.set('locale', locale);
+
+    const res = await fetch(url.toString(), {
+      next: { revalidate: 300, tags: ['seoSettings'] },
+    });
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const json = await res.json();
+    return json?.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function splitKeywords(keywords?: string[] | string | null): string[] | undefined {
+  if (Array.isArray(keywords)) {
+    return keywords.length ? keywords : undefined;
+  }
+
+  if (!keywords) {
+    return undefined;
+  }
+
+  const parsed = keywords
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return parsed.length ? parsed : undefined;
+}
+
+function toAbsoluteAssetUrl(url: string): string {
+  return url.startsWith('http')
+    ? url
+    : `${siteBaseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
+export async function buildPageMetadata({
   locale,
   path = '',
   title,
@@ -61,26 +120,34 @@ export function buildPageMetadata({
   type = 'website',
   noIndex = false,
   keywords,
-}: BuildPageMetadataInput): Metadata {
-  const url = absoluteUrl(locale, path);
-  const ogImages = images
+}: BuildPageMetadataInput): Promise<Metadata> {
+  const seoOverride = await getSeoOverride(locale, path);
+  const resolvedTitle = seoOverride?.title?.trim() || title;
+  const resolvedDescription = seoOverride?.description?.trim() || description;
+  const resolvedCanonicalPath = seoOverride?.canonicalPath?.trim() || path;
+  const resolvedNoIndex = seoOverride?.robotsIndex === false ? true : noIndex;
+  const resolvedFollow = seoOverride?.robotsFollow ?? true;
+  const resolvedKeywords = splitKeywords(seoOverride?.keywords ?? keywords);
+  const resolvedImages = seoOverride?.ogImageUrl
+    ? [seoOverride.ogImageUrl, ...images]
+    : images;
+  const url = absoluteUrl(locale, resolvedCanonicalPath);
+  const ogImages = resolvedImages
     .filter((img): img is string => Boolean(img))
-    .map((img) =>
-      img.startsWith('http') ? img : `${siteBaseUrl}${img.startsWith('/') ? '' : '/'}${img}`
-    );
+    .map((img) => toAbsoluteAssetUrl(img));
 
   return {
     metadataBase: new URL(siteBaseUrl),
-    title,
-    description,
-    keywords,
-    alternates: buildAlternates(locale, path),
-    robots: noIndex
+    title: resolvedTitle,
+    description: resolvedDescription,
+    keywords: resolvedKeywords,
+    alternates: buildAlternates(locale, resolvedCanonicalPath),
+    robots: resolvedNoIndex
       ? { index: false, follow: false }
-      : { index: true, follow: true },
+      : { index: true, follow: resolvedFollow },
     openGraph: {
-      title,
-      description,
+      title: resolvedTitle,
+      description: resolvedDescription,
       url,
       siteName: SITE_NAME,
       locale: ogLocale(locale),
@@ -91,8 +158,8 @@ export function buildPageMetadata({
     },
     twitter: {
       card: ogImages.length ? 'summary_large_image' : 'summary',
-      title,
-      description,
+      title: resolvedTitle,
+      description: resolvedDescription,
       images: ogImages.length ? ogImages : undefined,
     },
   };

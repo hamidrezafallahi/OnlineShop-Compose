@@ -3,6 +3,8 @@ import type { MetadataRoute } from 'next';
 import { serverApiBaseUrl } from '@lib/api';
 import { absoluteUrl, DEFAULT_LOCALE } from '@lib/seo';
 
+export const revalidate = 3600;
+
 type ChangeFreq =
   | 'always'
   | 'hourly'
@@ -39,7 +41,7 @@ function buildEntry(
 async function fetchSlugs(endpoint: string): Promise<SlugItem[]> {
   try {
     const res = await fetch(`${serverApiBaseUrl}/${endpoint}`, {
-      cache: 'no-store',
+      next: { revalidate },
     });
 
     if (!res.ok) {

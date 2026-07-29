@@ -205,7 +205,48 @@
     "expandMenu": "Expand menu",
     "openMenu": "Open admin menu",
     "closeMenu": "Close admin menu",
-    "menuEmpty": "No menu items available"
+    "menuEmpty": "No menu items available",
+    "seoDashboardTitle": "Advanced SEO Dashboard",
+    "seoDashboardSubtitle": "Manage metadata, canonical tags, robots, and page priorities across the storefront",
+    "seoManageRules": "Manage SEO rules",
+    "seoRulesCount": "Active rules",
+    "seoRulesHint": "Route-level SEO rules are managed from this section.",
+    "seoStrategyTitle": "Centralized SEO control",
+    "seoStrategyHint": "In advanced projects, storing SEO rules in the database lets the team update route metadata, list pages, and detail pages without shipping a new frontend build.",
+    "seoQuickActions": "Key actions",
+    "seoQuickActionsHint": "Use these shortcuts to manage SEO rules and high-value content areas.",
+    "seoWorkflowTitle": "Recommended workflow",
+    "seoWorkflowDescription": "Create an exact or prefix rule for the target route, complete the content SEO fields in the related entity, then validate the rendered metadata in the final page and build output.",
+    "seoWorkflow": {
+      "step1Title": "1. Define a rule",
+      "step1Desc": "Create specific rules for routes like `products`, `blog`, or `products/some-slug`.",
+      "step2Title": "2. Complete content",
+      "step2Desc": "Fill in the best title, description, and image values in content entities such as `blogs` and `products`.",
+      "step3Title": "3. Validate output",
+      "step3Desc": "After saving, verify canonical, robots, and Open Graph output in the rendered page and build."
+    },
+    "seoCards": {
+      "rules": {
+        "title": "Central SEO Rules",
+        "description": "Manage title, description, keywords, canonical, and robots for routes and route patterns."
+      },
+      "blogs": {
+        "title": "Blog SEO",
+        "description": "Optimize article content, slugs, and metadata fields."
+      },
+      "products": {
+        "title": "Product SEO",
+        "description": "Review titles, descriptions, and primary images for product detail pages."
+      },
+      "categories": {
+        "title": "Category SEO",
+        "description": "Control SEO for listing pages and category structure."
+      },
+      "brands": {
+        "title": "Brand SEO",
+        "description": "Manage brand landing pages and brand listing SEO."
+      }
+    }
   },
   "register": {
     "enter":"Enter",

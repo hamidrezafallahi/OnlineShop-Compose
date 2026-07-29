@@ -60,7 +60,7 @@ function MobileMenu() {
         aria-label={t('mainNav')}
         className={`
           fixed top-0 bottom-0 z-[70] flex flex-col gap-4 p-5 w-[min(100%,20rem)]
-          bg-[var(--store-surface-solid)] text-[var(--store-text)] shadow-2xl
+          border border-[var(--store-border)] bg-[color-mix(in_srgb,var(--store-surface)_82%,transparent)] text-[var(--store-text)] shadow-2xl backdrop-blur-xl
           transition-transform duration-300 ease-in-out
           ${
             isOpen
