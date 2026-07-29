@@ -12,7 +12,7 @@ export function Label({ children, htmlFor, className = "" }: LabelProps) {
   return (
     <label
       htmlFor={htmlFor}
-      className={`block text-sm font-medium text-white   dark:text-gray-300 ${className}`}
+      className={`block text-sm font-medium text-[var(--store-text)] dark:text-gray-300 ${className}`}
     >
       {children}
     </label>

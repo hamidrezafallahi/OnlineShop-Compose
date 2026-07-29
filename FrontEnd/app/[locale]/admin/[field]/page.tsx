@@ -27,5 +27,19 @@ export default async function Page({
     filter,
   });
 
-  return <AdminList list={list?.data} entity={entity} />;
+  return (
+    <AdminList
+      list={
+        list?.data as
+          | {
+              records?: Record<string, unknown>[];
+              actionsJson?: string;
+              columnsJson?: string;
+              totalCount?: number;
+            }
+          | undefined
+      }
+      entity={entity}
+    />
+  );
 }

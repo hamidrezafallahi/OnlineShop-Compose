@@ -17,7 +17,7 @@ import { Button } from '@components/atoms/defaultElements/customButton';
 import { Checkbox } from '@components/atoms/defaultElements/customCheckbox';
 import { Input } from '@components/atoms/defaultElements/customInput';
 import { Label } from '@components/atoms/defaultElements/label';
-import { browserAuthBaseUrl } from '@lib/api';
+import { apiBaseUrl } from '@lib/api';
 import { cn } from '@lib/utils';
 import { SynchronousResponse } from '@models/product';
 import { useGetConditionallyMutation } from '@services/base';
@@ -32,8 +32,6 @@ import {
   IProps,
   TokenPayload,
 } from './type';
-
-;
 
 export function LoginForm({
   className,
@@ -71,15 +69,14 @@ export function LoginForm({
   const handleLogin = async () => {
     try {
        setIsLoading(true);
-          const res = await fetch(`${browserAuthBaseUrl}/login`, {
-      method: 'POST',
-      headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(`${apiBaseUrl}/Identity/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      credentials: "include",
-      body:  JSON.stringify(login),
-    });
-  
+        body: JSON.stringify(login),
+      });
+
 
       const data: IBaseQueryResponse<ILoginResponse> =
         await res.json();
@@ -171,7 +168,7 @@ export function LoginForm({
         <div>
           <Label
             htmlFor="email"
-            className="block mb-2 font-medium text-gray-900 dark:text-white text-sm"
+            className="block mb-2 font-medium text-gray-900 text-sm  "
           >
             {t("register.email")}
           </Label>
