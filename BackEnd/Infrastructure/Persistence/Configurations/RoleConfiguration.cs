@@ -11,14 +11,14 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
                .IsRequired()
                .HasMaxLength(100);
 
-        // اگر بخوای Seed Data اولیه بزنی
+        var seedCreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         builder.HasData(
-            new Role { Id = 1, RoleName = "SuperAdmin" },
-            new Role { Id = 2, RoleName = "Admin" },
-            new Role { Id = 3, RoleName = "StoreManager" },
-            new Role { Id = 4, RoleName = "Support" },
-            new Role { Id = 5, RoleName = "ContentEditor" },
-            new Role { Id = 6, RoleName = "Customer" }
+            new { Id = 1, RoleName = "SuperAdmin", CreatedAt = seedCreatedAt, IsActive = true, IsDeleted = false },
+            new { Id = 2, RoleName = "Admin", CreatedAt = seedCreatedAt, IsActive = true, IsDeleted = false },
+            new { Id = 3, RoleName = "StoreManager", CreatedAt = seedCreatedAt, IsActive = true, IsDeleted = false },
+            new { Id = 4, RoleName = "Support", CreatedAt = seedCreatedAt, IsActive = true, IsDeleted = false },
+            new { Id = 5, RoleName = "ContentEditor", CreatedAt = seedCreatedAt, IsActive = true, IsDeleted = false },
+            new { Id = 6, RoleName = "Customer", CreatedAt = seedCreatedAt, IsActive = true, IsDeleted = false }
         );
     }
 }

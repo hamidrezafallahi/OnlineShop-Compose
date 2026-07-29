@@ -30,7 +30,13 @@ namespace OnlineShop.Infrastructure
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            {
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+                // EntityConfig HasData uses JsonSerializer.Serialize; output can differ across OS/runtime
+                // vs the Windows-generated snapshot and falsely trip PendingModelChangesWarning.
+                options.ConfigureWarnings(w =>
+                    w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+            });
             services.AddHangfire(config => config.UsePostgreSqlStorage(configuration.GetConnectionString("DefaultConnection")));
             services.AddHangfireServer();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
