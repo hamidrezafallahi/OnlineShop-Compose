@@ -1,20 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace OnlineShop.Infrastructure.Persistence.Configurations
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
-        private readonly IPasswordHasher<User> _passwordHasher;
-
-        // Constructor برای تزریق PasswordHasher
-        public UserConfiguration(IPasswordHasher<User> passwordHasher)
-        {
-            _passwordHasher = passwordHasher;
-        }
-
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(b => b.Id);
@@ -59,35 +50,6 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
                    .WithOne(c => c.User)
                    .HasForeignKey<Cart>(c => c.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
-
-            // ===== Seed Data =====
-            var tempUser = User.Create(
-                "مدیر سیستم",
-                "hamidreza.lipar@gmail.com",
-                "09121720295",
-                "مدیر اصلی سیستم"
-            );
-            
-            // هش کردن پسورد
-            var hashedPassword = _passwordHasher.HashPassword(tempUser, "Admin@123");
-
-            builder.HasData(
-                new
-                {
-                    Id = 1,
-                    FullName = "مدیر سیستم",
-                    Email = "hamidreza.lipar@gmail.com",
-                    PhoneNumber = "09121720295",
-                    Password = hashedPassword,  // استفاده از متغیر هش شده
-                    Image = "",
-                    UserDescription = "مدیر اصلی سیستم",
-                    RoleId = 1,
-                    IsActive = true,
-                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    CreatedBy = 1,
-                    IsDeleted = false
-                }
-            );
         }
     }
 }

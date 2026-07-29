@@ -75,6 +75,7 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<ISeoSettingRepository, SeoSettingRepository>();
             services.AddHttpContextAccessor();
             services.AddScoped<IDataInitializer, EntityConfigApiUrlNormalizer>();
+            services.AddScoped<IDataInitializer, AdminUserInitializer>();
             return services;
         }
     }

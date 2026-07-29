@@ -434,14 +434,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Carts");
@@ -2076,15 +2071,18 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -2098,7 +2096,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
@@ -2110,9 +2109,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("UserDescription")
-                        .HasColumnType("text");
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 
@@ -2505,14 +2508,10 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("OnlineShop.Domain.Entities.Cart", b =>
                 {
                     b.HasOne("OnlineShop.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("OnlineShop.Domain.Entities.User", null)
                         .WithOne("Cart")
-                        .HasForeignKey("OnlineShop.Domain.Entities.Cart", "UserId1");
+                        .HasForeignKey("OnlineShop.Domain.Entities.Cart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -2675,7 +2674,8 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Dimensions");
+                    b.Navigation("Dimensions")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Entities.ProductImage", b =>
@@ -2773,7 +2773,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
@@ -2782,7 +2782,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("OnlineShop.Domain.Entities.UserAddress", b =>
                 {
                     b.HasOne("OnlineShop.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2911,6 +2911,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("OnlineShop.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("Blogs");
 
                     b.Navigation("Cart");

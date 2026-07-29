@@ -12,16 +12,10 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
             builder.Property(b => b.Id)
                    .ValueGeneratedOnAdd();
 
-            builder.HasOne(c => c.User)
-                   .WithMany()
-                   .HasForeignKey(c => c.UserId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            // رابطه با آیتم‌های سبد
             builder.HasMany(c => c.Items)
                    .WithOne(i => i.Cart)
                    .HasForeignKey(i => i.CartId)
-                   .OnDelete(DeleteBehavior.Cascade);  
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
