@@ -56,8 +56,28 @@ export default async function AdminPage() {
         </div>
 
         {items.length === 0 ? (
-          <div className="admin-panel admin-empty">
-            <p className="admin-empty-title">{t('admin.menuEmpty')}</p>
+          <div className="gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="admin-panel admin-empty sm:col-span-2 lg:col-span-3 xl:col-span-3">
+              <p className="admin-empty-title">{t('admin.menuEmpty')}</p>
+            </div>
+            <Link
+              href={`/${locale}/admin/backup`}
+              className="admin-stat-card group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex justify-center items-center bg-[var(--admin-active)] rounded-xl w-11 h-11 text-primary text-sm font-semibold">
+                  BK
+                </span>
+                <div className="min-w-0">
+                  <p className="font-medium text-[var(--admin-text)] group-hover:text-primary truncate transition-colors">
+                    {t('admin.backupNav')}
+                  </p>
+                  <p className="text-[var(--admin-text-muted)] text-xs truncate">
+                    /admin/backup
+                  </p>
+                </div>
+              </div>
+            </Link>
           </div>
         ) : (
           <div className="gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -85,6 +105,24 @@ export default async function AdminPage() {
                 </div>
               </Link>
             ))}
+            <Link
+              href={`/${locale}/admin/backup`}
+              className="admin-stat-card group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="flex justify-center items-center bg-[var(--admin-active)] rounded-xl w-11 h-11 text-primary text-sm font-semibold">
+                  BK
+                </span>
+                <div className="min-w-0">
+                  <p className="font-medium text-[var(--admin-text)] group-hover:text-primary truncate transition-colors">
+                    {t('admin.backupNav')}
+                  </p>
+                  <p className="text-[var(--admin-text-muted)] text-xs truncate">
+                    /admin/backup
+                  </p>
+                </div>
+              </div>
+            </Link>
           </div>
         )}
       </section>

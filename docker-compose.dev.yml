@@ -42,11 +42,15 @@ services:
       Jwt__Key: ${JWT_KEY}
       Jwt__Issuer: OnlineShop
       Jwt__Audience: OnlineShopUsers
+      Backup__Directory: /src/Api/backups
+      Backup__PgDumpPath: pg_dump
     volumes:
       # Mount source code for hot-reload
       - ./BackEnd:/src
       # Named volume for uploads
       - uploads:/src/Api/wwwroot/uploads
+      # Named volume for database backups
+      - backups:/src/Api/backups
       # Exclude build artifacts from the mounted source
       - /src/**/bin
       - /src/**/obj
@@ -119,6 +123,7 @@ networks:
 volumes:
   postgres_data:
   uploads:
+  backups:
   pgadmin_data:
 
 

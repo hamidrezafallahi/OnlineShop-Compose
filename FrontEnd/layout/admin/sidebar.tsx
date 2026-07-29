@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';
 
 import {
   CloseIcon,
+  FolderIcon,
   LeftIcon,
   RightIcon,
 } from '@components/atoms/iconComponents';
@@ -153,6 +154,24 @@ export default function Sidebar({
               );
             })
           )}
+
+          <Link
+            href={`/${locale}/admin/backup`}
+            title={t('admin.backupNav')}
+            onClick={onMobileClose}
+            className={cn(
+              'admin-nav-item mt-1',
+              !open && 'lg:justify-center lg:px-2',
+              activeEndpoint.toLowerCase() === 'backup' && 'admin-nav-item-active',
+            )}
+          >
+            <span className="flex justify-center items-center w-6 h-6 shrink-0 [&>svg]:w-5 [&>svg]:h-5">
+              <FolderIcon />
+            </span>
+            <span className={cn('truncate', !open && 'lg:hidden')}>
+              {t('admin.backupNav')}
+            </span>
+          </Link>
         </nav>
 
         <div className="flex justify-center items-center gap-2 px-3 border-[var(--admin-border)] border-t min-h-16 lg:h-20">

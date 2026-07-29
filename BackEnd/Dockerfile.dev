@@ -26,7 +26,7 @@ COPY . .
 
 # Tools
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl wget \
+    && apt-get install -y --no-install-recommends curl wget postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 

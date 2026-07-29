@@ -50,6 +50,8 @@ BackEnd/**/coverage.json
 BackEnd/**/appsettings.*.local.json
 BackEnd/**/connectionStrings.json
 BackEnd/Api/wwwroot/uploads/*
+BackEnd/**/backups/
+BackEnd/Api/backups/
 
 # ─── Frontend ─────────────────────────────────────────────────────────────
 FrontEnd/.next/

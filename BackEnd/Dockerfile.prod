@@ -67,22 +67,24 @@ LABEL maintainer="OnlineShop Team" \
 
 WORKDIR /app
 
-# Install packages required for health checks
+# Install packages required for health checks and database backups
 RUN apt-get update \
- && apt-get install -y --no-install-recommends wget curl \
+ && apt-get install -y --no-install-recommends wget curl postgresql-client \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy published application
 COPY --from=publish /app/publish .
 
-# Create upload directory and set permissions
-RUN mkdir -p /app/wwwroot/uploads \
+# Create upload/backup directories and set permissions
+RUN mkdir -p /app/wwwroot/uploads /app/backups \
     && chown -R app:app /app
 
 # Environment
 ENV ASPNETCORE_URLS=http://+:8080 \
     ASPNETCORE_ENVIRONMENT=Production \
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    Backup__Directory=/app/backups \
+    Backup__PgDumpPath=pg_dump
 
 EXPOSE 8080
 
