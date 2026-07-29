@@ -23,31 +23,20 @@ export default function LangSwitcher() {
   const dispatch = useDispatch();
 
   const handleChangeLang = () => {
-  const newLang: TLang = locale === "fa" ? "en" : "fa";
+    const newLang: TLang = locale === 'fa' ? 'en' : 'fa';
+    const locales = new Set(['fa', 'en']);
+    const parts = window.location.pathname.split('/').filter(Boolean);
 
-  // مسیر فعلی بدون دامنه
-  const pathname = window.location.pathname; // مثلا "/fa/blog/123"
+    if (parts.length > 0 && locales.has(parts[0])) {
+      parts[0] = newLang;
+    } else {
+      parts.unshift(newLang);
+    }
 
-  // قسمت‌ها رو جدا می‌کنیم
-  const parts = pathname.split("/").filter(Boolean); // ["fa", "blog", "123"]
-
-  // اولین بخش (زبان) رو جایگزین می‌کنیم
-  if (parts.length > 0) {
-    parts[0] = newLang;
-  } else {
-    parts.unshift(newLang);
-  }
-
-  // دوباره URL رو می‌سازیم
-  const newPath = "/" + parts.join("/");
-  const newUrl = window.location.origin + newPath;
-
-  // تغییر state زبان
-  dispatch(setLocale({ locale: newLang }));
-
-  // تغییر مسیر
-  router.replace(newUrl);
-};
+    const newPath = `/${parts.join('/')}`;
+    dispatch(setLocale({ locale: newLang }));
+    router.replace(newPath);
+  };
   return (
     <button
       onClick={handleChangeLang}

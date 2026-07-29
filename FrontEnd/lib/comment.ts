@@ -26,7 +26,8 @@ export async function approveComment(field:string,formData: FormData) {
   });
   const data = await response.json();
   if(data.isSuccess){
-    revalidatePath('/admin/comments');
+    revalidatePath('/fa/admin/comments');
+    revalidatePath('/en/admin/comments');
     revalidateTag('comments');
     return true
 

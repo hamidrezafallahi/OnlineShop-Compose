@@ -14,17 +14,11 @@ export function cleanPath(path = ''): string {
 }
 
 /**
- * Locale-aware path matching next-intl `localePrefix: 'as-needed'`
- * (default locale `fa` has no prefix).
+ * Locale-aware path matching next-intl `localePrefix: 'always'`.
+ * Every page URL is /fa/... or /en/...
  */
 export function localizedPath(locale: string, path = ''): string {
   const cleaned = cleanPath(path);
-  const isDefault = locale === DEFAULT_LOCALE;
-
-  if (isDefault) {
-    return cleaned ? `/${cleaned}` : '/';
-  }
-
   return cleaned ? `/${locale}/${cleaned}` : `/${locale}`;
 }
 

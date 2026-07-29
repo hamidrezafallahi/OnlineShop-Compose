@@ -24,7 +24,8 @@ export async function saveEntity({
       body,
     });
     if (data.isSuccess) {
-      revalidatePath(`/admin/${endPoint}`);
+      revalidatePath(`/fa/admin/${endPoint}`);
+      revalidatePath(`/en/admin/${endPoint}`);
       revalidateTag(endPoint);
     }
 

@@ -4,8 +4,9 @@ import createMiddleware from 'next-intl/middleware';
 export default createMiddleware({
   locales: ['fa', 'en'],
   defaultLocale: 'fa',
-  localePrefix: 'as-needed' ,
-  localeDetection: true
+  // Always require /fa/... or /en/... — no unprefixed store routes
+  localePrefix: 'always',
+  localeDetection: true,
 });
 
 export const config = {
