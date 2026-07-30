@@ -143,7 +143,7 @@ dispatch(addToCart({
 
           <div className="flex items-center gap-2">
             <Link
-              href={`/${locale}/products/${product.id}`}
+              href={`/${locale}/products/${product.slug || product.id}`}
               className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-xs"
             >
               مشاهده

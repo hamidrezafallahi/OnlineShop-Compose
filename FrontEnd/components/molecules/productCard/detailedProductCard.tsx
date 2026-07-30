@@ -65,7 +65,7 @@ export function DetailedProductCard({
 
       {/* تصویر محصول */}
       <Link
-        href={`/${locale}/products/${product.id}`}
+        href={`/${locale}/products/${product.slug || product.id}`}
         className="block relative bg-gray-50 h-64 overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -104,7 +104,7 @@ export function DetailedProductCard({
         )}
 
         {/* نام محصول */}
-        <Link href={`/${locale}/products/${product.id}`}>
+        <Link href={`/${locale}/products/${product.slug || product.id}`}>
           <h3 className="mb-2 font-semibold text-gray-800 hover:text-primary line-clamp-1 transition-colors">
             {product.name}
           </h3>
@@ -162,7 +162,7 @@ export function DetailedProductCard({
         {/* دکمه‌های عملیاتی */}
         <div className="flex gap-2">
           <Link
-            href={`/${locale}/products/${product.id}`}
+            href={`/${locale}/products/${product.slug || product.id}`}
             className="flex-1 bg-primary hover:bg-primary/90 px-4 py-2 rounded-lg font-medium text-white text-center transition-colors"
           >
             {texts.view}

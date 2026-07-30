@@ -8,6 +8,7 @@ namespace Application.Commands
     {
 
         public string Name { get; set; } = default!;
+        public string? Slug { get; set; }
         public string Description { get; set; } = default!;
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
@@ -27,6 +28,7 @@ namespace Application.Commands
     {
         public int Id { get; set; }
         public string? Name { get; set; } = default!;
+        public string? Slug { get; set; }
         public string? Description { get; set; } = default!;
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }

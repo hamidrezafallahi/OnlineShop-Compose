@@ -67,7 +67,7 @@ async function fetchSlugs(endpoint: string): Promise<SlugItem[]> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, blogs, brands, categories, suppliers, tags] =
     await Promise.all([
-      fetchSlugs('products'),
+      fetchSlugs('products/getslugs'),
       fetchSlugs('blogs'),
       fetchSlugs('brands'),
       fetchSlugs('categories'),

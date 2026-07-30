@@ -17,6 +17,7 @@ namespace OnlineShop.Domain.Interfaces
         //Task<IEnumerable<Product>> GetProductsIncludesTagsAndBrandsAndCategoriesByUserIdAsync(int userId);
         //Task<IEnumerable<Product>> GetDiscountedProductsAsync();
         Task<bool> ExistsByNameAndBrandAsync(string name, int? brandId);
+        Task<bool> ExistsBySlugAsync(string slug, int? excludeProductId = null);
 
         Task<IEnumerable<Product>> SearchByNameAsync(string keyword);
 

@@ -20,6 +20,14 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
                    .IsRequired()
                    .HasMaxLength(200);
 
+            builder.Property(p => p.Slug)
+                   .IsRequired()
+                   .HasMaxLength(220);
+
+            builder.HasIndex(p => p.Slug)
+                   .IsUnique()
+                   .HasFilter("\"IsDeleted\" = false");
+
             builder.Property(p => p.Description)
                    .HasMaxLength(1000);
 

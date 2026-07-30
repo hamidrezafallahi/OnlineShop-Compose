@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
+import { permanentRedirect } from 'next/navigation';
 
 import ProductBrand from '@components/organisms/productOrganisms/productBrand';
 import ProductCategory from '@components/organisms/productOrganisms/productCategory';
@@ -98,9 +99,20 @@ export default async function ProductPage({
 
     const result = await response.json();
     const product = result.data || result;
+
+    // Legacy numeric URLs → permanent SEO slug.
+    if (
+      product?.slug &&
+      product.slug !== slug &&
+      /^\d+$/.test(slug)
+    ) {
+      permanentRedirect(`/${locale}/products/${product.slug}`);
+    }
+
+    const canonicalSlug = product?.slug || slug;
     const image =
       product?.imageUrls?.[0] || product?.imageUrl || product?.image;
-    const productUrl = absoluteUrl(locale, `products/${slug}`);
+    const productUrl = absoluteUrl(locale, `products/${canonicalSlug}`);
 
     const productLd = {
       '@context': 'https://schema.org',
@@ -122,7 +134,7 @@ export default async function ProductPage({
         <ProductBrand id={product.brandId} />
         <ProductCategory id={product.categoryId} />
         <ProductTags id={product.id} />
-        <ProductSupplierExtended productId={slug} />
+        <ProductSupplierExtended productId={product.id} />
         <ProductDetailsTabs product={product} />
       </article>
     );

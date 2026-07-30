@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using OnlineShop.Domain.Common;
 using OnlineShop.Domain.ValueObjects;
 
 
@@ -9,6 +10,7 @@ namespace OnlineShop.Domain.Entities
         private Product() { }
 
         public string Name { get; private set; } = string.Empty;
+        public string Slug { get; private set; } = string.Empty;
         public string? Description { get; private set; }
 
         // ==== Category ====
@@ -42,7 +44,8 @@ namespace OnlineShop.Domain.Entities
             int categoryId,
             int brandId,
             ProductDimensions dimensions,
-            int currentUserId) 
+            int currentUserId,
+            string? slug = null) 
 
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -51,6 +54,7 @@ namespace OnlineShop.Domain.Entities
             var product = new Product
             {
                 Name = name,
+                Slug = string.IsNullOrWhiteSpace(slug) ? SlugHelper.Generate(name) : SlugHelper.Generate(slug),
                 CategoryId = categoryId,
                 BrandId = brandId,
                 Description = description,
@@ -69,7 +73,8 @@ namespace OnlineShop.Domain.Entities
             string? description,
             int? categoryId,
             int? brandId,
-            ProductDimensions? dimensions
+            ProductDimensions? dimensions,
+            string? slug = null
             )
         {
             if (!string.IsNullOrWhiteSpace(name))
@@ -86,7 +91,20 @@ namespace OnlineShop.Domain.Entities
             if (dimensions != null)
                 Dimensions = dimensions;
 
+            if (!string.IsNullOrWhiteSpace(slug))
+                Slug = SlugHelper.Generate(slug);
+            else if (!string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(Slug))
+                Slug = SlugHelper.Generate(name);
+
             MarkUpdated(currentUserId);
+        }
+
+        public void EnsureSlug(int? uniqueSuffix = null)
+        {
+            if (string.IsNullOrWhiteSpace(Slug))
+                Slug = SlugHelper.Generate(Name, uniqueSuffix);
+            else if (uniqueSuffix.HasValue && !Slug.EndsWith($"-{uniqueSuffix.Value}", StringComparison.Ordinal))
+                Slug = SlugHelper.Generate(Slug, uniqueSuffix);
         }
 
 

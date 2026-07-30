@@ -20,6 +20,7 @@ public class ProductQueryHandler(IProductRepository _repo,
     IRequestHandler<GetAllProductsByDetailQuery, ServiceResult<IEnumerable<ProductByDetailDto>>>,
     IRequestHandler<GetAllProductsIdQuery, ServiceResult<List<IdDto>>>,
     IRequestHandler<GetProductByIdQuery, ServiceResult<ProductByDetailDto?>>,
+    IRequestHandler<GetAllProductsSlugsQuery, ServiceResult<IEnumerable<SlugDto>>>,
     IRequestHandler<GetProductSpecialsByIdQuery, ServiceResult<ProductSpecialsByIdDto?>>,
     IRequestHandler<GetProductsByCategoryIdQuery, ServiceResult<IEnumerable<ProductByDetailDto>>>,
     IRequestHandler<GetDiscountedProductsQuery, ServiceResult<IEnumerable<ProductDto>>>,
@@ -68,6 +69,7 @@ public class ProductQueryHandler(IProductRepository _repo,
         {
             Id = x.Id,
             Name = x.Name,
+            Slug = x.Slug,
             Description = x.Description,
             BrandId = x.BrandId,
             BrandName=x.Brand.Name,
@@ -186,7 +188,17 @@ public class ProductQueryHandler(IProductRepository _repo,
     public async Task<ServiceResult<ProductByDetailDto?>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
-        var product = await _repo.Query(p => !p.IsDeleted && p.Id == request.Id)
+        var key = (request.IdOrSlug ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(key))
+            return ServiceResult<ProductByDetailDto?>.Failed("product not found");
+
+        IQueryable<Product> query = _repo.Query(p => !p.IsDeleted);
+        if (int.TryParse(key, out var id))
+            query = query.Where(p => p.Id == id);
+        else
+            query = query.Where(p => p.Slug == key);
+
+        var product = await query
             .Include(p => p.ProductOffers).ThenInclude(pt => pt.ProductOfferTags).ThenInclude(t => t.Tag)
             .Include(p => p.Images)
             .Include(p => p.Variants).ThenInclude(v => v.Offers)
@@ -203,6 +215,7 @@ public class ProductQueryHandler(IProductRepository _repo,
         {
             Id = product.Id,
             Name = product.Name,
+            Slug = product.Slug,
             Description = product.Description,
             BrandId = product.BrandId,
             CategoryId = product.CategoryId,
@@ -249,6 +262,15 @@ public class ProductQueryHandler(IProductRepository _repo,
 
         return ServiceResult<ProductByDetailDto?>.Ok(dto);
     }
+
+    public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllProductsSlugsQuery request, CancellationToken cancellationToken)
+    {
+        var slugs = await _repo.Query(p => p.IsActive && !p.IsDeleted && !string.IsNullOrWhiteSpace(p.Slug))
+            .Select(p => new SlugDto { Id = p.Id,Slug = p.Slug })
+            .ToListAsync(cancellationToken);
+        return ServiceResult<IEnumerable<SlugDto>>.Ok(slugs);
+    }
+
     public async Task<ServiceResult<ProductSpecialsByIdDto?>> Handle(GetProductSpecialsByIdQuery request, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;

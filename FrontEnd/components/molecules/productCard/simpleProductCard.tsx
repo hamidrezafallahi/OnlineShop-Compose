@@ -29,7 +29,7 @@ export async function SimpleProductCard({
         <p className="text-gray-500 text-xs">{product.description}</p>
         <div className="flex justify-between items-end gap-2 mt-3">
           <Link
-            href={`/${locale}/products/${product.id}`}
+            href={`/${locale}/products/${product.slug || product.id}`}
             className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-xs"
           >
             مشاهده
