@@ -3,6 +3,7 @@ import { IUser } from '@models/user';
 export interface IDetailedProductCardProps {
   product: {
     id: number;
+    slug?: string | null;
     name: string;
     description: string;
     price: number;
@@ -20,6 +21,7 @@ export interface IDetailedProductCardProps {
 }
 export interface ISimpleProduct {
     id: number;
+    slug?: string | null;
     name: string;
     description: string;
     mainImage: string | null;

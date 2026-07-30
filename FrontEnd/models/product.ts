@@ -29,6 +29,7 @@ export interface IDetailedProduct {
     name: string;
     description: string;
     id: number;
+    slug?: string | null;
     productOfferId: number;
     mainImage: string;
     categoryId: number,
@@ -38,6 +39,8 @@ export interface IDetailedProduct {
 }
 export interface IDetailedProductOffer {
     id: number;
+    slug?: string | null;
+    productSlug?: string | null;
     basePrice: number
     createdAt: string
     finalPrice: number
@@ -53,6 +56,7 @@ export interface IDetailedProductOffer {
 }
 export interface ILandingProduct {
     id: number
+    slug?: string | null
     bestOfferId: number
     name: string
     description: string

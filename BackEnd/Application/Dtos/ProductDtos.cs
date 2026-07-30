@@ -110,6 +110,7 @@ namespace Application.Dtos
     public class TheMostProductDto
     {
         public int Id { get; set; }
+        public string Slug { get; set; } = default!;
         public int BestOfferId { get; set; }
 
         public string Name { get; set; } = default!;

@@ -438,6 +438,7 @@ public class ProductQueryHandler(IProductRepository _repo,
             dtos.Add(new TheMostProductDto
             {
                 Id = p.Id,
+                Slug = p.Slug,
                 Name = p.Name,
                 Description = p.Description,
                 Brand = p.Brand?.Name ?? "",

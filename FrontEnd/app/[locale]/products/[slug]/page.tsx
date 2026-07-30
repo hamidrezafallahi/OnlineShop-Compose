@@ -48,6 +48,7 @@ export async function generateMetadata({
 
     const result = await response.json();
     const product = result.data || result;
+    const canonicalSlug = product?.slug || slug;
     const title =
       product?.name || product?.title || (locale === 'fa' ? 'محصول' : 'Product');
     const description = product?.description || '';
@@ -56,7 +57,7 @@ export async function generateMetadata({
 
     return buildPageMetadata({
       locale,
-      path: `products/${slug}`,
+      path: `products/${canonicalSlug}`,
       title,
       description,
       images: [image],
@@ -80,64 +81,9 @@ export default async function ProductPage({
   const { slug, locale } = await params;
   const tStore = await getTranslations({ locale, namespace: 'store' });
 
+  let response: Response;
   try {
-    const response = await fetchProduct(slug);
-
-    if (response.status === 404) {
-      return (
-        <div className="store-page">
-          <div className="store-empty">
-            <h1 className="store-empty-title">{tStore('notFound')}</h1>
-            <p className="store-empty-desc">{tStore('notFoundHint')}</p>
-            <Link href={`/${locale}/products`} className="store-btn store-btn-primary mt-4">
-              {tStore('backHome')}
-            </Link>
-          </div>
-        </div>
-      );
-    }
-
-    const result = await response.json();
-    const product = result.data || result;
-
-    // Legacy numeric URLs → permanent SEO slug.
-    if (
-      product?.slug &&
-      product.slug !== slug &&
-      /^\d+$/.test(slug)
-    ) {
-      permanentRedirect(`/${locale}/products/${product.slug}`);
-    }
-
-    const canonicalSlug = product?.slug || slug;
-    const image =
-      product?.imageUrls?.[0] || product?.imageUrl || product?.image;
-    const productUrl = absoluteUrl(locale, `products/${canonicalSlug}`);
-
-    const productLd = {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: product.name || product.title,
-      description: product.description,
-      image: image ? [image] : undefined,
-      url: productUrl,
-      sku: product.sku || product.id,
-      brand: product.brandName
-        ? { '@type': 'Brand', name: product.brandName }
-        : undefined,
-    };
-
-    return (
-      <article className="store-page !pt-6">
-        <JsonLd data={productLd} />
-        <ProductHero product={product} />
-        <ProductBrand id={product.brandId} />
-        <ProductCategory id={product.categoryId} />
-        <ProductTags id={product.id} />
-        <ProductSupplierExtended productId={product.id} />
-        <ProductDetailsTabs product={product} />
-      </article>
-    );
+    response = await fetchProduct(slug);
   } catch {
     return (
       <div className="store-page">
@@ -148,4 +94,67 @@ export default async function ProductPage({
       </div>
     );
   }
+
+  if (response.status === 404) {
+    return (
+      <div className="store-page">
+        <div className="store-empty">
+          <h1 className="store-empty-title">{tStore('notFound')}</h1>
+          <p className="store-empty-desc">{tStore('notFoundHint')}</p>
+          <Link href={`/${locale}/products`} className="store-btn store-btn-primary mt-4">
+            {tStore('backHome')}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!response.ok) {
+    return (
+      <div className="store-page">
+        <div className="store-empty">
+          <h1 className="store-empty-title">{tStore('loadError')}</h1>
+          <p className="store-empty-desc">{tStore('loadErrorHint')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const result = await response.json();
+  const product = result.data || result;
+
+  // Legacy numeric URLs → permanent SEO slug (must not be inside a broad try/catch).
+  if (product?.slug && product.slug !== slug && /^\d+$/.test(slug)) {
+    permanentRedirect(`/${locale}/products/${product.slug}`);
+  }
+
+  const canonicalSlug = product?.slug || slug;
+  const image =
+    product?.imageUrls?.[0] || product?.imageUrl || product?.image;
+  const productUrl = absoluteUrl(locale, `products/${canonicalSlug}`);
+
+  const productLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name || product.title,
+    description: product.description,
+    image: image ? [image] : undefined,
+    url: productUrl,
+    sku: product.sku || product.id,
+    brand: product.brandName
+      ? { '@type': 'Brand', name: product.brandName }
+      : undefined,
+  };
+
+  return (
+    <article className="store-page !pt-6">
+      <JsonLd data={productLd} />
+      <ProductHero product={product} />
+      <ProductBrand id={product.brandId} />
+      <ProductCategory id={product.categoryId} />
+      <ProductTags id={product.id} />
+      <ProductSupplierExtended productId={product.id} />
+      <ProductDetailsTabs product={product} />
+    </article>
+  );
 }

@@ -211,6 +211,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             SizeMl = offer.Variant?.SizeMl,
             Concentration = offer.Variant?.Concentration.ToString(),
             VariantLabel = offer.Variant?.DisplayLabel,
+            ProductSlug = offer.Product?.Slug,
             ProductName = offer.Product?.Name ?? "",
             SupplierId = offer.SupplierId,
             SupplierName = offer.Supplier?.FullName ?? "",

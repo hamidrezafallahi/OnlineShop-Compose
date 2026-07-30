@@ -29,6 +29,7 @@ namespace Application.Dtos
         public int? SizeMl { get; set; }
         public string? Concentration { get; set; }
         public string? VariantLabel { get; set; }
+        public string? ProductSlug { get; set; }
         public string ProductName { get; set; } = default!;
         public string ProductImage { get; set; } = default!;
         public string ProductDescription { get; set; } = default!;
