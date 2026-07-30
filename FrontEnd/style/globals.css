@@ -646,57 +646,6 @@ html {
     color: var(--store-text);
   }
 
-  /* Mobile drawer: hide fully off-screen (rtl: Tailwind variant is NOT configured) */
-  .store-mobile-backdrop {
-    @apply fixed inset-0 z-[60] transition-opacity duration-300;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-
-  .store-mobile-backdrop[data-open="false"] {
-    @apply opacity-0 invisible pointer-events-none;
-  }
-
-  .store-mobile-backdrop[data-open="true"] {
-    @apply opacity-100 visible pointer-events-auto;
-  }
-
-  .store-mobile-drawer {
-    @apply fixed top-0 bottom-0 z-[70] flex flex-col gap-4 p-5;
-    width: min(100%, 20rem);
-    inset-inline-start: 0;
-    border-inline-end: 1px solid var(--store-border);
-    border-radius: 0;
-    color: var(--store-text);
-    box-shadow: var(--store-shadow);
-    /* Fully opaque — never let page text bleed through */
-    background-color: var(--store-surface-solid);
-    background-image: none;
-    opacity: 1;
-    isolation: isolate;
-    transition: transform 300ms ease, visibility 300ms ease;
-    will-change: transform;
-  }
-
-  /* LTR closed: slide left, off-screen */
-  .store-mobile-drawer[data-open="false"] {
-    transform: translate3d(-105%, 0, 0);
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  /* RTL closed: slide right, off-screen (site default is fa/rtl) */
-  [dir="rtl"] .store-mobile-drawer[data-open="false"] {
-    transform: translate3d(105%, 0, 0);
-  }
-
-  .store-mobile-drawer[data-open="true"] {
-    transform: translate3d(0, 0, 0);
-    visibility: visible;
-    pointer-events: auto;
-  }
-
   .store-nav-link {
     @apply inline-flex items-center px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors;
     color: var(--store-text-muted);
