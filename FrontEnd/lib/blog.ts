@@ -4,19 +4,43 @@ import { notFound } from 'next/navigation';
 
 import { SimpleResponse } from '@models/base';
 import { IBlog } from '@models/Blog';
-import { showErrorToast } from '@utils/core';
 
-import { serverApiBaseUrl } from './api';
+import { requireAbsoluteUrl, serverApiBaseUrl } from './api';
+import { logger } from './logger';
 
 export async function getBlogBySlug({ params }: { params: { slug: string } }) {
-    const slug = params.slug;
-    const res = await fetch(`${serverApiBaseUrl}/Blogs/${slug}`, {
-        cache: 'no-store'
-    });
-    const response:SimpleResponse<IBlog> = await res.json();
-    if (!response.isSuccess) {
-        showErrorToast(response.error||"")
-        notFound();
+  const slug = params.slug;
+  const url = requireAbsoluteUrl(
+    `${serverApiBaseUrl}/Blogs/${slug}`,
+    'getBlogBySlug URL',
+  );
+
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) {
+      logger.error('getBlogBySlug HTTP error', {
+        scope: 'blog',
+        source: 'server',
+        url,
+        status: res.status,
+      });
+      notFound();
     }
-     return response.data;
+
+    const response: SimpleResponse<IBlog> = await res.json();
+    if (!response.isSuccess) {
+      logger.warn('getBlogBySlug business error', {
+        scope: 'blog',
+        source: 'server',
+        url,
+        errorMessage: response.error,
+      });
+      notFound();
+    }
+
+    return response.data;
+  } catch (err) {
+    logger.error('getBlogBySlug failed', { scope: 'blog', source: 'server', url }, err);
+    notFound();
+  }
 }

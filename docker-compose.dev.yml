@@ -77,6 +77,11 @@ services:
       - "3000:3000"
     env_file:
       - ./FrontEnd/.env
+    environment:
+      # Absolute URL required for RSC/server fetch inside Docker network
+      INTERNAL_SERVER_SIDE_API_URL: ${INTERNAL_SERVER_SIDE_API_URL:-http://backend:8080}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost}
+      NODE_ENV: development
     volumes:
       - ./FrontEnd:/app
       - /app/node_modules
