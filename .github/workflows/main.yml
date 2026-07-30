@@ -101,6 +101,8 @@ jobs:
           script: |
             set -e
             cd /opt/shop
+            # Guard against Windows CRLF if deploy.sh was edited/copied from Windows
+            sed -i 's/\r$//' deploy.sh
             chmod +x deploy.sh
 
             FRONTEND_CHANGED="${{ needs.detect-changes.outputs.frontend }}"
