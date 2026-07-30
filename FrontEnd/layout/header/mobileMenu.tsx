@@ -48,26 +48,18 @@ function MobileMenu() {
       </button>
 
       <div
-        onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 bg-black/45 backdrop-blur-sm transition-all duration-300 ${
-          isOpen ? 'opacity-100 visible z-[60]' : 'opacity-0 invisible z-0'
-        }`}
+        data-open={isOpen ? 'true' : 'false'}
+        className="store-mobile-backdrop"
         aria-hidden={!isOpen}
+        onClick={() => setIsOpen(false)}
       />
 
       <nav
         id="mobile-nav-drawer"
+        data-open={isOpen ? 'true' : 'false'}
         aria-label={t('mainNav')}
-        className={`
-          fixed top-0 bottom-0 z-[70] flex flex-col gap-4 p-5 w-[min(100%,20rem)]
-          border border-[var(--store-border)] bg-[color-mix(in_srgb,var(--store-surface)_82%,transparent)] text-[var(--store-text)] shadow-2xl backdrop-blur-xl
-          transition-transform duration-300 ease-in-out
-          ${
-            isOpen
-              ? 'translate-x-0 start-0'
-              : '-translate-x-full rtl:translate-x-full start-0'
-          }
-        `}
+        aria-hidden={!isOpen}
+        className="store-mobile-drawer"
       >
         <div className="flex justify-between items-center">
           <button
@@ -91,6 +83,7 @@ function MobileMenu() {
                 href={item.href ? `/${locale}/${item.href}` : `/${locale}`}
                 className="block px-3 py-2.5 rounded-xl hover:bg-[color-mix(in_srgb,var(--primary-color)_10%,transparent)] hover:text-[var(--primary-color)] transition"
                 onClick={() => setIsOpen(false)}
+                tabIndex={isOpen ? 0 : -1}
               >
                 {t(item.labelKey)}
               </Link>
