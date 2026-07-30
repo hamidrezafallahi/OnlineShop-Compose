@@ -666,14 +666,15 @@ html {
     @apply fixed top-0 bottom-0 z-[70] flex flex-col gap-4 p-5;
     width: min(100%, 20rem);
     inset-inline-start: 0;
-    border: 1px solid var(--store-border);
+    border-inline-end: 1px solid var(--store-border);
     border-radius: 0;
     color: var(--store-text);
     box-shadow: var(--store-shadow);
-    /* Solid glass — same language as header, readable over page content */
-    background: color-mix(in srgb, var(--store-surface-solid) 88%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    /* Fully opaque — never let page text bleed through */
+    background-color: var(--store-surface-solid);
+    background-image: none;
+    opacity: 1;
+    isolation: isolate;
     transition: transform 300ms ease, visibility 300ms ease;
     will-change: transform;
   }

@@ -60,6 +60,7 @@ function MobileMenu() {
         aria-label={t('mainNav')}
         aria-hidden={!isOpen}
         className="store-mobile-drawer"
+        style={{ backgroundColor: 'var(--store-surface-solid)' }}
       >
         <div className="flex justify-between items-center">
           <button
@@ -81,7 +82,7 @@ function MobileMenu() {
             <li key={item.href || 'home'}>
               <Link
                 href={item.href ? `/${locale}/${item.href}` : `/${locale}`}
-                className="block px-3 py-2.5 rounded-xl hover:bg-[color-mix(in_srgb,var(--primary-color)_10%,transparent)] hover:text-[var(--primary-color)] transition"
+                className="block hover:bg-[color-mix(in_srgb,var(--primary-color)_10%,transparent)] px-3 py-2.5 rounded-xl hover:text-[var(--primary-color)] transition"
                 onClick={() => setIsOpen(false)}
                 tabIndex={isOpen ? 0 : -1}
               >
