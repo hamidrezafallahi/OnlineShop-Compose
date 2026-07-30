@@ -4,8 +4,10 @@ export interface ILogin {
   Password: string;
 }
 export interface ILoginResponse {
-  accessToken: string;
-  refreshToken: string;
+  /** Present only on legacy direct API login; BFF login returns role only. */
+  accessToken?: string;
+  refreshToken?: string;
+  role?: string;
 }
 export interface TokenPayload {
   role: string;

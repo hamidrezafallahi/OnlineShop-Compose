@@ -13,7 +13,7 @@ export default function ProductCTA({
   id: number;
   productId: number;
 }) {
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
   const [addToShoppingCart] = useGetConditionallyMutation();
   const dispatch = useDispatch();
   const handleAddToCart = async () => {

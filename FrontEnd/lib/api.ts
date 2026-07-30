@@ -18,10 +18,13 @@ function ensureApiSuffix(value: string) {
     : `${normalized}/api`;
 }
 
-export const browserApiBaseUrl = '/api';
+/**
+ * Browser calls go through Next BFF so httpOnly candyAccess can be attached
+ * as Authorization. Nginx still routes raw /api/* straight to the backend.
+ */
+export const browserApiBaseUrl = '/auth/bff';
 export const browserAuthBaseUrl = '/auth';
 
-// Browser always uses same-origin /api (nginx → backend).
 // Server components / Route Handlers must use an absolute internal URL.
 // Relative "/api" breaks Node fetch (ERR_INVALID_URL).
 const internalServerOrigin =

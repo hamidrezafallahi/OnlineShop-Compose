@@ -77,7 +77,7 @@ export default function SupplierProductsCarousel({
 }
 
 function ProductCard({ product }: { product: IDetailedProductOffer }) {
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
   const locale = useLocale();
   const [addToShoppingCart] = useGetConditionallyMutation();
   const dispatch = useDispatch();

@@ -2,29 +2,21 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { serverApiBaseUrl } from '@lib/api';
-
-const accessCookieOptions = {
-  httpOnly: false,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  path: '/',
-  maxAge: 60 * 60,
-};
-
-const refreshCookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  path: '/',
-  maxAge: 60 * 60 * 24 * 30,
-};
+import {
+  ACCESS_COOKIE,
+  REFRESH_COOKIE,
+  SESSION_FLAG_COOKIE,
+  accessCookieOptions,
+  refreshCookieOptions,
+  sessionFlagCookieOptions,
+} from '@lib/auth-cookies';
 
 export async function POST() {
   try {
     const cookieStore = await cookies();
 
-    const refreshToken = cookieStore.get('candyRefresh')?.value;
-    const accessToken = cookieStore.get('candyAccess')?.value;
+    const refreshToken = cookieStore.get(REFRESH_COOKIE)?.value;
+    const accessToken = cookieStore.get(ACCESS_COOKIE)?.value;
 
     if (!refreshToken) {
       return NextResponse.json(
@@ -36,19 +28,16 @@ export async function POST() {
       );
     }
 
-    const response = await fetch(
-      `${serverApiBaseUrl}/Identity/refresh-token`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accessToken,
-          refreshToken,
-        }),
-      }
-    );
+    const response = await fetch(`${serverApiBaseUrl}/Identity/refresh-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accessToken,
+        refreshToken,
+      }),
+    });
 
     let data: {
       isSuccess?: boolean;
@@ -75,8 +64,9 @@ export async function POST() {
         },
         { status: 401 }
       );
-      res.cookies.delete('candyAccess');
-      res.cookies.delete('candyRefresh');
+      res.cookies.set(ACCESS_COOKIE, '', { httpOnly: true, path: '/', maxAge: 0 });
+      res.cookies.set(REFRESH_COOKIE, '', { httpOnly: true, path: '/', maxAge: 0 });
+      res.cookies.set(SESSION_FLAG_COOKIE, '', { path: '/', maxAge: 0 });
       return res;
     }
 
@@ -86,20 +76,16 @@ export async function POST() {
     const res = NextResponse.json({
       isSuccess: true,
       data: {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken ?? null,
+        refreshed: true,
       },
     });
 
-    res.cookies.set('candyAccess', newAccessToken, accessCookieOptions);
+    res.cookies.set(ACCESS_COOKIE, newAccessToken, accessCookieOptions);
 
     if (newRefreshToken) {
-      res.cookies.set(
-        'candyRefresh',
-        newRefreshToken,
-        refreshCookieOptions
-      );
+      res.cookies.set(REFRESH_COOKIE, newRefreshToken, refreshCookieOptions);
     }
+    res.cookies.set(SESSION_FLAG_COOKIE, '1', sessionFlagCookieOptions);
 
     return res;
   } catch (error) {

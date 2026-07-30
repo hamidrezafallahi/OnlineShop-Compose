@@ -15,7 +15,7 @@ import { ShoppingCartButtonProps } from './type';
 function RemoveButton({ ...props }: ShoppingCartButtonProps ) {
   const { id,productOfferId,cartItemId, className, content } = props;
 
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
   const [itemMutate, { isLoading }] = useGetConditionallyMutation();
 
   const dispatch = useDispatch();

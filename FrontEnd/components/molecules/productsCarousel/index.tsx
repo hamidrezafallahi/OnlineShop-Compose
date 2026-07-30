@@ -111,7 +111,7 @@ export default function ProductsCarousel({
 }
 
 function ProductCard({ product }: { product: ILandingProduct }) {
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
   const locale = useLocale();
   const [addToShoppingCart] = useGetConditionallyMutation();
   const dispatch = useDispatch();

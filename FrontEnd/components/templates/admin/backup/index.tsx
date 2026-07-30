@@ -6,7 +6,6 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { browserApiBaseUrl } from '@lib/api';
 import {
-  getTokens,
   showErrorToast,
   showSuccessToast,
 } from '@utils/core';
@@ -67,12 +66,11 @@ async function apiRequest<T>(
   path: string,
   init?: RequestInit,
 ): Promise<ApiEnvelope<T>> {
-  const token = getTokens('candyAccess');
   const response = await fetch(`${browserApiBaseUrl}/${path}`, {
     ...init,
+    credentials: 'include',
     headers: {
       ...(init?.headers ?? {}),
-      ...(token.valid ? { Authorization: `Bearer ${token.val}` } : {}),
       ...(!(init?.body instanceof FormData)
         ? { 'Content-Type': 'application/json' }
         : {}),
@@ -186,13 +184,10 @@ export default function AdminBackupPanel() {
   const handleDownload = async (fileName: string) => {
     setBusyFile(fileName);
     try {
-      const token = getTokens('candyAccess');
       const response = await fetch(
         `${browserApiBaseUrl}/Backup/${encodeURIComponent(fileName)}/download`,
         {
-          headers: token.valid
-            ? { Authorization: `Bearer ${token.val}` }
-            : undefined,
+          credentials: 'include',
         },
       );
 

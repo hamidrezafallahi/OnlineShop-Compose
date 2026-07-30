@@ -4,6 +4,14 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { requireAbsoluteUrl, serverApiBaseUrl } from './api';
+import {
+  ACCESS_COOKIE,
+  REFRESH_COOKIE,
+  SESSION_FLAG_COOKIE,
+  accessCookieOptions,
+  refreshCookieOptions,
+  sessionFlagCookieOptions,
+} from './auth-cookies';
 import { logger } from './logger';
 
 type FetchOptions = {
@@ -19,8 +27,8 @@ export async function authenticatedFetch<T>({
 }: FetchOptions): Promise<T> {
   const cookieStore = await cookies();
 
-  let accessToken = cookieStore.get('candyAccess')?.value;
-  let refreshToken = cookieStore.get('candyRefresh')?.value;
+  let accessToken = cookieStore.get(ACCESS_COOKIE)?.value;
+  let refreshToken = cookieStore.get(REFRESH_COOKIE)?.value;
 
   const url = requireAbsoluteUrl(
     `${serverApiBaseUrl}/${endpoint.replace(/^\/+/, '')}`,
@@ -61,8 +69,9 @@ export async function authenticatedFetch<T>({
     accessToken = refreshResult.accessToken;
     refreshToken = refreshResult.refreshToken;
 
-    cookieStore.set('candyAccess', accessToken!);
-    cookieStore.set('candyRefresh', refreshToken!);
+    cookieStore.set(ACCESS_COOKIE, accessToken!, accessCookieOptions);
+    cookieStore.set(REFRESH_COOKIE, refreshToken!, refreshCookieOptions);
+    cookieStore.set(SESSION_FLAG_COOKIE, '1', sessionFlagCookieOptions);
 
     // retry
     response = await execute(accessToken);
@@ -158,6 +167,7 @@ async function refreshTokens({
 }
 
 function clearTokens(cookieStore: Awaited<ReturnType<typeof cookies>>) {
-  cookieStore.delete('candyAccess');
-  cookieStore.delete('candyRefresh');
+  cookieStore.delete(ACCESS_COOKIE);
+  cookieStore.delete(REFRESH_COOKIE);
+  cookieStore.delete(SESSION_FLAG_COOKIE);
 }
