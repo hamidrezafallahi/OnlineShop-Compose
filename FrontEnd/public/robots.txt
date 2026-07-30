@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /auth/
 Disallow: /admin/
 Disallow: /*/admin/
 Disallow: /checkout
@@ -12,4 +13,4 @@ Disallow: /*/payment
 Disallow: /order
 Disallow: /*/order
 
-Sitemap: https://www.hamidrezafalahi.ir/sitemap.xml
+Sitemap: https://shooshkitchen.ir/sitemap.xml

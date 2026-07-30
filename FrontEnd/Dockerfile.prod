@@ -29,7 +29,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ARG INTERNAL_SERVER_SIDE_API_URL=http://backend:8080
-ARG NEXT_PUBLIC_SITE_URL=https://www.hamidrezafalahi.ir
+ARG NEXT_PUBLIC_SITE_URL=https://shooshkitchen.ir
 ENV INTERNAL_SERVER_SIDE_API_URL=$INTERNAL_SERVER_SIDE_API_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 
