@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using Api.Security;
+using Hangfire;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -139,6 +140,11 @@ namespace Api
             });
 
 
+            var jwtKey = builder.Configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+                throw new InvalidOperationException(
+                    "Jwt:Key must be set via environment/secrets and be at least 32 characters.");
+
             builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer(opt =>
                 {
@@ -151,7 +157,7 @@ namespace Api
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = builder.Configuration["Jwt:Issuer"],
                         ValidAudience = builder.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                     };
                 });
             builder.Services.AddAuthorization(options =>
@@ -214,7 +220,13 @@ namespace Api
             }
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[]
+                {
+                    new HangfireDashboardAuthFilter(app.Environment, app.Configuration)
+                }
+            });
             app.MapHealthChecks("/health");
             app.MapControllers();
             app.Run();

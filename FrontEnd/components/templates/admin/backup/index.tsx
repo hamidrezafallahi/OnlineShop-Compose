@@ -28,6 +28,19 @@ type BackupListData = {
   totalCount: number;
 };
 
+type SeedStatus = {
+  seedsAvailable: boolean;
+  seedsDirectory: string;
+  files: string[];
+  autoSeedNote: string;
+};
+
+type SeedResult = {
+  success: boolean;
+  message: string;
+  appliedFiles: string[];
+};
+
 function formatBytes(bytes: number, locale: string) {
   if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
   const units = ['B', 'KB', 'MB', 'GB'];
@@ -89,6 +102,21 @@ export default function AdminBackupPanel() {
   const [isPending, startTransition] = useTransition();
   const [busyFile, setBusyFile] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [seedStatus, setSeedStatus] = useState<SeedStatus | null>(null);
+  const [seeding, setSeeding] = useState(false);
+
+  const loadSeedStatus = useCallback(() => {
+    startTransition(async () => {
+      try {
+        const result = await apiRequest<SeedStatus>('Seed');
+        if (result.isSuccess && result.data) {
+          setSeedStatus(result.data);
+        }
+      } catch {
+        // Seed panel is optional; backup still works.
+      }
+    });
+  }, []);
 
   const loadBackups = useCallback(() => {
     startTransition(async () => {
@@ -110,7 +138,33 @@ export default function AdminBackupPanel() {
 
   useEffect(() => {
     loadBackups();
-  }, [loadBackups]);
+    loadSeedStatus();
+  }, [loadBackups, loadSeedStatus]);
+
+  const handleApplySeed = async (clean: boolean) => {
+    const ok = window.confirm(
+      clean ? t('admin.seedConfirmClean') : t('admin.seedConfirm'),
+    );
+    if (!ok) return;
+
+    setSeeding(true);
+    try {
+      const result = await apiRequest<SeedResult>(
+        `Seed/sample?clean=${clean ? 'true' : 'false'}`,
+        { method: 'POST' },
+      );
+      if (!result.isSuccess) {
+        showErrorToast(result.error || t('admin.seedApplyError'));
+        return;
+      }
+      showSuccessToast(t('admin.seedApplySuccess'));
+      loadSeedStatus();
+    } catch {
+      showErrorToast(t('admin.seedApplyError'));
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   const handleCreate = async () => {
     setCreating(true);
@@ -322,6 +376,69 @@ export default function AdminBackupPanel() {
             </table>
           </div>
         )}
+      </section>
+
+      <section className="admin-panel overflow-hidden">
+        <div className="admin-toolbar">
+          <div>
+            <h2 className="font-semibold text-[var(--admin-text)] text-base">
+              {t('admin.seedTitle')}
+            </h2>
+            <p className="text-[var(--admin-text-muted)] text-sm">
+              {t('admin.seedSubtitle')}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="admin-btn admin-btn-ghost"
+              onClick={loadSeedStatus}
+              disabled={seeding}
+            >
+              {t('admin.backupRefresh')}
+            </button>
+            <button
+              type="button"
+              className="admin-btn"
+              disabled={seeding || !seedStatus?.seedsAvailable}
+              onClick={() => handleApplySeed(false)}
+            >
+              {seeding ? t('admin.seedApplying') : t('admin.seedApply')}
+            </button>
+            <button
+              type="button"
+              className="admin-btn admin-btn-primary"
+              disabled={seeding || !seedStatus?.seedsAvailable}
+              onClick={() => handleApplySeed(true)}
+            >
+              {t('admin.seedApplyClean')}
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-3 px-4 py-4">
+          <p className="text-[var(--admin-text-muted)] text-sm leading-relaxed">
+            {t('admin.seedAutoNote')}
+          </p>
+          {!seedStatus?.seedsAvailable ? (
+            <p className="text-[var(--error-color)] text-sm">
+              {t('admin.seedUnavailable')}
+            </p>
+          ) : (
+            <>
+              <p className="font-medium text-[var(--admin-text)] text-sm">
+                {t('admin.seedFilesTitle')}
+              </p>
+              <ul className="gap-1 grid grid-cols-1 sm:grid-cols-2 text-[var(--admin-text-muted)] text-sm">
+                {seedStatus.files.map((file) => (
+                  <li key={file} className="font-mono text-xs">
+                    {file}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
       </section>
     </div>
   );

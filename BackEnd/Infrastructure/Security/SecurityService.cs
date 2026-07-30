@@ -1,31 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OnlineShop.Infrastructure.Persistence;
+﻿using Microsoft.Extensions.Configuration;
 
-namespace OnlineShop.Infrastructure.Security
+namespace OnlineShop.Infrastructure.Security;
+
+/// <summary>
+/// IP allow/deny lists. Disabled by default until real IP tables exist.
+/// Enable with Security:IpFilterEnabled=true and configure lists in config.
+/// </summary>
+public class SecurityService(IConfiguration configuration) : ISecurityService
 {
-     
-
-    public class SecurityService : ISecurityService
+    public Task<bool> IsIpAllowedAsync(string ip)
     {
-        private readonly AppDbContext _context;
+        if (!configuration.GetValue("Security:IpFilterEnabled", false))
+            return Task.FromResult(true);
 
-        public SecurityService(AppDbContext context)
-        {
-            _context = context;
-        }
+        var whitelist = configuration.GetSection("Security:IpWhitelist").Get<string[]>()
+                        ?? Array.Empty<string>();
 
-        public async Task<bool> IsIpAllowedAsync(string ip)
-        {
-            //return await _context.Roles.AnyAsync(x => x.Ip == ip && !x.IsBlacklisted);
-            return await _context.Roles.AnyAsync(x => true);
+        // Empty whitelist with filter enabled = deny all (fail closed).
+        if (whitelist.Length == 0)
+            return Task.FromResult(false);
 
-        }
+        return Task.FromResult(whitelist.Contains(ip, StringComparer.OrdinalIgnoreCase));
+    }
 
-        public async Task<bool> IsIpBlacklistedAsync(string ip)
-        {
-            //return await _context.Roles.AnyAsync(x => x.Ip == ip && x.IsBlacklisted);
-            return await _context.Roles.AnyAsync(x => x.Id == 7);
+    public Task<bool> IsIpBlacklistedAsync(string ip)
+    {
+        if (!configuration.GetValue("Security:IpFilterEnabled", false))
+            return Task.FromResult(false);
 
-        }
+        var blacklist = configuration.GetSection("Security:IpBlacklist").Get<string[]>()
+                        ?? Array.Empty<string>();
+
+        return Task.FromResult(blacklist.Contains(ip, StringComparer.OrdinalIgnoreCase));
     }
 }

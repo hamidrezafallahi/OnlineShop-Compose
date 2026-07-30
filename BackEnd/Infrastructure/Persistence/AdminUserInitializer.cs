@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OnlineShop.Domain.Entities;
 
@@ -7,11 +8,19 @@ namespace OnlineShop.Infrastructure.Persistence;
 public class AdminUserInitializer(
     AppDbContext db,
     IPasswordHasher<User> passwordHasher,
+    IConfiguration configuration,
     ILogger<AdminUserInitializer> logger) : IDataInitializer
 {
     public void InitializeData()
     {
-        const string adminEmail = "hamidreza.lipar@gmail.com";
+        var adminEmail = configuration["Seed:AdminEmail"] ?? "hamidreza.lipar@gmail.com";
+        var adminPassword = configuration["Seed:AdminPassword"];
+
+        if (string.IsNullOrWhiteSpace(adminPassword))
+        {
+            logger.LogWarning("Seed:AdminPassword is not set; skip admin user seed.");
+            return;
+        }
 
         if (db.Users.Any(u => u.Email == adminEmail))
             return;
@@ -26,12 +35,12 @@ public class AdminUserInitializer(
         var user = User.Create(
             "مدیر سیستم",
             adminEmail,
-            "09121720295",
+            configuration["Seed:AdminPhone"] ?? "09121720295",
             "مدیر اصلی سیستم");
 
         user.SetRole(role, currentUserId: 1);
 
-        var hashed = passwordHasher.HashPassword(user, "Admin@123");
+        var hashed = passwordHasher.HashPassword(user, adminPassword);
         user.ChangePassword(hashed, currentUserId: 1);
 
         db.Users.Add(user);

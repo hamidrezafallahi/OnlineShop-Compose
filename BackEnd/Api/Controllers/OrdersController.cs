@@ -2,11 +2,14 @@
 using Application.Commands;
 using Application.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class OrdersController : BaseController
     {
         private readonly IMediator _mediator;

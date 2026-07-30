@@ -3,6 +3,7 @@ using Application.Commands;
 using Application.Dtos;
 using Application.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -10,6 +11,7 @@ namespace WebApi.Controllers
 {
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
     public class CartsController : BaseController
     {
         private readonly IMediator _mediator;

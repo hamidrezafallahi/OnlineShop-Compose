@@ -75,6 +75,9 @@ RUN apt-get update \
 # Copy published application
 COPY --from=publish /app/publish .
 
+# Sample catalog SQL (applied from admin Seed panel)
+COPY seeds /app/seeds
+
 # Create upload/backup directories and set permissions
 RUN mkdir -p /app/wwwroot/uploads /app/backups \
     && chown -R app:app /app
@@ -84,7 +87,8 @@ ENV ASPNETCORE_URLS=http://+:8080 \
     ASPNETCORE_ENVIRONMENT=Production \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
     Backup__Directory=/app/backups \
-    Backup__PgDumpPath=pg_dump
+    Backup__PgDumpPath=pg_dump \
+    Seed__SampleDirectory=/app/seeds
 
 EXPOSE 8080
 

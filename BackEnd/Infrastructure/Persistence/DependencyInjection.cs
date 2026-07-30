@@ -75,6 +75,7 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<IBackgroundJobService, HangfireBackgroundJobService>();
             services.AddScoped<IUploaderService, UploaderService>();
             services.AddScoped<IBackupService, PostgresBackupService>();
+            services.AddScoped<ISampleSeedService, SampleSeedService>();
             services.AddHttpClient<IPaymentGateway, ZarinpalPaymentGateway>();
             services.AddScoped<IProductSpecificationRepository, ProductSpecificationRepository>();
             services.AddScoped<IBlogTagRepository, BlogTagRepository>();

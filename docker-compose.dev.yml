@@ -39,9 +39,11 @@ services:
         Database=${POSTGRES_DB:-OnlineShopDb};
         Username=${POSTGRES_USER:-postgres};
         Password=${POSTGRES_PASSWORD:-postgres}
-      Jwt__Key: ${JWT_KEY}
+      Jwt__Key: ${JWT_KEY:-dev-only-change-me-32chars-minimum!!}
       Jwt__Issuer: OnlineShop
       Jwt__Audience: OnlineShopUsers
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-Admin@123}
+      Hangfire__DashboardEnabled: "true"
       Backup__Directory: /src/Api/backups
       Backup__PgDumpPath: pg_dump
     volumes:

@@ -1,22 +1,9 @@
-﻿public class SuspiciousClientMiddleware
+﻿/// <summary>
+/// Intentionally permissive. Blocking User-Agents that contain "bot"
+/// breaks search-engine crawlers and SEO. Keep as a pass-through until
+/// a real bot policy (Allow/Deny lists) is defined.
+/// </summary>
+public class SuspiciousClientMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public SuspiciousClientMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        var userAgent = context.Request.Headers["User-Agent"].ToString();
-        if (string.IsNullOrEmpty(userAgent) || userAgent.Contains("bot", StringComparison.OrdinalIgnoreCase))
-        {
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            await context.Response.WriteAsync("Suspicious client detected.");
-            return;
-        }
-
-        await _next(context);
-    }
+    public Task InvokeAsync(HttpContext context) => next(context);
 }
