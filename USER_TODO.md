@@ -10,6 +10,7 @@
 ## فوری — امنیت (امروز)
 
 ### 1) تعویض رمز root سرور
+
 - **نوع:** امنیت سرور
 - **محل:** VPS `188.240.196.165` (SSH)
 - **چرا:** رمز root در چت Cursor لو رفته است.
@@ -19,18 +20,22 @@
   3. ترجیحاً ورود با رمز را محدود و **SSH Key** بسازید
 
 ### 2) Revoke کردن GitHub Personal Access Token لو‌رفته
+
 - **نوع:** امنیت GitHub
-- **محل:** https://github.com/settings/tokens
+- **محل:** [https://github.com/settings/tokens](https://github.com/settings/tokens)
 - **چرا:** روی VPS در `/opt/shop` آدرس `git remote` قبلاً شامل PAT بود (`ghp_...`). من URL را به حالت بدون توکن عوض کردم، ولی خود توکن هنوز باید باطل شود.
 - **کار شما:**
   1. همه PATهای مشکوک/قدیمی را Revoke کنید
   2. اگر نیاز به `git pull` روی سرور دارید، یکی از این‌ها را جایگزین کنید:
-     - **Deploy Key** فقط‌خواندنی برای ریپوی `candyRose`، یا
-     - یک Fine-grained PAT جدید با دسترسی محدود فقط به `candyRose` و ذخیره در credential helper سرور (نه داخل URL)
+    - **Deploy Key** فقط‌خواندنی برای ریپوی `candyRose`، یا
+    - یک Fine-grained PAT جدید با دسترسی محدود فقط به `candyRose` و ذخیره در credential helper سرور (نه داخل URL)
+
+
 
 ### 3) بررسی GitHub Secrets ریپوی توسعه
+
 - **نوع:** تنظیمات CI/CD
-- **محل:** https://github.com/hamidrezafallahi/OnlineShop-Compose/settings/secrets/actions
+- **محل:** [https://github.com/hamidrezafallahi/OnlineShop-Compose/settings/secrets/actions](https://github.com/hamidrezafallahi/OnlineShop-Compose/settings/secrets/actions)
 - **اسرار مورد انتظار (نام‌ها):**
   - `DOCKER_USERNAME`
   - `DOCKERHUB_TOKEN`
@@ -40,7 +45,10 @@
   - `SSH_PRIVATE_KEY` (کلید خصوصی متناظر با سرور؛ **نه** پسورد)
 - **کار شما:** مطمئن شوید مقادیر واقعی‌اند و با توکن/رمزهای جدید هم‌خوان هستند. فایل محلی `secrets.txt` دیگر در git نیست؛ فقط روی ماشین خودتان نگه دارید یا از `secrets.example.txt` الگو بگیرید.
 
+
+
 ### 4) چرخش سایر اسرار در صورت نیاز
+
 - **نوع:** امنیت اپ
 - **محل VPS:** `/opt/shop/.env`
 - **وضعیت فعلی:**
@@ -51,7 +59,10 @@
   2. پس از عوض کردن: آپدیت `/opt/shop/.env` → `docker compose -f docker-compose.prod.yml up -d` برای postgres/backend
   3. `SEED_ADMIN_PASSWORD` / `PGADMIN_PASSWORD` را اگر ضعیف‌اند عوض کنید
 
+
+
 ### 5) پاک‌سازی تاریخچه git (اختیاری ولی توصیه‌شده)
+
 - **نوع:** امنیت ریپو
 - **محل:** ریپوی `OnlineShop-Compose` روی GitHub
 - **چرا:** حذف فایل از commit جدید، تاریخچهٔ قدیمی (`.env` / `secrets.txt`) را پاک نمی‌کند
@@ -59,12 +70,17 @@
 
 ---
 
+
+
 ## دامنه و SEO
 
+
+
 ### 6) DNS و دامنهٔ اصلی فروشگاه
+
 - **نوع:** DNS / دامنه
 - **وضعیت یافت‌شده:**
-  - فروشگاه زنده روی VPS: **`shooshkitchen.ir`** → `188.240.196.165`
+  - فروشگاه زنده روی VPS: `shooshkitchen.ir` → `188.240.196.165`
   - `www.hamidrezafalahi.ir` به **Vercel** می‌رود (سایت قدیمی/دیگر)
 - **محل تنظیمات کد/سرور که من هم‌تراز کردم:**
   - `FrontEnd/Dockerfile.prod` → پیش‌فرض `NEXT_PUBLIC_SITE_URL=https://shooshkitchen.ir`
@@ -76,7 +92,10 @@
   3. در پنل DNS، `A`/`AAAA` را فقط به VPS بدهید؛ از تداخل با Vercel جلوگیری کنید
   4. SSL برای دامنهٔ نهایی را با certbot روی VPS چک کنید
 
+
+
 ### 7) فایل‌های محلی env روی سیستم خودتان
+
 - **نوع:** محیط توسعه محلی
 - **محل:**
   - `C:\falahi\OnlineShop-Compose\.env` (دیگر در git track نمی‌شود)
@@ -86,11 +105,16 @@
 
 ---
 
+
+
 ## محصول / عملیات فروشگاه
 
+
+
 ### 8) تست لاگین بعد از httpOnly
+
 - **نوع:** QA دستی
-- **محل سایت:** https://shooshkitchen.ir/fa/register
+- **محل سایت:** [https://shooshkitchen.ir/fa/register](https://shooshkitchen.ir/fa/register)
 - **تغییر فنی من:**
   - کوکی‌های `candyAccess` / `candyRefresh` دیگر برای JS قابل خواندن نیستند
   - فلگ UI: `candySession`
@@ -101,13 +125,19 @@
   3. در DevTools → Application → Cookies چک کنید `candyAccess` باید **HttpOnly** باشد
   4. اگر جایی شکست، اسکرین/لاگ بدهید
 
+
+
 ### 9) اعمال Seed کاتالوگ (در صورت خالی بودن محصولات)
+
 - **نوع:** داده
 - **محل UI:** ادمین → بخش Backup/Seed (یا API مربوطه)
 - **چرا:** روی سرور migration واریانت اعمال شد ولی اگر جدول Products خالی باشد، `ProductVariants` هم خالی می‌ماند
 - **کار شما:** از پنل ادمین «اعمال داده نمونه» را بزنید (یا بگویید من از سرور seed را اجرا کنم) و بعد یک محصول با حجم/غلظت تست کنید
 
+
+
 ### 10) تعریف واریانت‌های واقعی عطر
+
 - **نوع:** محتوا / دامنه کسب‌وکار
 - **محل مدل:** `ProductVariant` (`SizeMl` + `Concentration`) وصل به `ProductOffers`
 - **کار شما هنگام ثبت offer:**
@@ -116,7 +146,10 @@
   - یا `ProductVariantId` موجود را بفرستید
 - **نکته:** offerهای قدیمی (در صورت وجود) به variant پیش‌فرض `0ml / Other` وصل می‌شوند تا بعداً اصلاح کنید
 
+
+
 ### 11) بکاپ آف‌سایت (هنوز با من کامل نشده)
+
 - **نوع:** Ops / Disaster Recovery
 - **محل فعلی:** volume داکر `shop-backups-prod` روی همان VPS (`/app/backups`)
 - **کار شما:**
@@ -124,14 +157,20 @@
   2. cron یا اسکریپت کپی دوره‌ای از volume بکاپ + در صورت تمایل از `uploads`
   3. ماهانه یک‌بار restore تست کنید
 
+
+
 ### 12) Deploy Key برای candyRose روی VPS
+
 - **نوع:** DevOps
 - **محل سرور:** `/opt/shop` + GitHub → Settings → Deploy keys ریپوی `candyRose`
 - **کار شما:** بعد از Revoke توکن، Deploy Key بسازید تا `git pull` روی VPS بدون قرار دادن secret در URL کار کند
 
+
+
 ### 13) بررسی slug محصول بعد از دیپلوی اولویت ۵
+
 - **نوع:** QA / SEO
-- **محل:** https://shooshkitchen.ir/fa/products و صفحه جزئیات محصول
+- **محل:** [https://shooshkitchen.ir/fa/products](https://shooshkitchen.ir/fa/products) و صفحه جزئیات محصول
 - **تغییر فنی من:**
   - ستون `Products.Slug` + migration `AddProductSlug`
   - API: `GET /api/Products/{idOrSlug}` و `GET /api/Products/getslugs`
@@ -143,29 +182,37 @@
   3. باز کردن `/fa/products/12` باید به slug ریدایرکت شود
   4. در ادمین هنگام ویرایش، در صورت نیاز `Slug` را دستی تنظیم کنید
 
+
+
 ### 15) بررسی CI شکست‌خوردهٔ قبلی (اولویت ۵)
+
 - **نوع:** اطلاع / نیازی به کار نیست اگر دیپلوی بعدی سبز شد
-- **محل:** https://github.com/hamidrezafallahi/OnlineShop-Compose/actions/runs/30547649781
+- **محل:** [https://github.com/hamidrezafallahi/OnlineShop-Compose/actions/runs/30547649781](https://github.com/hamidrezafallahi/OnlineShop-Compose/actions/runs/30547649781)
 - **علت:** تایپ `product.slug` در کارت محصول در بیلد Next نبود
 - **وضعیت:** در commit بعدی رفع و دوباره پوش شد؛ شما فقط بعد از سبز شدن Actions، تست slug (مورد ۱۳) را انجام دهید
 
-
 ---
+
+
 
 ## کارهای بعدی Agent (وضعیت)
 
-| اولویت | موضوع | وضعیت |
-|--------|--------|--------|
-| 1 | حذف secrets از git + چرخش JWT | انجام شد |
-| 2 | httpOnly + BFF | انجام شد |
-| 3 | volume بکاپ + dhparams | انجام شد |
-| 4 | مدل Variant عطر | انجام شد |
-| 5 | Slug محصول + redirect از id | انجام شد (در حال دیپلوی) |
-| … | ادامه نقشه راه (فیلتر، wishlist، …) | صف |
+
+| اولویت | موضوع                               | وضعیت                    |
+| ------ | ----------------------------------- | ------------------------ |
+| 1      | حذف secrets از git + چرخش JWT       | انجام شد                 |
+| 2      | httpOnly + BFF                      | انجام شد                 |
+| 3      | volume بکاپ + dhparams              | انجام شد                 |
+| 4      | مدل Variant عطر                     | انجام شد                 |
+| 5      | Slug محصول + redirect از id         | انجام شد (در حال دیپلوی) |
+| …      | ادامه نقشه راه (فیلتر، wishlist، …) | صف                       |
+
 
 هر وقت اولویت جدید نیاز به کار دستی شما داشته باشد، **به همین فایل اضافه می‌شود**.
 
 ---
+
+
 
 ## چک‌لیست سریع روزانه
 
