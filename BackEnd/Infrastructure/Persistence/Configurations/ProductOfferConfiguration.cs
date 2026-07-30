@@ -29,6 +29,13 @@ namespace Infrastructure.Persistence.Configurations
                    .HasForeignKey(po => po.SupplierId)
                    .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(po => po.Variant)
+                   .WithMany(v => v.Offers)
+                   .HasForeignKey(po => po.ProductVariantId)
+                   .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasIndex(po => po.ProductVariantId);
+
             // ===== Discounts (ProductOfferDiscount) =====
             builder.HasMany(po => po.Discounts)
                    .WithOne(pd => pd.ProductOffer)
