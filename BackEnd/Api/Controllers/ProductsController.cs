@@ -65,11 +65,20 @@ public class ProductsController : BaseController
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDto>> GetById(int id)
+    [HttpGet("getslugs")]
+    public async Task<ActionResult<IEnumerable<SlugDto>>> GetAllProductSlugs()
     {
-        var result = await _mediator.Send(new GetProductByIdQuery {Id=id });
+        var result = await _mediator.Send(new GetAllProductsSlugsQuery());
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
+        return Ok(result);
+    }
+
+    [HttpGet("{idOrSlug}")]
+    public async Task<ActionResult<ProductByDetailDto>> GetByIdOrSlug(string idOrSlug)
+    {
+        var result = await _mediator.Send(new GetProductByIdQuery { IdOrSlug = idOrSlug });
+        if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
+        if (!result.IsSuccess || result.Data is null) return NotFound(result);
 
         return Ok(result);
     }

@@ -78,7 +78,7 @@ export default function CommentAndRate({ ...props }: TCommentAndRate) {
   };
   const redirectUrl = encodeURIComponent(pathname);
   useEffect(() => {
-    setIsAuthenticated(Boolean(getCookie("candyAccess")));
+    setIsAuthenticated(Boolean(getCookie("candySession")));
   }, []);
   return (
     <div className="flex flex-col gap-2 bg-gray-50 hover:shadow-md p-6 rounded-2xl w-5/6 md:w-1/2 text-right transition">

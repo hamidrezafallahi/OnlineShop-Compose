@@ -10,7 +10,7 @@ import {
 export async function ProductSupplierExtended({
   productId,
 }: {
-  productId: string;
+  productId: string | number;
 }) {
   const response = await fetch(
     `${serverApiBaseUrl}/productOffers/by-product/${productId}`,

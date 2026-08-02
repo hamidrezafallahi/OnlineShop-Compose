@@ -138,5 +138,14 @@ namespace OnlineShop.Infrastructure.Repositories
                                p.Name.Trim().ToLower() == name.Trim().ToLower() &&
                                p.BrandId == brandId);
         }
+
+        public async Task<bool> ExistsBySlugAsync(string slug, int? excludeProductId = null)
+        {
+            var normalized = slug.Trim().ToLower();
+            return await _context.Products.AnyAsync(p =>
+                !p.IsDeleted
+                && p.Slug.ToLower() == normalized
+                && (!excludeProductId.HasValue || p.Id != excludeProductId.Value));
+        }
     }
 }

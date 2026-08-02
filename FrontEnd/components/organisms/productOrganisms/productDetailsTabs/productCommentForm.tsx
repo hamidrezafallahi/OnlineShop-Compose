@@ -69,7 +69,7 @@ const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   };
   const redirectUrl = encodeURIComponent(pathname);
   useEffect(() => {
-  setIsAuthenticated(Boolean(getCookie("candyAccess")));
+  setIsAuthenticated(Boolean(getCookie("candySession")));
 }, []);
   return (
     <div className="mt-4">

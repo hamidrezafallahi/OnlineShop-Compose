@@ -3,7 +3,16 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { serverApiBaseUrl } from './api';
+import { requireAbsoluteUrl, serverApiBaseUrl } from './api';
+import {
+  ACCESS_COOKIE,
+  REFRESH_COOKIE,
+  SESSION_FLAG_COOKIE,
+  accessCookieOptions,
+  refreshCookieOptions,
+  sessionFlagCookieOptions,
+} from './auth-cookies';
+import { logger } from './logger';
 
 type FetchOptions = {
   endpoint: string;
@@ -18,11 +27,16 @@ export async function authenticatedFetch<T>({
 }: FetchOptions): Promise<T> {
   const cookieStore = await cookies();
 
-  let accessToken = cookieStore.get('candyAccess')?.value;
-  let refreshToken = cookieStore.get('candyRefresh')?.value;
+  let accessToken = cookieStore.get(ACCESS_COOKIE)?.value;
+  let refreshToken = cookieStore.get(REFRESH_COOKIE)?.value;
+
+  const url = requireAbsoluteUrl(
+    `${serverApiBaseUrl}/${endpoint.replace(/^\/+/, '')}`,
+    'authenticatedFetch URL',
+  );
 
   async function execute(token?: string) {
-    return fetch(`${serverApiBaseUrl}/${endpoint}`, {
+    return fetch(url, {
       method,
       headers: getHeaders(body, token),
       body: body instanceof FormData
@@ -32,7 +46,7 @@ export async function authenticatedFetch<T>({
           : undefined,
     });
   }
- 
+
   let response = await execute(accessToken);
 
   // access token expired
@@ -55,18 +69,31 @@ export async function authenticatedFetch<T>({
     accessToken = refreshResult.accessToken;
     refreshToken = refreshResult.refreshToken;
 
-    cookieStore.set('candyAccess', accessToken!);
-    cookieStore.set('candyRefresh', refreshToken!);
+    cookieStore.set(ACCESS_COOKIE, accessToken!, accessCookieOptions);
+    cookieStore.set(REFRESH_COOKIE, refreshToken!, refreshCookieOptions);
+    cookieStore.set(SESSION_FLAG_COOKIE, '1', sessionFlagCookieOptions);
 
     // retry
     response = await execute(accessToken);
   }
 
   if (response.status === 403) {
+    logger.warn('authenticatedFetch forbidden', {
+      scope: 'server-fetch',
+      source: 'server',
+      url,
+      status: 403,
+    });
     throw new Error('FORBIDDEN');
   }
 
   if (!response.ok) {
+    logger.error('authenticatedFetch HTTP error', {
+      scope: 'server-fetch',
+      source: 'server',
+      url,
+      status: response.status,
+    });
     throw new Error(
       `HTTP ${response.status}: ${response.statusText}`
     );
@@ -101,7 +128,10 @@ async function refreshTokens({
 }) {
   try {
     const response = await fetch(
-      `${serverApiBaseUrl}/Identity/refresh-token`,
+      requireAbsoluteUrl(
+        `${serverApiBaseUrl}/Identity/refresh-token`,
+        'refreshTokens URL',
+      ),
       {
         method: 'POST',
         headers: {
@@ -137,6 +167,7 @@ async function refreshTokens({
 }
 
 function clearTokens(cookieStore: Awaited<ReturnType<typeof cookies>>) {
-  cookieStore.delete('candyAccess');
-  cookieStore.delete('candyRefresh');
+  cookieStore.delete(ACCESS_COOKIE);
+  cookieStore.delete(REFRESH_COOKIE);
+  cookieStore.delete(SESSION_FLAG_COOKIE);
 }

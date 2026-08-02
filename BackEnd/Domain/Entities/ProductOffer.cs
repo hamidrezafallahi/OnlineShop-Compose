@@ -6,6 +6,9 @@ public class ProductOffers : BaseEntity
     public int ProductId { get; private set; }
     public Product Product { get; private set; }
 
+    public int? ProductVariantId { get; private set; }
+    public ProductVariant? Variant { get; private set; }
+
     public int SupplierId { get; private set; }
     public User Supplier { get; private set; }
 
@@ -26,12 +29,14 @@ public class ProductOffers : BaseEntity
       int supplierId,
       decimal basePrice,
       int inventory,
-      int currentUserId)
+      int currentUserId,
+      int? productVariantId = null)
     {
         // اعتبارسنجی‌ها
         var offer = new ProductOffers
         {
             ProductId = productId,
+            ProductVariantId = productVariantId,
             SupplierId = supplierId,
             BasePrice = basePrice,
             Inventory = inventory
@@ -39,6 +44,12 @@ public class ProductOffers : BaseEntity
 
         offer.MarkCreated(currentUserId);
         return offer;
+    }
+
+    public void AssignVariant(int productVariantId, int currentUserId)
+    {
+        ProductVariantId = productVariantId;
+        MarkUpdated(currentUserId);
     }
  
 

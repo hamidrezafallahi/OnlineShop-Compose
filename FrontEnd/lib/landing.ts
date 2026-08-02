@@ -2,7 +2,8 @@ import 'server-only';
 
 import { ILandingProduct } from '@models/product';
 
-import { serverApiBaseUrl } from './api';
+ import { requireAbsoluteUrl, serverApiBaseUrl } from './api';
+import { logger } from './logger';
 
 type LandingTab = 'BestSeller' | 'TheNewest' | 'Discounters';
 
@@ -13,16 +14,31 @@ type LandingProductsEnvelope = {
 };
 
 export async function getSlides<T>(): Promise<T[]> {
+  const url = requireAbsoluteUrl(
+    `${serverApiBaseUrl}/Landing/slide`,
+    'getSlides URL',
+  );
+
   try {
     const url = `${serverApiBaseUrl}/Landing/slide`;
-    const res = await fetch(url, {
-      cache: 'no-store',
-    });
+ 
+    const res = await fetch(url, { cache: 'no-store' });
+
+    if (!res.ok) {
+      logger.error('getSlides HTTP error', {
+        scope: 'landing',
+        source: 'server',
+        url,
+        status: res.status,
+      });
+      return [];
+    }
+
     const data = await res.json();
-    return data.data ?? [];
-  } catch (e) {
-    console.error(e);
-    throw e;
+    return (data?.data ?? []) as T[];
+  } catch (err) {
+    logger.error('getSlides failed', { scope: 'landing', source: 'server', url }, err);
+    return [];
   }
 }
 

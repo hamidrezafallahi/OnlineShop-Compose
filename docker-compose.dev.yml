@@ -39,9 +39,11 @@ services:
         Database=${POSTGRES_DB:-OnlineShopDb};
         Username=${POSTGRES_USER:-postgres};
         Password=${POSTGRES_PASSWORD:-postgres}
-      Jwt__Key: ${JWT_KEY}
+      Jwt__Key: ${JWT_KEY:-dev-only-change-me-32chars-minimum!!}
       Jwt__Issuer: OnlineShop
       Jwt__Audience: OnlineShopUsers
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-Admin@123}
+      Hangfire__DashboardEnabled: "true"
       Backup__Directory: /src/Api/backups
       Backup__PgDumpPath: pg_dump
     volumes:
@@ -75,6 +77,11 @@ services:
       - "3000:3000"
     env_file:
       - ./FrontEnd/.env
+    environment:
+      # Absolute URL required for RSC/server fetch inside Docker network
+      INTERNAL_SERVER_SIDE_API_URL: ${INTERNAL_SERVER_SIDE_API_URL:-http://backend:8080}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost}
+      NODE_ENV: development
     volumes:
       - ./FrontEnd:/app
       - /app/node_modules

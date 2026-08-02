@@ -77,7 +77,7 @@ export default function SupplierProductsCarousel({
 }
 
 function ProductCard({ product }: { product: IDetailedProductOffer }) {
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
   const locale = useLocale();
   const [addToShoppingCart] = useGetConditionallyMutation();
   const dispatch = useDispatch();
@@ -143,7 +143,7 @@ dispatch(addToCart({
 
           <div className="flex items-center gap-2">
             <Link
-              href={`/${locale}/products/${product.id}`}
+              href={`/${locale}/products/${product.productSlug || product.slug || product.productId}`}
               className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-xs"
             >
               مشاهده

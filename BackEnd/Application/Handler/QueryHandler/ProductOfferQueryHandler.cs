@@ -199,6 +199,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
     {
         var now = DateTime.UtcNow;
         var offers = await _offerRepo.Query().Include(o => o.Product)
+                .Include(o => o.Variant)
                 .Where(o => o.ProductId == request.ProductId && o.IsActive && !o.IsDeleted)
             .Include(o => o.Supplier).ToListAsync();
 
@@ -206,6 +207,11 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
         {
             Id = offer.Id,
             ProductId = offer.ProductId,
+            ProductVariantId = offer.ProductVariantId,
+            SizeMl = offer.Variant?.SizeMl,
+            Concentration = offer.Variant?.Concentration.ToString(),
+            VariantLabel = offer.Variant?.DisplayLabel,
+            ProductSlug = offer.Product?.Slug,
             ProductName = offer.Product?.Name ?? "",
             SupplierId = offer.SupplierId,
             SupplierName = offer.Supplier?.FullName ?? "",

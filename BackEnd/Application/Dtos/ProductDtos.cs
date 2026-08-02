@@ -8,6 +8,7 @@ namespace Application.Dtos
     {
         public int Id { get; set; }
         public string Name { get; set; } = default!;
+        public string Slug { get; set; } = default!;
         public string Description { get; set; } = default!;
         public int CategoryId { get; set; }
         public string CategoryName { get; set; } 
@@ -27,6 +28,7 @@ namespace Application.Dtos
     {
         public int Id { get; set; }
         public string Name { get; set; } = default!;
+        public string Slug { get; set; } = default!;
         public string Description { get; set; } = default!;
         public int CategoryId { get; set; }
         public int? BrandId { get; set; }
@@ -37,7 +39,18 @@ namespace Application.Dtos
         public decimal? Height { get; set; } = 0;
         public decimal? Depth { get; set; } = 0;
         public decimal? Weight { get; set; } = 0;
+        public List<ProductVariantDto> Variants { get; set; } = new();
+    }
 
+    public class ProductVariantDto
+    {
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public int SizeMl { get; set; }
+        public string Concentration { get; set; } = default!;
+        public string Label { get; set; } = default!;
+        public int OfferCount { get; set; }
+        public decimal? MinFinalPrice { get; set; }
     }
     public class ProductCardDto
     {
@@ -97,6 +110,7 @@ namespace Application.Dtos
     public class TheMostProductDto
     {
         public int Id { get; set; }
+        public string Slug { get; set; } = default!;
         public int BestOfferId { get; set; }
 
         public string Name { get; set; } = default!;

@@ -4,10 +4,17 @@
 
 # ─── Environment ──────────────────────────────────────────────────────────
 .env
+.env.*
+!.env.example
+!**/.env.example
+!**/.env.*.example
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+FrontEnd/.env
+FrontEnd/.env.production
+FrontEnd/.env.local
 *.local
 
 # ─── IDE / Editor ─────────────────────────────────────────────────────────
@@ -73,5 +80,9 @@ FrontEnd/next-env.d.ts
 
 # ─── Secrets ──────────────────────────────────────────────────────────────
 secrets/
+secrets.txt
+**/secrets.txt
 credentials.json
 serviceAccountKey.json
+*.pem
+!nginx_configs/ssl-dhparams.pem

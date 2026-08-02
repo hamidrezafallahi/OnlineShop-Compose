@@ -14,7 +14,7 @@ import { IProps } from './type';
 export default function ShoppingCartTemplate({ ...props }: IProps) {
   const { locale } = props;
   const route=useRouter()
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
 
   useEffect(() => {
     if (!isAuthenticated) {

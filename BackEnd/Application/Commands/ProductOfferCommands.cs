@@ -5,6 +5,9 @@ namespace Application.Commands
     public class CreateProductOfferCommand : IRequest<ServiceResult<IdDto>>
     {
         public int ProductId { get; set; }
+        public int? ProductVariantId { get; set; }
+        public int? SizeMl { get; set; }
+        public int? Concentration { get; set; }
         public decimal BasePrice { get; set; }
         public int Inventory { get; set; }
     }

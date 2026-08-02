@@ -5,14 +5,15 @@ import {
   browserAuthBaseUrl,
 } from '@lib/api';
 import {
+  SESSION_FLAG_COOKIE,
+} from '@lib/auth-cookies';
+import {
   BaseQueryApi,
   FetchArgs,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query';
 import {
-  createCookie,
   deleteCookie,
-  getTokens,
   showErrorToast,
 } from '@utils/core';
 
@@ -40,13 +41,11 @@ export async function baseQueryByToken(
           await refreshAccessToken();
 
         if (!refreshed) {
-          deleteCookie("candyAccess");
-          deleteCookie("candyRefresh");
-
-          // if (typeof window !== "undefined") {
-          //   window.location.href =
-          //     "/fa/register";
-          // }
+          deleteCookie(SESSION_FLAG_COOKIE);
+          await fetch(`${browserAuthBaseUrl}/logout`, {
+            method: 'POST',
+            credentials: 'include',
+          }).catch(() => undefined);
 
           return {
             error: {
@@ -62,7 +61,6 @@ export async function baseQueryByToken(
       await mutex.waitForUnlock();
     }
 
-    // retry request
     result = await baseQueryWithAuth(
       args,
       api,
@@ -81,17 +79,6 @@ async function baseQueryWithAuth(
   const rawBaseQuery = fetchBaseQuery({
     baseUrl: browserApiBaseUrl,
     credentials: "include",
-    prepareHeaders: (headers) => {
-      const token = getTokens("candyAccess");
-      if (token?.val) {
-        headers.set(
-          "Authorization",
-          `Bearer ${token.val}`
-        );
-      }
-
-      return headers;
-    },
   });
 
   const result = await rawBaseQuery(
@@ -128,13 +115,7 @@ async function refreshAccessToken(): Promise<boolean> {
     }
 
     const data = await response.json();
-
-    if (data.isSuccess && data.data?.accessToken) {
-      createCookie('candyAccess', data.data.accessToken, 1);
-      return true;
-    }
-
-    return false;
+    return Boolean(data.isSuccess);
   } catch (err) {
     console.error("Refresh token error:", err);
 

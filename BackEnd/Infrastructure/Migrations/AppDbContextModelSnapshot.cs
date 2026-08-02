@@ -1491,6 +1491,11 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(220)
+                        .HasColumnType("character varying(220)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -1502,6 +1507,10 @@ namespace Infrastructure.Migrations
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasFilter("\"IsDeleted\" = false");
 
                     b.ToTable("Products");
                 });
@@ -1601,6 +1610,56 @@ namespace Infrastructure.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("ProductOfferTags", (string)null);
+                });
+
+            modelBuilder.Entity("OnlineShop.Domain.Entities.ProductVariant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Concentration")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SizeMl")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId", "SizeMl", "Concentration")
+                        .IsUnique()
+                        .HasFilter("\"IsDeleted\" = false");
+
+                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Entities.Rate", b =>
@@ -2335,6 +2394,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ProductVariantId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SupplierId")
                         .HasColumnType("integer");
 
@@ -2347,6 +2409,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductVariantId");
 
                     b.HasIndex("SupplierId");
 
@@ -2398,7 +2462,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsDeleted = false,
                             RoleName = "SuperAdmin"
@@ -2406,7 +2470,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsDeleted = false,
                             RoleName = "Admin"
@@ -2414,7 +2478,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsDeleted = false,
                             RoleName = "StoreManager"
@@ -2422,7 +2486,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsDeleted = false,
                             RoleName = "Support"
@@ -2430,7 +2494,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsDeleted = false,
                             RoleName = "ContentEditor"
@@ -2438,7 +2502,7 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             IsActive = true,
                             IsDeleted = false,
                             RoleName = "Customer"
@@ -2708,6 +2772,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("OnlineShop.Domain.Entities.ProductVariant", b =>
+                {
+                    b.HasOne("OnlineShop.Domain.Entities.Product", "Product")
+                        .WithMany("Variants")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("OnlineShop.Domain.Entities.Rate", b =>
                 {
                     b.HasOne("OnlineShop.Domain.Entities.User", "User")
@@ -2836,6 +2911,11 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OnlineShop.Domain.Entities.ProductVariant", "Variant")
+                        .WithMany("Offers")
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("OnlineShop.Domain.Entities.User", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
@@ -2845,6 +2925,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Supplier");
+
+                    b.Navigation("Variant");
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Entities.Blog", b =>
@@ -2898,6 +2980,13 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProductOffers");
 
                     b.Navigation("Specifications");
+
+                    b.Navigation("Variants");
+                });
+
+            modelBuilder.Entity("OnlineShop.Domain.Entities.ProductVariant", b =>
+                {
+                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Entities.Tag", b =>

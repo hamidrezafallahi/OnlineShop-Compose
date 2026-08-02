@@ -56,6 +56,7 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IProductOfferDiscountRepository, ProductOfferDiscountRepository>();
             services.AddScoped<IProductOfferRepository, ProductOfferRepository>();
+            services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
             services.AddScoped<IProductOfferTagRepository, ProductOfferTagRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
@@ -75,6 +76,7 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<IBackgroundJobService, HangfireBackgroundJobService>();
             services.AddScoped<IUploaderService, UploaderService>();
             services.AddScoped<IBackupService, PostgresBackupService>();
+            services.AddScoped<ISampleSeedService, SampleSeedService>();
             services.AddHttpClient<IPaymentGateway, ZarinpalPaymentGateway>();
             services.AddScoped<IProductSpecificationRepository, ProductSpecificationRepository>();
             services.AddScoped<IBlogTagRepository, BlogTagRepository>();

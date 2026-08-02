@@ -6,11 +6,14 @@ using Common;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using OnlineShop.Domain.Entities;
+using OnlineShop.Domain.Enums;
 using OnlineShop.Domain.Interfaces;
 
     public class ProductOfferCommandHandler(
             IProductOfferRepository _offerRepo,
             IProductRepository _productRepo,
+            IProductVariantRepository _variantRepo,
             IDiscountRepository _discountRepo,
             IProductOfferDiscountRepository _productOfferDiscountRepo,
             IHttpContextAccessor _accessor)
@@ -38,13 +41,42 @@ using OnlineShop.Domain.Interfaces;
             if (exists)
                 return ServiceResult<IdDto>.Failed("You already have an offer for this product");
 
+            var variantId = request.ProductVariantId;
+            if (!variantId.HasValue)
+            {
+                var sizeMl = request.SizeMl ?? 0;
+                var concentration = request.Concentration.HasValue
+                    ? (PerfumeConcentration)request.Concentration.Value
+                    : PerfumeConcentration.Other;
+
+                var existingVariant = await _variantRepo.FindAsync(
+                    request.ProductId,
+                    sizeMl,
+                    concentration,
+                    cancellationToken);
+
+                if (existingVariant == null)
+                {
+                    existingVariant = ProductVariant.Create(
+                        request.ProductId,
+                        sizeMl,
+                        concentration,
+                        userId.Value);
+                    await _variantRepo.AddAsync(existingVariant);
+                    await _variantRepo.SaveChangesAsync(cancellationToken);
+                }
+
+                variantId = existingVariant.Id;
+            }
+
             // 3. ایجاد offer
             var offer = ProductOffers.Create(
                 productId: request.ProductId,
                 supplierId: userId.Value,
                 basePrice: request.BasePrice,
                 inventory: request.Inventory,
-                currentUserId: userId.Value
+                currentUserId: userId.Value,
+                productVariantId: variantId
             );
 
             await _offerRepo.AddAsync(offer);

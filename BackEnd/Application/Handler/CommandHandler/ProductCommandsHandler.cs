@@ -34,11 +34,23 @@ namespace Application.Handler.CommandHandler
                 categoryId: request.CategoryId,
                 brandId: request.BrandId,
                 dimensions: dim,
-                currentUserId: userId.Value
+                currentUserId: userId.Value,
+                slug: request.Slug
             );
             
             await _repository.AddAsync(product);
-            await _repository.SaveChangesAsync(cancellationToken); 
+            await _repository.SaveChangesAsync(cancellationToken);
+
+            // Guarantee uniqueness after Id is assigned.
+            var baseSlug = string.IsNullOrWhiteSpace(request.Slug)
+                ? OnlineShop.Domain.Common.SlugHelper.Generate(request.Name, product.Id)
+                : OnlineShop.Domain.Common.SlugHelper.Generate(request.Slug, product.Id);
+            if (!string.Equals(product.Slug, baseSlug, StringComparison.OrdinalIgnoreCase)
+                || await _repository.ExistsBySlugAsync(product.Slug, product.Id))
+            {
+                product.EnsureSlug(product.Id);
+                await _repository.SaveChangesAsync(cancellationToken);
+            } 
             //if (request.Images != null && request.Images.Any())
             //{
             //    for (int i = 0; i < request.Images.Count; i++)
@@ -122,8 +134,16 @@ namespace Application.Handler.CommandHandler
                 description: request.Description,
                 categoryId: request.CategoryId,
                 brandId: request.BrandId,
-                dimensions: dim
+                dimensions: dim,
+                slug: request.Slug
                 );
+
+            if (!string.IsNullOrWhiteSpace(product.Slug)
+                && await _repository.ExistsBySlugAsync(product.Slug, product.Id))
+            {
+                product.EnsureSlug(product.Id);
+            }
+
             await _repository.SaveChangesAsync(cancellationToken);
 
             return ServiceResult<IdDto>.Ok(new IdDto { Id = product.Id });

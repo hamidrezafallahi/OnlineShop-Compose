@@ -173,19 +173,25 @@ html {
   }
 
   .admin-sidebar {
-    @apply fixed inset-y-0 start-0 z-50 h-dvh shrink-0 transition-transform duration-300 ease-out pointer-events-none;
+    @apply fixed inset-y-0 z-50 h-dvh shrink-0 pointer-events-none;
     width: min(268px, 88vw);
-    transform: translate3d(calc(-100% - 1rem), 0, 0);
+    inset-inline-start: 0;
+    transition: transform 300ms ease, visibility 300ms ease;
+    will-change: transform;
+    /* LTR closed */
+    transform: translate3d(-105%, 0, 0);
+    visibility: hidden;
   }
 
   [dir="rtl"] .admin-sidebar {
-    transform: translate3d(calc(100% + 1rem), 0, 0);
+    transform: translate3d(105%, 0, 0);
   }
 
   .admin-sidebar.is-open,
   .admin-sidebar[data-open="true"] {
     @apply pointer-events-auto;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
   }
 
   @media (min-width: 1024px) {
@@ -196,16 +202,19 @@ html {
       @apply relative inset-auto z-auto h-screen pointer-events-auto overflow-visible;
       width: var(--admin-sidebar-width, 268px);
       transform: none;
+      visibility: visible;
     }
   }
 
   .admin-sidebar-panel {
     @apply flex flex-col h-full;
     width: 100%;
-    background: var(--admin-surface);
+    /* Opaque glass — readable over page content on mobile */
+    background: color-mix(in srgb, var(--admin-surface-elevated) 92%, transparent);
     border-inline-end: 1px solid var(--admin-border);
     box-shadow: var(--admin-shadow);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
 
   @media (min-width: 1024px) {
@@ -628,11 +637,12 @@ html {
 
   .store-nav-bar {
     @apply flex justify-between items-center gap-3 px-3 sm:px-5 w-full max-w-7xl h-16 sm:h-[4.5rem] transition-all duration-300;
-    background: color-mix(in srgb, var(--store-surface) 82%, transparent);
+    background: color-mix(in srgb, var(--store-surface-solid) 72%, transparent);
     border: 1px solid var(--store-border);
     border-radius: var(--store-radius-sm);
     box-shadow: var(--store-shadow);
     backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     color: var(--store-text);
   }
 

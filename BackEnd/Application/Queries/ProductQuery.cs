@@ -33,9 +33,12 @@ public class GetDiscountedProductsQuery : IRequest<ServiceResult<IEnumerable<Pro
 }
 public class GetProductByIdQuery : IRequest<ServiceResult<ProductByDetailDto?>>
 {
-    public int Id { get; set; }
+    /// <summary>Numeric id (legacy URLs) or SEO slug.</summary>
+    public string IdOrSlug { get; set; } = default!;
+}
 
-    
+public class GetAllProductsSlugsQuery : IRequest<ServiceResult<IEnumerable<SlugDto>>>
+{
 }
 public class GetProductSpecialsByIdQuery : IRequest<ServiceResult<ProductSpecialsByIdDto?>>
 {

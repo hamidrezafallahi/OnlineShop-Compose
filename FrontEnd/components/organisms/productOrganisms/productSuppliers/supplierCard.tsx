@@ -7,6 +7,10 @@ export interface ISupplier {
   id: number;
   productId: number;
   productName: string;
+  productVariantId?: number | null;
+  sizeMl?: number | null;
+  concentration?: string | null;
+  variantLabel?: string | null;
   supplierId: number;
   supplierName: string;
   supplierImage: string;
@@ -68,6 +72,12 @@ export function SupplierCardGrid({
           {supplier.supplierName}
         </h4>
       </Link>
+
+      {supplier.variantLabel && (
+        <p className="mb-2 text-primary text-xs font-medium">
+          {supplier.variantLabel}
+        </p>
+      )}
 
       {supplier.supplierDesc && (
         <p className="mb-4 text-gray-500 text-xs line-clamp-2 leading-5">

@@ -111,7 +111,7 @@ export default function ProductsCarousel({
 }
 
 function ProductCard({ product }: { product: ILandingProduct }) {
-  const isAuthenticated = Boolean(getCookie("candyAccess"));
+  const isAuthenticated = Boolean(getCookie("candySession"));
   const locale = useLocale();
   const [addToShoppingCart] = useGetConditionallyMutation();
   const dispatch = useDispatch();
@@ -186,7 +186,7 @@ function ProductCard({ product }: { product: ILandingProduct }) {
 
           <div className="flex items-center gap-2">
             <Link
-              href={`/${locale}/products/${product.id}`}
+              href={`/${locale}/products/${product.slug || product.id}`}
               className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-xs"
             >
               مشاهده
