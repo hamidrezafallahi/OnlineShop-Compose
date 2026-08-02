@@ -50,6 +50,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
     const [internalChecked, setInternalChecked] = React.useState(defaultChecked);
 
     const s = sizeConfig[size];
+    // Physical left→right travel; absolute left is direction-independent (RTL-safe).
     const knobTranslate = s.width - s.knob - s.padding * 2;
 
     const handleToggle = () => {
@@ -57,11 +58,6 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       onChange?.(!checked);
       setInternalChecked((prev) => !prev);
     };
-    const isRtl =
-      typeof window !== "undefined" &&
-      getComputedStyle(document.body).direction === "rtl";
-
-    const knobTranslateX = isRtl ? -knobTranslate : knobTranslate;
     React.useEffect(() => {
       setInternalChecked(checked)
     }, [checked]);
@@ -87,12 +83,13 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         {...props}
       >
         <span
-          className="absolute bg-white shadow-sm rounded-full transition-transform duration-300"
+          className="absolute top-1/2 bg-white shadow-sm rounded-full transition-transform duration-300"
           style={{
             width: s.knob,
             height: s.knob,
-            transform: `translateX(${
-              internalChecked ? (isRtl ? -knobTranslate : knobTranslate) : 0
+            left: s.padding,
+            transform: `translateY(-50%) translateX(${
+              internalChecked ? knobTranslate : 0
             }px)`,
           }}
         />

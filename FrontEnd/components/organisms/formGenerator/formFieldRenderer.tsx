@@ -68,7 +68,8 @@ const FormFieldRenderer = ({
       return (
         <FieldShell caption={field.Caption} help={field.Help} error={error}>
           <Uploader
-            value={getValues(field.Name) || ''}
+            placeHolder={field.PlaceHolder}
+            value={watch(field.Name) || ''}
             onChange={(file) => setValue(field.Name, file)}
           />
         </FieldShell>

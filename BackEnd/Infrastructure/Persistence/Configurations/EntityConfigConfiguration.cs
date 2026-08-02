@@ -126,18 +126,18 @@ namespace OnlineShop.Infrastructure.Configurations
                 {
                     // ===== فارسی =====
                     new FormFieldDefinition { Name = "titleFa", Caption = "عنوان فارسی", Type = "text", PlaceHolder = "مثلاً: معرفی محصول جدید", Help = "عنوان بلاگ را وارد کنید", Rules = new List<ValidationRule> { new ValidationRule { Rule = "required", Condition = "true", Message = "عنوان فارسی الزامی است" } } },
-                    new FormFieldDefinition { Name = "introFa", Caption = "مقدمه فارسی", Type = "text", PlaceHolder = "مقدمه بلاگ را وارد کنید", Rules = new List<ValidationRule> { new ValidationRule { Rule = "required", Condition = "true", Message = "مقدمه فارسی الزامی است" } } },
-                    new FormFieldDefinition { Name = "contentFa", Caption = "محتوا فارسی", Type = "textarea", PlaceHolder = "متن بلاگ را وارد کنید" },
-                    new FormFieldDefinition { Name = "conclusionFa", Caption = "جمع بندی فارسی", Type = "textarea", PlaceHolder = "جمع بندی بلاگ را وارد کنید" },
-                    new FormFieldDefinition { Name = "excerptFa", Caption = "خلاصه فارسی", Type = "textarea", PlaceHolder = "چکیده‌ای کوتاه از بلاگ" },
-                    new FormFieldDefinition { Name = "metaDescriptionFa", Caption = "توضیحات متا فارسی", Type = "text", PlaceHolder = "حداکثر 160 کاراکتر" },
+                    new FormFieldDefinition { Name = "introFa", Caption = "مقدمه فارسی", Type = "textarea", PlaceHolder = "مقدمه بلاگ را وارد کنید (HTML مجاز است)", Rules = new List<ValidationRule> { new ValidationRule { Rule = "required", Condition = "true", Message = "مقدمه فارسی الزامی است" } } },
+                    new FormFieldDefinition { Name = "contentFa", Caption = "محتوا فارسی", Type = "textarea", PlaceHolder = "متن اصلی با H2/H3، جدول و FAQ (HTML)" },
+                    new FormFieldDefinition { Name = "conclusionFa", Caption = "جمع بندی فارسی", Type = "textarea", PlaceHolder = "جمع بندی بلاگ را وارد کنید (HTML مجاز است)" },
+                    new FormFieldDefinition { Name = "excerptFa", Caption = "خلاصه فارسی", Type = "textarea", PlaceHolder = "حداکثر ۱۶۰ کاراکتر — برای کارت بلاگ و فال‌بک متا" },
+                    new FormFieldDefinition { Name = "metaDescriptionFa", Caption = "توضیحات متا فارسی", Type = "text", PlaceHolder = "حداکثر ۱۶۰ کاراکتر — اختصاصی برای SERP" },
                     new FormFieldDefinition { Name = "metaKeywordsFa", Caption = "کلمات کلیدی متا فارسی", Type = "text", PlaceHolder = "کلمات کلیدی با کاما جدا شوند" },
 
                     // ===== انگلیسی =====  
                     new FormFieldDefinition { Name = "titleEn", Caption = "عنوان انگلیسی", Type = "text", PlaceHolder = "New Product Introduction" },
-                    new FormFieldDefinition { Name = "introEn", Caption = "مقدمه انگلیسی", Type = "textarea", PlaceHolder = "Enter blog introduction" },
-                    new FormFieldDefinition { Name = "contentEn", Caption = "محتوا انگلیسی", Type = "textarea", PlaceHolder = "Enter blog content" },
-                    new FormFieldDefinition { Name = "conclusionEn", Caption = "جمع بندی انگلیسی", Type = "textarea", PlaceHolder = "Enter blog conclusion" },
+                    new FormFieldDefinition { Name = "introEn", Caption = "مقدمه انگلیسی", Type = "textarea", PlaceHolder = "Blog introduction (HTML allowed)" },
+                    new FormFieldDefinition { Name = "contentEn", Caption = "محتوا انگلیسی", Type = "textarea", PlaceHolder = "Main body with H2/H3, table and FAQ (HTML)" },
+                    new FormFieldDefinition { Name = "conclusionEn", Caption = "جمع بندی انگلیسی", Type = "textarea", PlaceHolder = "Blog conclusion (HTML allowed)" },
                     new FormFieldDefinition { Name = "excerptEn", Caption = "خلاصه انگلیسی", Type = "textarea", PlaceHolder = "Short blog summary" },
                     new FormFieldDefinition { Name = "metaDescriptionEn", Caption = "Meta Description", Type = "text", PlaceHolder = "Max 160 characters" },
                     new FormFieldDefinition { Name = "metaKeywordsEn", Caption = "Meta Keywords", Type = "text", PlaceHolder = "keyword1, keyword2" },

@@ -6,8 +6,10 @@ import React, {
   useState,
 } from 'react';
 
+import { cn } from '@/lib/utils';
+
 interface UploaderProps {
-  value?: string;
+  value?: string | File | null;
   defaultValue?: string;
   onChange?: (file: File) => void;
   placeHolder?: string | boolean;
@@ -30,8 +32,7 @@ const Uploader = ({ ...props }: UploaderProps) => {
   const handleFile = (file: File) => {
     const url = URL.createObjectURL(file);
     setBackgroundImage(url);
-    if (onChange) onChange(file);
-    uploadFile(file);
+    onChange?.(file);
   };
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -52,50 +53,51 @@ const Uploader = ({ ...props }: UploaderProps) => {
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
 
-  const uploadFile = (file: File) => {
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append("file", file);
-    xhr.open("POST", "/upload", true);
-    xhr.send(formData);
-  };
   useEffect(() => {
-    if (typeof value == "string") {
+    if (typeof value === "string") {
       setBackgroundImage(value && value.trim?.() !== "" ? value : null);
-    } else if (value) {
+    } else if (value instanceof File) {
       const url = URL.createObjectURL(value);
       setBackgroundImage(url);
+      return () => URL.revokeObjectURL(url);
     }
   }, [value]);
+
   return (
-  <label 
-    className={`flex flex-col  justify-center items-center  text-gray-400 text-sm border-gray-300 bg-white rounded-lg w-full !h-full overflow-hidden cursor-pointer ${className}`}
-    style={{
-      backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    }}
-  >
-    <input
-      type="file"
-      ref={fileInputRef}
-      onChange={handleFileChange}
-     
-      className="hidden"
-      accept="image/*"
-    />
-    
-    <div
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      className="w-full h-full"
-    >
-      {!backgroundImage && placeHolder && (
-        <div className="flex items-center p-2 w-full !h-full">{placeHolder}</div>
+    <label
+      className={cn(
+        "flex flex-col justify-center items-center w-full min-h-36 h-36",
+        "border border-dashed border-gray-300 bg-white rounded-lg",
+        "text-gray-400 text-sm overflow-hidden cursor-pointer",
+        className,
       )}
-    </div>
-  </label>
-);
+      style={{
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
+        accept="image/*"
+      />
+
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        className="flex justify-center items-center w-full h-full"
+      >
+        {!backgroundImage && placeHolder && (
+          <div className="flex justify-center items-center p-3 w-full h-full text-center">
+            {placeHolder}
+          </div>
+        )}
+      </div>
+    </label>
+  );
 };
 
 export default Uploader;

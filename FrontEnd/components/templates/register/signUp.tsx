@@ -158,6 +158,7 @@ const handleRegister = async () => {
         {/* Uploader */}
         <div className="bg-red-500 mx-auto rounded-full w-20 h-20 overflow-hidden">
           <Uploader
+            className="!min-h-0 !h-full border-0 rounded-full"
             onChange={(file) => setSignup((prev) => ({ ...prev, image: file }))}
           />
         </div>

@@ -76,8 +76,7 @@ const removeImage = (e: React.MouseEvent, id: number) => {
             className="flex items-center gap-4 pb-2 rounded-lg h-12"
           >
             <Uploader
-            // defaultValue={}
-              //  value={imageArray[index].file?URL.createObjectURL(imageArray[index].file):undefined}
+              className="!min-h-0 !h-full"
               onChange={(file) => {
                 updateImage(item.id, file);
               }}
