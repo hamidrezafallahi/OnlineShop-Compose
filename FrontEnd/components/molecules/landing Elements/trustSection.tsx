@@ -25,30 +25,24 @@ type Review = {
   avatar: string;
 };
 
-type Brand = {
-  id: number;
-  name: string;
-  logo: string;
-};
-
 const trustBadges: TrustBadge[] = [
   {
-    icon: <LookIcon/>,
+    icon: <LookIcon />,
     title: "پرداخت امن",
     description: "اطلاعات شما رمزگذاری می‌شود",
   },
   {
-    icon: <CreditCardIcon/>,
+    icon: <CreditCardIcon />,
     title: "پرداخت در محل",
     description: "پس از دریافت کالا پرداخت کنید",
   },
   {
-    icon: <ReplaceIcon/>,
+    icon: <ReplaceIcon />,
     title: "۷ روز ضمانت بازگشت",
     description: "در صورت نارضایتی کالا را بازگردانید",
   },
   {
-    icon: <TruckIcon/>,
+    icon: <TruckIcon />,
     title: "ارسال سریع",
     description: "تحویل فوری به سراسر کشور",
   },
@@ -58,7 +52,7 @@ const reviews: Review[] = [
   {
     id: 1,
     name: "مریم رضایی",
-    comment: "بسته‌بندی عالی و ارسال سریع. عطر فوق‌العاده‌ای بود!",
+    comment: "بسته‌بندی عالی و ارسال سریع. کیفیت محصول فوق‌العاده بود!",
     rating: 5,
     avatar: "https://i.pravatar.cc/100?img=47",
   },
@@ -78,12 +72,7 @@ const reviews: Review[] = [
   },
 ];
 
-const brands: Brand[] = [
-  { id: 1, name: "Dior", logo: "/images/brands/dior.svg" },
-  { id: 2, name: "Chanel", logo: "/images/brands/chanel.svg" },
-  { id: 3, name: "Tom Ford", logo: "/images/brands/tomford.svg" },
-  { id: 4, name: "Versace", logo: "/images/brands/versace.svg" },
-];
+const partnerLabels = ["Nova Home", "Pure Form", "Urban Living", "Craft House"];
 
 const TrustSection: React.FC = () => {
   return (
@@ -92,7 +81,6 @@ const TrustSection: React.FC = () => {
         چرا مشتریان به ما اعتماد دارند؟
       </h2>
 
-      {/* Badges */}
       <div className="gap-6 grid grid-cols-2 sm:grid-cols-4 mb-16">
         {trustBadges.map((badge, idx) => (
           <div
@@ -106,7 +94,6 @@ const TrustSection: React.FC = () => {
         ))}
       </div>
 
-      {/* Reviews */}
       <div className="gap-6 grid sm:grid-cols-3 mb-16">
         {reviews.map((review) => (
           <div
@@ -137,17 +124,14 @@ const TrustSection: React.FC = () => {
         ))}
       </div>
 
-      {/* Brands */}
-      <div className="flex flex-wrap justify-center items-center gap-10 opacity-70 grayscale">
-        {brands.map((brand) => (
-          <div key={brand.id} className="relative w-24 h-12">
-            <Image
-              src={brand.logo}
-              alt={brand.name}
-              fill
-              className="object-contain"
-            />
-          </div>
+      <div className="flex flex-wrap justify-center items-center gap-6 opacity-80">
+        {partnerLabels.map((name) => (
+          <span
+            key={name}
+            className="px-4 py-2 border border-gray-200 rounded-lg text-gray-500 text-sm tracking-wide"
+          >
+            {name}
+          </span>
         ))}
       </div>
     </section>

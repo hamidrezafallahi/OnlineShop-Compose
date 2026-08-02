@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
 import { siteBaseUrl } from '@lib/api';
+import { SITE_NAME } from '@lib/seo';
 
 type Props = {
   children: ReactNode;
@@ -13,12 +14,12 @@ type Props = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteBaseUrl),
   title: {
-    default: 'Online Shop',
-    template: '%s | Online Shop',
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     'Online storefront for products, brands, categories, and curated shopping experiences.',
-  applicationName: 'Online Shop',
+  applicationName: SITE_NAME,
   referrer: 'origin-when-cross-origin',
   formatDetection: {
     telephone: false,
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    siteName: 'Online Shop',
+    siteName: SITE_NAME,
   },
   twitter: {
     card: 'summary_large_image',
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="fa" suppressHydrationWarning>
-      <body className="bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--primary-color)_55%,transparent)_0%,color-mix(in_srgb,var(--secondary-color)_35%,#0b1f14)_55%,#07140e_100%)] min-h-screen antialiased">
+      <body className="bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--primary-color)_55%,transparent)_0%,color-mix(in_srgb,var(--secondary-color)_30%,#0b1224)_55%,#060914_100%)] min-h-screen antialiased">
         {children}
       </body>
     </html>

@@ -1,6 +1,6 @@
 {
   "brand":{
-    "name":"Candy Rose",
+    "name":"Rooshak",
     "icon":"icon"
   },
   "blog":{
@@ -18,8 +18,6 @@
     "emptyHint":"New posts will appear here soon."
   },
   "header":{
-    "men":"Men",
-    "women":"Women",
     "home":"Home",
     "products":"Products",
     "categories":"Categories",

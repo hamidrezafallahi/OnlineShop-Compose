@@ -38,7 +38,7 @@ export default async function LandingHero() {
         <div className="relative shrink-0">
           <div className="relative shadow-2xl rounded-2xl w-[240px] sm:w-[280px] md:w-[380px] h-[320px] sm:h-[380px] md:h-[480px] overflow-hidden ring-1 ring-white/20">
             <Image
-              src="/images/landingPage/landing.png"
+              src="/images/landingPage/1.jpg"
               alt={t('heroImageAlt')}
               fill
               className="object-cover hover:scale-105 transition-transform duration-700"

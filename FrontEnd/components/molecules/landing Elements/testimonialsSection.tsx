@@ -19,10 +19,10 @@ const testimonials: Testimonial[] = [
   {
     id: 1,
     name: "سمانه کاظمی",
-    comment: "رایحه‌ی عطر واقعا عالی و ماندگار بود، بسته‌بندی هم زیبا و شیک بود.",
+    comment: "کیفیت محصول عالی بود و بسته‌بندی هم مرتب و حرفه‌ای ارسال شد.",
     rating: 5,
     avatar: "https://i.pravatar.cc/100?img=12",
-    product: "Velvet Oud",
+    product: "محصول نمونه",
     date: "۱۵ مهر ۱۴۰۳",
   },
   {
@@ -31,7 +31,7 @@ const testimonials: Testimonial[] = [
     comment: "ارسال سریع و قیمت مناسب. کاملا راضی هستم.",
     rating: 4,
     avatar: "https://i.pravatar.cc/100?img=22",
-    product: "Noir Intense",
+    product: "پیشنهاد ویژه",
     date: "۱۰ مهر ۱۴۰۳",
   },
   {
@@ -40,7 +40,7 @@ const testimonials: Testimonial[] = [
     comment: "پشتیبانی عالی و پاسخگو، تجربه خرید خیلی خوبی داشتم.",
     rating: 5,
     avatar: "https://i.pravatar.cc/100?img=33",
-    product: "Rose Delight",
+    product: "سفارش اول",
     date: "۵ مهر ۱۴۰۳",
   },
 ];
@@ -69,8 +69,8 @@ const TestimonialsSection: React.FC = () => {
               <p className="mb-3 text-gray-600">{t.comment}</p>
 
               <div className="flex items-center gap-1 mb-2 text-yellow-500">
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <StarIcon key={i}  />
+                {Array.from({ length: t.rating }).map((_, i) => (
+                  <StarIcon key={i} />
                 ))}
               </div>
 
