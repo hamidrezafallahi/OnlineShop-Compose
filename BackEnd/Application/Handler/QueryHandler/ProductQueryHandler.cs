@@ -201,7 +201,6 @@ public class ProductQueryHandler(IProductRepository _repo,
         var product = await query
             .Include(p => p.ProductOffers).ThenInclude(pt => pt.ProductOfferTags).ThenInclude(t => t.Tag)
             .Include(p => p.Images)
-            .Include(p => p.Variants).ThenInclude(v => v.Offers)
             .FirstOrDefaultAsync(cancellationToken);
         if (product == null) return ServiceResult<ProductByDetailDto?>.Failed("product not found");
 
@@ -234,30 +233,6 @@ public class ProductQueryHandler(IProductRepository _repo,
             Height = product.Dimensions.Height,
             Depth = product.Dimensions.Depth,
             Weight = product.Dimensions.Weight,
-            Variants = product.Variants
-                .Where(v => !v.IsDeleted && v.IsActive)
-                .Select(v =>
-                {
-                    var activeOffers = v.Offers
-                        .Where(o => !o.IsDeleted && o.IsActive && o.Inventory > 0)
-                        .ToList();
-                    return new ProductVariantDto
-                    {
-                        Id = v.Id,
-                        ProductId = v.ProductId,
-                        SizeMl = v.SizeMl,
-                        Concentration = v.Concentration.ToString(),
-                        Label = v.DisplayLabel,
-                        OfferCount = activeOffers.Count,
-                        MinFinalPrice = activeOffers.Count == 0
-                            ? null
-                            : activeOffers.Min(o => o.GetFinalPrice(now))
-                    };
-                })
-                .OrderBy(v => v.SizeMl)
-                .ThenBy(v => v.Concentration)
-                .ToList()
-            
         };
 
         return ServiceResult<ProductByDetailDto?>.Ok(dto);

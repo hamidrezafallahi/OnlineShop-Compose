@@ -6,21 +6,15 @@ public class ProductOffers : BaseEntity
     public int ProductId { get; private set; }
     public Product Product { get; private set; }
 
-    public int? ProductVariantId { get; private set; }
-    public ProductVariant? Variant { get; private set; }
-
     public int SupplierId { get; private set; }
     public User Supplier { get; private set; }
 
-
     public decimal BasePrice { get; private set; }
     public int Inventory { get; private set; }
-    // ==== Tags ====
-    public ICollection<ProductOfferTag> ProductOfferTags { get; private set; } = new List<ProductOfferTag>();
 
+    public ICollection<ProductOfferTag> ProductOfferTags { get; private set; } = new List<ProductOfferTag>();
     public ICollection<ProductOfferDiscount> Discounts { get; private set; } = new List<ProductOfferDiscount>();
 
-    // ==== حیاتی ====
     public bool CanSell(int quantity)
         => !IsDeleted && IsActive && Inventory >= quantity;
 
@@ -29,14 +23,11 @@ public class ProductOffers : BaseEntity
       int supplierId,
       decimal basePrice,
       int inventory,
-      int currentUserId,
-      int? productVariantId = null)
+      int currentUserId)
     {
-        // اعتبارسنجی‌ها
         var offer = new ProductOffers
         {
             ProductId = productId,
-            ProductVariantId = productVariantId,
             SupplierId = supplierId,
             BasePrice = basePrice,
             Inventory = inventory
@@ -45,13 +36,6 @@ public class ProductOffers : BaseEntity
         offer.MarkCreated(currentUserId);
         return offer;
     }
-
-    public void AssignVariant(int productVariantId, int currentUserId)
-    {
-        ProductVariantId = productVariantId;
-        MarkUpdated(currentUserId);
-    }
- 
 
     public void Update(
         decimal? basePrice,
@@ -66,14 +50,15 @@ public class ProductOffers : BaseEntity
 
         MarkUpdated(currentUserId);
     }
+
     public decimal GetFinalPrice(DateTime now)
     {
         var discount = Discounts
-     .Where(d => d.Discount != null)
-     .Select(d => d.Discount)
-     .Where(d => !d.IsDeleted && d.StartDate <= now && d.EndDate >= now)
-     .OrderByDescending(d => d.Priority)
-     .FirstOrDefault();
+            .Where(d => d.Discount != null)
+            .Select(d => d.Discount)
+            .Where(d => !d.IsDeleted && d.StartDate <= now && d.EndDate >= now)
+            .OrderByDescending(d => d.Priority)
+            .FirstOrDefault();
 
         if (discount == null)
             return BasePrice;
@@ -93,13 +78,13 @@ public class ProductOffers : BaseEntity
         Inventory -= quantity;
         MarkUpdated(userId);
     }
+
     public void increaseInventory(int quantity, int userId)
     {
-       
-
         Inventory += quantity;
         MarkUpdated(userId);
     }
+
     public void AddTag(Tag tag, int currentUserId)
     {
         if (tag == null)

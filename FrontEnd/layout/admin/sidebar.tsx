@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import {
   useLocale,
@@ -12,37 +12,26 @@ import { usePathname } from 'next/navigation';
 import {
   CloseIcon,
   FolderIcon,
-  LeftIcon,
-  RightIcon,
 } from '@components/atoms/iconComponents';
-import LangSwitcher from '@components/molecules/lang';
-import ThemeSwitcher from '@components/molecules/theme';
 import { cn } from '@lib/utils';
 import { menuResponse } from '@models/config';
 
 interface SidebarProps {
-  initialOpen?: boolean;
   menu: menuResponse;
-  mobileOpen?: boolean;
-  onMobileClose?: () => void;
+  open?: boolean;
+  onClose?: () => void;
 }
 
 export default function Sidebar({
   menu,
-  initialOpen = true,
-  mobileOpen = false,
-  onMobileClose,
+  open = false,
+  onClose,
 }: SidebarProps) {
-  const [open, setOpen] = useState(initialOpen);
   const t = useTranslations();
   const locale = useLocale();
   const pathname = usePathname();
-  const isRtl = locale === 'fa';
-  const SIDEBAR_WIDTH = 268;
-  const SIDEBAR_COLLAPSED = 84;
 
   const items = menu?.data ?? [];
-  const desktopWidth = open ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED;
 
   const activeEndpoint = useMemo(() => {
     const parts = pathname?.split('/') ?? [];
@@ -54,63 +43,29 @@ export default function Sidebar({
   return (
     <aside
       id="admin-sidebar"
-      data-open={mobileOpen ? 'true' : 'false'}
-      style={{ ['--admin-sidebar-width' as string]: `${desktopWidth}px` }}
-      className={cn('admin-sidebar', mobileOpen && 'is-open')}
+      data-open={open ? 'true' : 'false'}
+      className={cn('admin-sidebar', open && 'is-open')}
     >
       <div className="admin-sidebar-panel">
-        <button
-          type="button"
-          aria-label={open ? t('admin.collapseMenu') : t('admin.expandMenu')}
-          className="admin-icon-btn z-20 absolute top-5 hidden lg:inline-flex"
-          onClick={() => setOpen(!open)}
-          style={{
-            [isRtl ? 'left' : 'right']: -14,
-          }}
-        >
-          {isRtl ? (
-            open ? (
-              <RightIcon />
-            ) : (
-              <LeftIcon />
-            )
-          ) : open ? (
-            <LeftIcon />
-          ) : (
-            <RightIcon />
-          )}
-        </button>
-
-        <div className="flex justify-between items-center gap-2 px-4 border-[var(--admin-border)] border-b h-16 lg:h-20">
+        <div className="flex justify-between items-center gap-2 px-4 border-[var(--admin-border)] border-b h-16">
           <div className="flex flex-col justify-center gap-0.5 min-w-0">
             <Link
               href={`/${locale}/admin`}
-              onClick={onMobileClose}
-              className={cn(
-                'font-semibold tracking-tight text-[var(--admin-text)] transition-colors hover:text-primary truncate',
-                open ? 'text-lg' : 'lg:text-sm lg:text-center',
-              )}
+              onClick={onClose}
+              className="font-semibold tracking-tight text-[var(--admin-text)] text-lg transition-colors hover:text-primary truncate"
             >
-              <span className="lg:hidden">{t('admin.dashboardTitle')}</span>
-              <span className="hidden lg:inline">
-                {open ? t('admin.dashboardTitle') : t('brand.icon')}
-              </span>
+              {t('admin.dashboardTitle')}
             </Link>
-            <p className="text-[var(--admin-text-muted)] text-xs lg:hidden">
+            <p className="text-[var(--admin-text-muted)] text-xs">
               {t('admin.dashboard')}
             </p>
-            {open ? (
-              <p className="hidden lg:block text-[var(--admin-text-muted)] text-xs">
-                {t('admin.dashboard')}
-              </p>
-            ) : null}
           </div>
 
           <button
             type="button"
-            className="admin-icon-btn lg:hidden shrink-0"
+            className="admin-icon-btn shrink-0"
             aria-label={t('admin.closeMenu')}
-            onClick={onMobileClose}
+            onClick={onClose}
           >
             <CloseIcon config={{ size: 16 }} />
           </button>
@@ -134,10 +89,9 @@ export default function Sidebar({
                       ? item.persianDisplayName
                       : item.englishDisplayName
                   }
-                  onClick={onMobileClose}
+                  onClick={onClose}
                   className={cn(
                     'admin-nav-item',
-                    !open && 'lg:justify-center lg:px-2',
                     isActive && 'admin-nav-item-active',
                   )}
                 >
@@ -145,7 +99,7 @@ export default function Sidebar({
                     className="flex justify-center items-center w-6 h-6 shrink-0 [&>svg]:w-5 [&>svg]:h-5"
                     dangerouslySetInnerHTML={{ __html: item.entityIconBase64 }}
                   />
-                  <span className={cn('truncate', !open && 'lg:hidden')}>
+                  <span className="truncate">
                     {locale === 'fa'
                       ? item.persianDisplayName
                       : item.englishDisplayName}
@@ -158,34 +112,24 @@ export default function Sidebar({
           <Link
             href={`/${locale}/admin/backup`}
             title={t('admin.backupNav')}
-            onClick={onMobileClose}
+            onClick={onClose}
             className={cn(
               'admin-nav-item mt-1',
-              !open && 'lg:justify-center lg:px-2',
               activeEndpoint.toLowerCase() === 'backup' && 'admin-nav-item-active',
             )}
           >
             <span className="flex justify-center items-center w-6 h-6 shrink-0 [&>svg]:w-5 [&>svg]:h-5">
               <FolderIcon />
             </span>
-            <span className={cn('truncate', !open && 'lg:hidden')}>
-              {t('admin.backupNav')}
-            </span>
+            <span className="truncate">{t('admin.backupNav')}</span>
           </Link>
         </nav>
 
-        <div className="flex justify-center items-center gap-2 px-3 border-[var(--admin-border)] border-t min-h-16 lg:h-20">
-          <div className="hidden lg:flex items-center gap-2">
-            <ThemeSwitcher />
-            <LangSwitcher />
-          </div>
+        <div className="flex justify-center items-center gap-2 px-3 border-[var(--admin-border)] border-t min-h-16">
           <Link
             href={`/${locale}`}
-            onClick={onMobileClose}
-            className={cn(
-              'admin-btn admin-btn-ghost justify-center text-xs w-full lg:w-auto',
-              open ? 'lg:ms-auto' : 'lg:hidden',
-            )}
+            onClick={onClose}
+            className="admin-btn admin-btn-ghost justify-center text-xs w-full"
           >
             {t('admin.openStore')}
           </Link>

@@ -154,12 +154,12 @@ html {
 
 @layer components {
   .admin-shell {
-    @apply relative flex flex-col lg:flex-row w-full h-dvh overflow-hidden;
+    @apply relative flex flex-col w-full h-dvh overflow-hidden;
     color: var(--admin-text);
   }
 
   .admin-topbar {
-    @apply lg:hidden sticky top-0 z-30 flex items-center gap-3 px-3 sm:px-4 h-14 shrink-0;
+    @apply sticky top-0 z-30 flex items-center gap-3 px-3 sm:px-4 h-14 shrink-0;
     background: var(--admin-surface);
     border-bottom: 1px solid var(--admin-border);
     box-shadow: var(--admin-shadow);
@@ -167,18 +167,17 @@ html {
   }
 
   .admin-sidebar-backdrop {
-    @apply lg:hidden fixed inset-0 z-40;
+    @apply fixed inset-0 z-40;
     background: color-mix(in srgb, var(--admin-text) 42%, transparent);
     backdrop-filter: blur(2px);
   }
 
   .admin-sidebar {
     @apply fixed inset-y-0 z-50 h-dvh shrink-0 pointer-events-none;
-    width: min(268px, 88vw);
+    width: min(300px, 88vw);
     inset-inline-start: 0;
     transition: transform 300ms ease, visibility 300ms ease;
     will-change: transform;
-    /* LTR closed */
     transform: translate3d(-105%, 0, 0);
     visibility: hidden;
   }
@@ -194,34 +193,13 @@ html {
     visibility: visible;
   }
 
-  @media (min-width: 1024px) {
-    .admin-sidebar,
-    [dir="rtl"] .admin-sidebar,
-    .admin-sidebar.is-open,
-    .admin-sidebar[data-open="true"] {
-      @apply relative inset-auto z-auto h-screen pointer-events-auto overflow-visible;
-      width: var(--admin-sidebar-width, 268px);
-      transform: none;
-      visibility: visible;
-    }
-  }
-
   .admin-sidebar-panel {
-    @apply flex flex-col h-full;
-    width: 100%;
-    /* Opaque glass — readable over page content on mobile */
-    background: color-mix(in srgb, var(--admin-surface-elevated) 92%, transparent);
+    @apply flex flex-col h-full w-full;
+    background: color-mix(in srgb, var(--admin-surface-elevated) 94%, transparent);
     border-inline-end: 1px solid var(--admin-border);
     box-shadow: var(--admin-shadow);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-  }
-
-  @media (min-width: 1024px) {
-    .admin-sidebar-panel {
-      width: var(--admin-sidebar-width, 268px);
-      transition: width 300ms ease;
-    }
   }
 
   .admin-main {
@@ -681,6 +659,59 @@ html {
   .store-meta-row {
     @apply flex flex-wrap items-center justify-between gap-3 text-sm;
     color: color-mix(in srgb, var(--store-text-on-dark) 75%, transparent);
+  }
+
+  .admin-dock {
+    @apply pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3;
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .admin-dock-bar {
+    @apply pointer-events-auto flex items-stretch gap-1 sm:gap-1.5 p-1.5 sm:p-2 w-full max-w-md;
+    background: color-mix(in srgb, var(--store-surface-solid) 82%, transparent);
+    border: 1px solid var(--store-border);
+    border-radius: 1.25rem;
+    box-shadow: var(--store-shadow);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--store-text);
+  }
+
+  .admin-dock-item {
+    @apply flex flex-1 flex-col sm:flex-row justify-center items-center gap-0.5 sm:gap-1.5 min-w-0 px-1.5 sm:px-3 py-2 rounded-xl text-[0.65rem] sm:text-xs font-medium transition-colors;
+    color: var(--store-text-muted);
+  }
+
+  .admin-dock-item:hover {
+    color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  }
+
+  .admin-dock-item-primary {
+    color: #fff;
+    background: var(--primary-color);
+  }
+
+  .admin-dock-item-primary:hover {
+    color: #fff;
+    background: color-mix(in srgb, var(--primary-color) 88%, black);
+  }
+
+  .admin-dock-item-primary .admin-dock-icon svg {
+    stroke: #fff !important;
+    color: #fff;
+  }
+
+  .admin-dock-icon {
+    @apply inline-flex justify-center items-center shrink-0;
+  }
+
+  .admin-dock-icon :is(svg) {
+    @apply w-[1.125rem] h-[1.125rem];
+  }
+
+  .admin-dock-label {
+    @apply truncate max-w-full leading-tight;
   }
 }
 

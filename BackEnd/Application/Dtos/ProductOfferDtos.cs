@@ -5,9 +5,6 @@ namespace Application.Dtos
     public class CreateProductOfferDto
     {
         public int ProductId { get; set; }
-        public int? ProductVariantId { get; set; }
-        public int? SizeMl { get; set; }
-        public int? Concentration { get; set; }
         public decimal BasePrice { get; set; }
         public int Inventory { get; set; }
         public List<int>? DiscountIds { get; set; }
@@ -25,10 +22,6 @@ namespace Application.Dtos
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
-        public int? ProductVariantId { get; set; }
-        public int? SizeMl { get; set; }
-        public string? Concentration { get; set; }
-        public string? VariantLabel { get; set; }
         public string? ProductSlug { get; set; }
         public string ProductName { get; set; } = default!;
         public string ProductImage { get; set; } = default!;
@@ -46,7 +39,6 @@ namespace Application.Dtos
         public DateTime CreatedAt { get; set; }
         public List<DiscountDto> ActiveDiscounts { get; set; } = new();
         public List<TagDto> Tags { get; set; } = new();
-
     }
 
     public class ProductOfferDetailDto : ProductOfferDto

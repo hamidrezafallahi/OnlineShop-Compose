@@ -56,7 +56,6 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IProductOfferDiscountRepository, ProductOfferDiscountRepository>();
             services.AddScoped<IProductOfferRepository, ProductOfferRepository>();
-            services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
             services.AddScoped<IProductOfferTagRepository, ProductOfferTagRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();

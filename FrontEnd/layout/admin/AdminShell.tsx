@@ -26,20 +26,20 @@ type AdminShellProps = {
 };
 
 export default function AdminShell({ menu, children }: AdminShellProps) {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations();
 
   useEffect(() => {
-    setMobileOpen(false);
+    setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!mobileOpen) return;
+    if (!menuOpen) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileOpen(false);
+      if (event.key === 'Escape') setMenuOpen(false);
     };
 
     const previousOverflow = document.body.style.overflow;
@@ -50,7 +50,7 @@ export default function AdminShell({ menu, children }: AdminShellProps) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [mobileOpen]);
+  }, [menuOpen]);
 
   return (
     <div className="admin-shell">
@@ -59,9 +59,9 @@ export default function AdminShell({ menu, children }: AdminShellProps) {
           type="button"
           className="admin-icon-btn"
           aria-label={t('admin.openMenu')}
-          aria-expanded={mobileOpen}
+          aria-expanded={menuOpen}
           aria-controls="admin-sidebar"
-          onClick={() => setMobileOpen(true)}
+          onClick={() => setMenuOpen(true)}
         >
           <MenuIcon config={{ size: 20 }} />
         </button>
@@ -79,19 +79,19 @@ export default function AdminShell({ menu, children }: AdminShellProps) {
         </div>
       </header>
 
-      {mobileOpen ? (
+      {menuOpen ? (
         <button
           type="button"
           className="admin-sidebar-backdrop"
           aria-label={t('admin.closeMenu')}
-          onClick={() => setMobileOpen(false)}
+          onClick={() => setMenuOpen(false)}
         />
       ) : null}
 
       <Sidebar
         menu={menu}
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
       />
 
       <div className="admin-main">

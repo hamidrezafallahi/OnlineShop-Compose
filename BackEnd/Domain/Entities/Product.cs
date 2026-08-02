@@ -31,7 +31,6 @@ namespace OnlineShop.Domain.Entities
 
         public ICollection<ProductSpecification> Specifications { get; private set; } = new List<ProductSpecification>();
         public ICollection<ProductOffers> ProductOffers { get; private set; } = new List<ProductOffers>();
-        public ICollection<ProductVariant> Variants { get; private set; } = new List<ProductVariant>();
 
         // ===== Dimensions =====
         public ProductDimensions? Dimensions { get; private set; }

@@ -15,7 +15,7 @@ import type { TokenPayload } from '@components/templates/register/type';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
+console.log("http://localhost:8080/api/Identity/login",`${serverApiBaseUrl}/Identity/login`,"============================================================================")
     const response = await fetch(`${serverApiBaseUrl}/Identity/login`, {
       method: 'POST',
       headers: {
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       body: JSON.stringify(body),
     });
 
+    const raw = await response.text();
     let data: {
       isSuccess?: boolean;
       error?: string;
@@ -34,11 +35,21 @@ export async function POST(req: Request) {
     };
 
     try {
-      data = await response.json();
+      data = JSON.parse(raw) as typeof data;
     } catch {
+      console.error(
+        `Login upstream non-JSON (${response.status}) from ${serverApiBaseUrl}/Identity/login`,
+        raw.slice(0, 300),
+      );
       return NextResponse.json(
-        { isSuccess: false, error: 'Invalid login response' },
-        { status: 502 }
+        {
+          isSuccess: false,
+          error:
+            response.status >= 500
+              ? 'Backend login failed (check JWT key length / backend logs)'
+              : 'Invalid login response',
+        },
+        { status: 502 },
       );
     }
 

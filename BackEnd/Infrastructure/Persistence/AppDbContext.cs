@@ -36,7 +36,6 @@ namespace OnlineShop.Infrastructure.Persistence
         public DbSet<Rate> Rates => Set<Rate>();
         public DbSet<ProductSpecification> ProductSpecification => Set<ProductSpecification>();
         public DbSet<ProductOffers> ProductOffers => Set<ProductOffers>();
-        public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
         public DbSet<SeoSetting> SeoSettings => Set<SeoSetting>();
 
 
