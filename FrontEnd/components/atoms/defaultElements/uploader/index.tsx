@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 
 import { cn } from '@/lib/utils';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 interface UploaderProps {
   value?: string | File | null;
@@ -15,6 +16,11 @@ interface UploaderProps {
   placeHolder?: string | boolean;
   className?: string;
 }
+
+const resolvePreviewUrl = (src: string | null | undefined): string | null => {
+  const resolved = toMediaUrl(src);
+  return resolved || null;
+};
 
 const Uploader = ({ ...props }: UploaderProps) => {
   const {
@@ -26,7 +32,7 @@ const Uploader = ({ ...props }: UploaderProps) => {
   } = props;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(
-    defaultValue && defaultValue.trim?.() !== "" ? defaultValue : null,
+    resolvePreviewUrl(defaultValue),
   );
 
   const handleFile = (file: File) => {
@@ -55,7 +61,7 @@ const Uploader = ({ ...props }: UploaderProps) => {
 
   useEffect(() => {
     if (typeof value === "string") {
-      setBackgroundImage(value && value.trim?.() !== "" ? value : null);
+      setBackgroundImage(resolvePreviewUrl(value));
     } else if (value instanceof File) {
       const url = URL.createObjectURL(value);
       setBackgroundImage(url);
@@ -72,7 +78,9 @@ const Uploader = ({ ...props }: UploaderProps) => {
         className,
       )}
       style={{
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundImage: backgroundImage
+          ? `url("${backgroundImage}")`
+          : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

@@ -21,14 +21,16 @@ export default async function Page({
     (resolvedSearchParams?.pageSize as string) ?? '10000',
   );
 
-  const list = await getAll<ITreeContext>('Categories', {
+  // EntityName/EndPoint در DB به‌صورت lowercase است (categories).
+  // lookup فرم case-sensitive است؛ Categories ≠ categories → form not found.
+  const list = await getAll<ITreeContext>('categories', {
     page,
     pageSize,
     byConfig: true,
     onlyActives: false,
   });
 
-  const res = await getFormConfigByEntityName('Categories');
+  const res = await getFormConfigByEntityName('categories');
 
   if (!res) {
     return (

@@ -15,11 +15,16 @@ namespace OnlineShop.Infrastructure.Repositories
         }
 
         /// <summary>
-        /// گرفتن EntityConfig براساس EntityName
+        /// گرفتن EntityConfig براساس EntityName (case-insensitive).
+        /// PostgreSQL string compare is case-sensitive; callers may pass Categories vs categories.
         /// </summary>
         public async Task<EntityConfig?> GetByEntityNameAsync(string entityName)
         {
-            return await Query(e => e.EntityName == entityName)
+            if (string.IsNullOrWhiteSpace(entityName))
+                return null;
+
+            var key = entityName.Trim().ToLowerInvariant();
+            return await Query(e => e.EntityName.ToLower() == key)
                          .FirstOrDefaultAsync();
         }
  

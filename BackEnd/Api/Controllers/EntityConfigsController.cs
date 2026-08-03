@@ -47,21 +47,22 @@ public class EntityConfigsController : BaseController
         return Ok(result);
     }
 
-    // ===== Get By EntityName =====
-    [HttpGet("{url}")]
-    public async Task<ActionResult<EntityConfigDto>> GetEntityConfigByName(string url)
-    {
-        var result = await _mediator.Send(new GetEntityConfigByNameQuery { EntityName = url });
-        if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
-        return Ok(result);
-    }
-    // ===== Get By Entity  =====
+    // ===== Get By Entity (literal segment before {url} catch-all) =====
     [HttpGet("entityFormConfig/{entity}")]
     public async Task<ActionResult<EntityConfigDto>> GetEntityConfigByurl(string entity)
     {
         var result = await _mediator.Send(new GetFormQuery { EntityName = entity });
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
 
+        return Ok(result);
+    }
+
+    // ===== Get By EntityName =====
+    [HttpGet("{url}")]
+    public async Task<ActionResult<EntityConfigDto>> GetEntityConfigByName(string url)
+    {
+        var result = await _mediator.Send(new GetEntityConfigByNameQuery { EntityName = url });
+        if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
         return Ok(result);
     }
     // ===== Create =====

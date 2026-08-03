@@ -66,7 +66,9 @@ export async function getById(entity: string, id: string): Promise<Record<string
   return (await data).data;
 }
 export async function getFormConfigByEntityName(entity: string) {
-  const url = `${serverApiBaseUrl}/EntityConfigs/entityFormConfig/${entity}`;
+  // Prefer EndPoint/EntityName casing from DB (usually camelCase starting lower).
+  // Still pass through as-is; backend lookup is case-insensitive as a safety net.
+  const url = `${serverApiBaseUrl}/EntityConfigs/entityFormConfig/${encodeURIComponent(entity)}`;
   try {
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) {
@@ -74,7 +76,14 @@ export async function getFormConfigByEntityName(entity: string) {
       return null;
     }
     const data = await res.json();
-    return data?.data ?? null;
+    if (!data?.isSuccess || !data?.data) {
+      console.error(
+        `getFormConfigByEntityName empty for ${entity}:`,
+        data?.error ?? 'no data',
+      );
+      return null;
+    }
+    return data.data;
   } catch (e) {
     console.error(`getFormConfigByEntityName error for ${entity}`, e);
     return null;
