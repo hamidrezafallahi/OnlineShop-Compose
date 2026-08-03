@@ -32,13 +32,18 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "yourdomain.com",
+        hostname: "rooshakshop.com",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.rooshakshop.com",
         pathname: "/uploads/**",
       },
       {
         protocol: "https",
         hostname: "i.pravatar.cc",
-      }
+      },
     ],
 
     // Responsive image sizes for art direction

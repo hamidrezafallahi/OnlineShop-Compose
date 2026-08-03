@@ -6,6 +6,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { toMediaUrl } from '@utils/toMediaUrl';
+
 import { IDetailedProductCardProps } from './type';
 
 export function DetailedProductCard({
@@ -30,7 +32,8 @@ export function DetailedProductCard({
 
   // تصویر محصول
   const imageSrc =
-    product.mainImage || product.imageUrl || "/images/default-product.jpg";
+    toMediaUrl(product.mainImage || product.imageUrl) ||
+    "/images/default-product.jpg";
 
   // متون بر اساس زبان
   const texts = {

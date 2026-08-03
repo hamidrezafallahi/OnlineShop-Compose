@@ -8,16 +8,17 @@ import {
 import Image from 'next/image';
 
 import { IDetailedProduct } from '@models/product';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 export default function ProductGallery({ product }: { product: IDetailedProduct }) {
-  const [activeImage, setActiveImage] = useState<string>(product?.mainImage || '');
+  const [activeImage, setActiveImage] = useState<string>(toMediaUrl(product?.mainImage));
   const [isClient, setIsClient] = useState(false);
 
  
   useEffect(() => {
     setIsClient(true);
     if (product?.mainImage) {
-      setActiveImage(product.mainImage);
+      setActiveImage(toMediaUrl(product.mainImage));
     }
   }, [product?.mainImage]);
   const defaultImage = '/images/default-product.jpg';
@@ -26,7 +27,7 @@ export default function ProductGallery({ product }: { product: IDetailedProduct 
       <div className="relative bg-gray-100 rounded-2xl h-72 md:h-[420px] overflow-hidden">
         {(activeImage || product?.mainImage) && (
           <Image
-            src={activeImage || product.mainImage || defaultImage}
+            src={toMediaUrl(activeImage || product.mainImage) || defaultImage}
             alt={product.name || 'Product image'}
             fill
             priority={true} // این تصویر LCP است
@@ -48,16 +49,16 @@ export default function ProductGallery({ product }: { product: IDetailedProduct 
           {product.imageUrls.map((img, index) => (
             <button
               key={`${img}-${index}`}
-              onClick={() => setActiveImage(img)}
+              onClick={() => setActiveImage(toMediaUrl(img))}
               className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all ${
-                img === activeImage 
+                toMediaUrl(img) === activeImage 
                   ? 'ring-2 ring-primary scale-105' 
                   : 'opacity-70 hover:opacity-100'
               }`}
               aria-label={`View image ${index + 1}`}
             >
               <Image 
-                src={img} 
+                src={toMediaUrl(img)} 
                 alt={`${product.name} - view ${index + 1}`}
                 fill
                 sizes="64px"

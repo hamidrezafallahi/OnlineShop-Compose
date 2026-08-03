@@ -4,6 +4,8 @@ import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { toMediaUrl } from '@utils/toMediaUrl';
+
 import { ISimpleProduct } from './type';
 
 export async function SimpleProductCard({
@@ -19,7 +21,7 @@ export async function SimpleProductCard({
     >
       <div className="relative w-full h-56 overflow-hidden">
         <img
-          src={product.mainImage || ""}
+          src={toMediaUrl(product.mainImage)}
           alt={product.name}
           className="w-full h-full object-cover"
         />

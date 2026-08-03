@@ -8,6 +8,7 @@ import IncreaseButton
 import RemoveButton
   from '@components/molecules/shoppingCartButtons/removeButton';
 import { ICartProduct } from '@models/product';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 function ItemCart({ ...props }: { item: ICartProduct }) {
   const { item } = props;
@@ -15,7 +16,7 @@ function ItemCart({ ...props }: { item: ICartProduct }) {
     <div className="flex gap-2">
       <div className="flex-shrink-0 bg-gray-700 rounded-lg w-14 h-14 overflow-hidden">
         <img
-          src={item.mainImage}
+          src={toMediaUrl(item.mainImage)}
           alt={item.name}
           className="w-full h-full object-cover"
         />

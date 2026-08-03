@@ -18,6 +18,7 @@ import {
   synchronousCart,
 } from '@slice/shoppingCartSlice';
 import { getCookie } from '@utils/core';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 interface ProductsCarouselProps {
   items: IDetailedProductOffer[] | undefined;
@@ -116,7 +117,7 @@ dispatch(addToCart({
     <article className="flex-shrink-0 bg-white shadow-sm hover:shadow-lg rounded-2xl w-64 overflow-hidden transition-shadow">
       <div className="relative w-full h-56 overflow-hidden">
         <img
-          src={product.productImage}
+          src={toMediaUrl(product.productImage)}
           alt={product.productName}
           className="w-full h-full object-cover"
           loading="lazy"

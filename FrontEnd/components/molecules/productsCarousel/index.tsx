@@ -19,6 +19,7 @@ import {
   synchronousCart,
 } from '@slice/shoppingCartSlice';
 import { getCookie } from '@utils/core';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 interface ProductsCarouselProps {
   items: ILandingProduct[] | undefined;
@@ -153,7 +154,7 @@ function ProductCard({ product }: { product: ILandingProduct }) {
     <article className="flex-shrink-0 bg-white shadow-sm hover:shadow-lg rounded-2xl w-64 overflow-hidden transition-shadow">
       <div className="relative w-full h-56 overflow-hidden">
         <img
-          src={product.mainImage}
+          src={toMediaUrl(product.mainImage)}
           alt={product.name}
           className="w-full h-full object-cover"
           loading="lazy"

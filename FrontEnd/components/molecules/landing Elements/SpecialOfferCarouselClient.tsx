@@ -13,6 +13,7 @@ import {
   ShoppingCartIcon,
 } from '@components/atoms/iconComponents';
 import { SpecialOffer } from '@models/specialOffer';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 import CountdownDisplayClient from '../countdownDisplayClient';
 
@@ -164,7 +165,8 @@ function CompactOfferCard({
       <div className="relative w-full h-64 overflow-hidden hover:scale-125">
         <Image
           src={
-            offer.product.mainImage || "https://picsum.photos/seed/p/300/300"
+            toMediaUrl(offer.product.mainImage) ||
+            "https://picsum.photos/seed/p/300/300"
           }
           alt={offer.product.name}
           fill
