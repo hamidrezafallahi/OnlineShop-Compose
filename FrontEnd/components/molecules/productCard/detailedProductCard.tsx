@@ -3,10 +3,9 @@
 
 import { useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
 
-import { toMediaUrl } from '@utils/toMediaUrl';
+import MediaImage from '@components/atoms/MediaImage';
 
 import { IDetailedProductCardProps } from './type';
 
@@ -31,9 +30,7 @@ export function DetailedProductCard({
   const isLowStock = product.inventory > 0 && product.inventory <= 10;
 
   // تصویر محصول
-  const imageSrc =
-    toMediaUrl(product.mainImage || product.imageUrl) ||
-    "/images/default-product.jpg";
+  const imageSrc = product.mainImage || product.imageUrl;
 
   // متون بر اساس زبان
   const texts = {
@@ -73,8 +70,9 @@ export function DetailedProductCard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Image
+        <MediaImage
           src={imageSrc}
+          fallbackSrc="/images/default-product.jpg"
           alt={product.name}
           fill
           className={`object-contain transition-transform duration-500 ${

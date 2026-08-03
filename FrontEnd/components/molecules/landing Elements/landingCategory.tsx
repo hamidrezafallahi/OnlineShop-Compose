@@ -3,6 +3,7 @@ import React from 'react';
 import { getLocale } from 'next-intl/server';
 import Link from 'next/link';
 
+import { toMediaUrl } from '@utils/toMediaUrl';
 import { ICategory } from '@models/category';
 
 import CategoryCard from '../categoryCart';
@@ -26,7 +27,7 @@ export default async  function LandingCategory(props: IProps) {
             >
               <div className="w-full h-44 overflow-hidden">
                 <img
-                  src={cat.categoryCover}
+                  src={toMediaUrl(cat.categoryCover)}
                   alt={cat.englishName}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform transform"
                   loading="lazy"

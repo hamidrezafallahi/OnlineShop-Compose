@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { IBrand } from '@models/brand';
 
 export default function BrandCard({brand}:{brand:IBrand}) {
@@ -14,7 +14,7 @@ export default function BrandCard({brand}:{brand:IBrand}) {
               className="group relative bg-white shadow-sm hover:shadow-lg p-0 !rounded-2xl overflow-hidden text-left transition-shadow"
             >
           <div className="relative flex justify-center items-center bg-inherit w-full h-48 overflow-hidden">
-                <Image
+                <MediaImage
                   src={brand.logoFile}
                   alt={brand.name}
                   width={400}

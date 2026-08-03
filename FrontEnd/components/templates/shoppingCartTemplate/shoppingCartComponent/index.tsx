@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Image from 'next/image';
 import { shallowEqual } from 'react-redux';
 
 import {
@@ -8,8 +7,8 @@ import {
   PlusIcon2,
   RialIcon,
 } from '@components/atoms/iconComponents';
+import MediaImage from '@components/atoms/MediaImage';
 import { useAppSelector } from '@store/index';
-import { toMediaUrl } from '@utils/toMediaUrl';
 
 import DecreaseButton
   from '../../../molecules/shoppingCartButtons/decreaseButton';
@@ -38,8 +37,9 @@ function ShoppingCartComponent({ ...props }: IProps) {
           return (
             <div key={index} className="flex gap-4 bg-zinc-900 p-6 rounded-lg">
               <div className="flex-shrink-0 bg-gray-200 rounded-lg w-24 h-24 overflow-hidden">
-                <Image
-                  src={toMediaUrl(item.mainImage) || '/images/default-product.jpg'}
+                <MediaImage
+                  src={item.mainImage}
+                  fallbackSrc="/images/default-product.jpg"
                   alt={item.name}
                   width={96}
                   height={96}

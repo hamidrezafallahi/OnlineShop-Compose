@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 
 import { OrderStatusText } from '@models/order';
 import { useGetData } from '@services/base';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 import { IOrder } from './type';
 
@@ -51,7 +52,7 @@ export default function OrderDetails({
                 className="flex gap-4 bg-zinc-800 p-3 border border-gray-700 rounded-lg"
               >
                 <img
-                  src={item.product.image}
+                  src={toMediaUrl(item.product.image)}
                   className="rounded w-20 h-20 object-cover"
                 />
 

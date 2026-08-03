@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { getLocale } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { serverApiBaseUrl } from '@lib/api';
 import { SimpleResponse } from '@models/base';
 import { IUser } from '@models/user';
@@ -30,7 +30,7 @@ export async function BrandSuppliers({ id }: { id: number }) {
             className="flex flex-col items-center bg-white shadow-sm hover:shadow-lg p-4 rounded-2xl transition"
           >
             <div className="relative flex justify-center items-center bg-gray-50 mb-3 rounded-full w-24 h-24 overflow-hidden">
-              <Image
+              <MediaImage
                 src={s.userImage}
                 alt={s.fullName}
                 fill

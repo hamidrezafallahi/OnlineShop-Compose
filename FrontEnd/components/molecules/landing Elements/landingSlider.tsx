@@ -5,9 +5,9 @@ import React, {
 } from 'react';
 
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -44,7 +44,7 @@ const locale = useLocale()
               index === current ? "opacity-100 z-10" : "opacity-0 z-0"
             }`}
           >
-            <Image
+            <MediaImage
               src={item.banner}
               alt={`Slide ${index + 1}`}
               fill

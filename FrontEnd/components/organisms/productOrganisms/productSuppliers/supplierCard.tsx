@@ -1,5 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
+
+import MediaImage from '@components/atoms/MediaImage';
 
 import ProductCTA from './productCTA';
 
@@ -33,16 +34,12 @@ export function SupplierCardGrid({
       <div className="flex justify-between items-start mb-4">
         <Link href={`/${locale}/suppliers/${supplier.id}`} className="relative">
           <div className="relative w-16 h-16 group-hover:scale-110 transition-transform duration-300">
-            <Image
+            <MediaImage
               alt={supplier.supplierName}
               src={supplier.supplierImage}
               width={64}
               height={64}
               className="rounded-xl ring-4 ring-gray-50 group-hover:ring-primary/10 w-16 h-16 object-cover"
-              // onError={(e) => {
-              //   const target = e.target as HTMLImageElement;
-              //   target.src = defaultImage;
-              // }}
             />
           </div>
         </Link>

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import CustomPagination from '@components/molecules/pagination';
 import EmptyState from '@components/molecules/storefront/EmptyState';
 import EntityGrid from '@components/molecules/storefront/EntityGrid';
@@ -66,7 +66,7 @@ export default async function Page({ searchParams, params }: Props) {
               className="store-card group"
             >
               <div className="relative w-full h-40 md:h-44 overflow-hidden">
-                <Image
+                <MediaImage
                   src={brand.logoFile}
                   alt={brand.name}
                   fill

@@ -4,9 +4,9 @@ import {
   getLocale,
   getTranslations,
 } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { IUser } from '@models/user';
 
 export async function SimpleSupplierCard({
@@ -22,9 +22,9 @@ export async function SimpleSupplierCard({
       href={`/${locale}/suppliers/${supplier.id}`}
     >
       <div className="relative w-16 h-16 group-hover:scale-110 transition-transform duration-300">
-        <Image
+        <MediaImage
           alt={supplier.fullName}
-          src={supplier.image ?? ""}
+          src={supplier.image}
           width={64}
           height={64}
           className="rounded-xl ring-4 ring-gray-50 group-hover:ring-primary/10 w-16 h-16 object-cover"

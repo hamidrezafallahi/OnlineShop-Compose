@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { getLocale } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { ICategory } from '@models/category';
 
 export async function SupplierCategory(props: {
@@ -26,7 +26,7 @@ export async function SupplierCategory(props: {
             key={i}
             className="group relative shadow-sm rounded-2xl h-44 md:h-52 overflow-hidden"
           >
-            <Image
+            <MediaImage
               src={cat.categoryCover}
               alt={cat.persianName}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform transform"

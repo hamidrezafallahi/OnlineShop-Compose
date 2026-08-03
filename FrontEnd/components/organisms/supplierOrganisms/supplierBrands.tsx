@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { getLocale } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { IBrand } from '@models/brand';
 
 export async function SupplierBrands(props: { brands: IBrand[] }) {
@@ -22,7 +22,7 @@ export async function SupplierBrands(props: { brands: IBrand[] }) {
             key={i}
             className="group relative shadow-sm rounded-2xl h-24 overflow-hidden"
           >
-            <Image
+            <MediaImage
                src={b.logoFile}
               alt={b.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform transform"

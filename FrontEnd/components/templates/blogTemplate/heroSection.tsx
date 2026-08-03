@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Image from 'next/image';
+import MediaImage from '@components/atoms/MediaImage';
 
 import { IProps } from './type';
 
@@ -11,7 +11,7 @@ export async function HeroSection({ ...props }: IProps) {
     <section className="relative h-[60vh] max-h-[700px] overflow-hidden">
       {blog.thumbnailFile && (
         <div className="relative w-full h-full">
-          <Image
+          <MediaImage
             src={blog.thumbnailFile}
             alt={isRTL? blog.titleFa : blog.titleEn}
             fill

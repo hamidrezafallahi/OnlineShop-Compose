@@ -5,13 +5,12 @@ import React, {
   useRef,
 } from 'react';
 
-import Image from 'next/image';
-
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ShoppingCartIcon,
 } from '@components/atoms/iconComponents';
+import MediaImage from '@components/atoms/MediaImage';
 import { SpecialOffer } from '@models/specialOffer';
 import { toMediaUrl } from '@utils/toMediaUrl';
 
@@ -163,17 +162,13 @@ function CompactOfferCard({
   return (
     <article className="relative bg-white/95 dark:bg-gray-800 shadow-sm rounded-xl !h-full aspect-auto overflow-hidden">
       <div className="relative w-full h-64 overflow-hidden hover:scale-125">
-        <Image
-          src={
-            toMediaUrl(offer.product.mainImage) ||
-            "https://picsum.photos/seed/p/300/300"
-          }
+        <MediaImage
+          src={toMediaUrl(offer.product.mainImage) || "https://picsum.photos/seed/p/300/300"}
           alt={offer.product.name}
           fill
           className="object-cover"
           priority  
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
- 
         />
         {offer.product.discountId > 0 && (
           <div className="top-2 absolute bg-yellow-400 px-2 py-1 rounded text-rose-700 text-xs end-2">

@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { getLocale } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { ICategory } from '@models/category';
 
 export default async function CategoryCard({ category }: { category: ICategory}) {
@@ -21,7 +21,7 @@ export default async function CategoryCard({ category }: { category: ICategory})
       href={`/${locale}/categories/${id}`}
       className="group relative shadow-sm rounded-2xl h-44 md:h-52 overflow-hidden"
     >
-      <Image
+      <MediaImage
         src={categoryCover}
         alt={locale == "fa" ? persianName : englishName}
         width={400}

@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Image from 'next/image';
-
+import MediaImage from '@components/atoms/MediaImage';
 import { StarIcon } from '@components/atoms/iconComponents';
 import { serverApiBaseUrl } from '@lib/api';
 import {
@@ -31,7 +30,7 @@ export async function SupplierCommentsAndRates(props: {
             className="bg-gray-50 hover:shadow-md p-6 rounded-2xl text-right transition"
           >
             <div className="flex items-center mb-3">
-              <Image
+              <MediaImage
                 src={comment.userImage}
                 alt={comment.userFullName}
                 width={50}

@@ -6,8 +6,8 @@ import React, {
 } from 'react';
 
 import moment from 'moment-jalaali';
-import Image from 'next/image';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { CloseIcon } from '@components/atoms/iconComponents';
 import { TickIcon } from '@components/atoms/iconComponents/icons/tickIcon';
 
@@ -49,7 +49,7 @@ export function renderAdminCellContent({
               compact ? 'w-9 h-9' : 'w-11 h-11'
             }`}
           >
-            <Image
+            <MediaImage
               src={children}
               alt="thumbnail"
               fill

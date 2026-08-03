@@ -5,18 +5,14 @@ import {
   useState,
 } from 'react';
 
-import Image from 'next/image';
-
+import MediaImage from '@components/atoms/MediaImage';
 import { IDetailedProduct } from '@models/product';
 import { toMediaUrl } from '@utils/toMediaUrl';
 
 export default function ProductGallery({ product }: { product: IDetailedProduct }) {
   const [activeImage, setActiveImage] = useState<string>(toMediaUrl(product?.mainImage));
-  const [isClient, setIsClient] = useState(false);
 
- 
   useEffect(() => {
-    setIsClient(true);
     if (product?.mainImage) {
       setActiveImage(toMediaUrl(product.mainImage));
     }
@@ -26,13 +22,14 @@ export default function ProductGallery({ product }: { product: IDetailedProduct 
     <div className="bg-white shadow-sm p-4 rounded-2xl">
       <div className="relative bg-gray-100 rounded-2xl h-72 md:h-[420px] overflow-hidden">
         {(activeImage || product?.mainImage) && (
-          <Image
-            src={toMediaUrl(activeImage || product.mainImage) || defaultImage}
+          <MediaImage
+            src={activeImage || product.mainImage}
+            fallbackSrc={defaultImage}
             alt={product.name || 'Product image'}
             fill
-            priority={true} // این تصویر LCP است
-            sizes="(max-width: 768px) 100vw, 50vw" // responsive sizes
-            quality={85} // کیفیت بهینه
+            priority={true}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            quality={85}
             className="object-cover transition-opacity duration-300"
             loading="eager"
             onError={(e) => {
@@ -51,19 +48,19 @@ export default function ProductGallery({ product }: { product: IDetailedProduct 
               key={`${img}-${index}`}
               onClick={() => setActiveImage(toMediaUrl(img))}
               className={`relative flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden transition-all ${
-                toMediaUrl(img) === activeImage 
-                  ? 'ring-2 ring-primary scale-105' 
+                toMediaUrl(img) === activeImage
+                  ? 'ring-2 ring-primary scale-105'
                   : 'opacity-70 hover:opacity-100'
               }`}
               aria-label={`View image ${index + 1}`}
             >
-              <Image 
-                src={toMediaUrl(img)} 
+              <MediaImage
+                src={img}
                 alt={`${product.name} - view ${index + 1}`}
                 fill
                 sizes="64px"
                 className="object-cover"
-                loading={index < 4 ? "eager" : "lazy"}  
+                loading={index < 4 ? 'eager' : 'lazy'}
                 priority={false}
               />
             </button>

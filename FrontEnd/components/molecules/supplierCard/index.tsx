@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { IUser } from '@models/user';
 
 export default function SupplierCard({
@@ -20,12 +20,8 @@ export default function SupplierCard({
     >
       {/* Image Section */}
       <div className="relative flex justify-center items-center bg-gray-50 w-full h-48">
-        <Image
-          src={
-            supplier.image && supplier.image !== ''
-              ? supplier.image
-              : '/images/user-placeholder.png'
-          }
+        <MediaImage
+          src={supplier.image}
           alt={supplier.fullName}
           width={400}
           height={400}

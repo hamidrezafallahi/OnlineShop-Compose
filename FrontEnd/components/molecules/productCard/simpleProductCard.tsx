@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { getLocale } from 'next-intl/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
+import MediaImage from '@components/atoms/MediaImage';
 import { toMediaUrl } from '@utils/toMediaUrl';
 
 import { ISimpleProduct } from './type';
@@ -45,9 +45,9 @@ export async function SimpleProductCard({
                   key={idx}
                   href={`/${locale}/suppliers/${s.id}`}
                 >
-                  <Image
+                  <MediaImage
                     alt={s.fullName}
-                    src={s.image || ""}
+                    src={s.image}
                     priority
                     fill
                     loading={"eager"}
