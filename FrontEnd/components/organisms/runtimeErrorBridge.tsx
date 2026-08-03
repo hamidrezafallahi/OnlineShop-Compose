@@ -35,7 +35,7 @@ function toPayload(
 
 async function forwardToServer(payload: LogPayload) {
   try {
-    await fetch('/api/log', {
+    await fetch('/auth/client-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

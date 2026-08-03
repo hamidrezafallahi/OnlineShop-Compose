@@ -39,7 +39,7 @@ export default async function Page({ params, searchParams }: Props) {
   );
   const pageSize = 12;
 
-  const response = await getAll<IUser>('productOffers/suppliers', {
+  const response = await getAll<IUser>('productOffer/suppliers', {
     page: pageNumber,
     pageSize,
     byConfig: false,

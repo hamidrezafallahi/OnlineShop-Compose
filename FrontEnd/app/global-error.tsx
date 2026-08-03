@@ -21,7 +21,7 @@ export default function GlobalError({ error, reset }: Props) {
       },
     };
     console.error(JSON.stringify({ ...payload, source: 'client', ts: new Date().toISOString() }));
-    void fetch('/api/log', {
+    void fetch('/auth/client-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

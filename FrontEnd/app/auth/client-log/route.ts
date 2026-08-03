@@ -7,6 +7,8 @@ const MAX_BODY_BYTES = 8_000;
 /**
  * Accepts client-side error reports and prints structured JSON to stdout
  * so they appear in `docker logs shop-frontend-*` / VPS logs.
+ *
+ * Mounted under /auth/* because nginx proxies all /api/* to the ASP.NET backend.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -48,7 +50,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     writeLog(
-      buildLogPayload('error', 'client-log route failed', { source: 'server', scope: 'api/log' }, err),
+      buildLogPayload(
+        'error',
+        'client-log route failed',
+        { source: 'server', scope: 'auth/client-log' },
+        err,
+      ),
     );
     return NextResponse.json({ ok: false }, { status: 400 });
   }

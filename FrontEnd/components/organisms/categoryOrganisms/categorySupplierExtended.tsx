@@ -6,25 +6,43 @@ import {
   SimpleSupplierCard,
 } from '@components/molecules/supplierCard/simpleSupplierCard';
 import { serverApiBaseUrl } from '@lib/api';
-import { PagedResponse } from '@models/base';
 import { IUser } from '@models/user';
 
 export async function CategorySupplierExtended({ id }: { id: number }) {
-  const response = await fetch(
-    `${serverApiBaseUrl}/productOffers/getSuppliersByCategoryId?CategoryId=${id}`,
-    {
-      cache: "no-store",
-    },
-  );
-  const suppliersResponse: PagedResponse<IUser> = await response.json();
-  const suppliers: IUser[] = suppliersResponse.data.records;
   const t = await getTranslations();
- 
-  return (
-    <div className="gap-5 grid grid-cols-1 lg:grid-cols-4">
-      {suppliers.length>0 ? suppliers.map((supplier: IUser, index: number) => (
-        <SimpleSupplierCard key={index} supplier={supplier} />
-      )):(<div>{t("category.noCategorySupplier")}</div>)}
-    </div>
-  );
+
+  try {
+    const response = await fetch(
+      `${serverApiBaseUrl}/productOffer/getSuppliersByCategoryId?CategoryId=${id}`,
+      {
+        cache: 'no-store',
+      },
+    );
+
+    if (!response.ok) {
+      return <div>{t('category.noCategorySupplier')}</div>;
+    }
+
+    const suppliersResponse = await response.json();
+    const payload = suppliersResponse?.data;
+    const suppliers: IUser[] = Array.isArray(payload?.records)
+      ? payload.records
+      : Array.isArray(payload)
+        ? payload
+        : [];
+
+    return (
+      <div className="gap-5 grid grid-cols-1 lg:grid-cols-4">
+        {suppliers.length > 0 ? (
+          suppliers.map((supplier: IUser, index: number) => (
+            <SimpleSupplierCard key={supplier.id ?? index} supplier={supplier} />
+          ))
+        ) : (
+          <div>{t('category.noCategorySupplier')}</div>
+        )}
+      </div>
+    );
+  } catch {
+    return <div>{t('category.noCategorySupplier')}</div>;
+  }
 }
