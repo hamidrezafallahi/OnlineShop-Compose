@@ -15,7 +15,10 @@
     "title":"Crystal blog",
     "subtitle":"Guides for buying, caring for, and styling crystal tableware",
     "empty":"No articles found",
-    "emptyHint":"New posts will appear here soon."
+    "emptyHint":"New posts will appear here soon.",
+    "landingTitle":"Read from the Rooshak blog",
+    "landingSubtitle":"Practical guides on buying and caring for crystal tableware",
+    "viewAll":"View all articles"
   },
   "header":{
     "home":"Home",

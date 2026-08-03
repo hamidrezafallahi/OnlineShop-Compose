@@ -63,7 +63,7 @@ export default async function Home({ params }: Props) {
     telephone: '+98-935-4042013',
   
     sameAs: [
-      'https://instagram.com/rooshak',
+      'https://instagram.com/roshak_kitchenware',
       'https://t.me/Arash71tj',
       // 'https://x.com/rooshak',
     ],
