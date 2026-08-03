@@ -2,15 +2,16 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /auth/
-Disallow: /admin/
-Disallow: /*/admin/
-Disallow: /checkout
-Disallow: /*/checkout
-Disallow: /shoppingCart
-Disallow: /*/shoppingCart
-Disallow: /payment
-Disallow: /*/payment
-Disallow: /order
-Disallow: /*/order
+Disallow: /fa/admin/
+Disallow: /en/admin/
+Disallow: /fa/checkout
+Disallow: /en/checkout
+Disallow: /fa/shoppingCart
+Disallow: /en/shoppingCart
+Disallow: /fa/payment
+Disallow: /en/payment
+Disallow: /fa/order
+Disallow: /en/order
 
-Sitemap: https://shooshkitchen.ir/sitemap.xml
+Sitemap: https://rooshakshop.com/sitemap.xml
+Host: rooshakshop.com

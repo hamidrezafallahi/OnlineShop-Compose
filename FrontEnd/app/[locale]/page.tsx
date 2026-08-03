@@ -54,15 +54,47 @@ export default async function Home({ params }: Props) {
   const organizationLd = {
     '@context': 'https://schema.org',
     '@type': 'OnlineStore',
+    '@id': `${absoluteUrl(locale, '')}#organization`,
+    name: 'روشاک',
+    url: absoluteUrl(locale, ''),
+    logo: absoluteUrl(locale, 'logo.png'),
+    image: absoluteUrl(locale, 'og-image.jpg'),
+    email: 'info@rooshak.ir',
+    telephone: '+98-935-4042013',
+  
+    sameAs: [
+      'https://instagram.com/rooshak',
+      'https://t.me/Arash71tj',
+      // 'https://x.com/rooshak',
+    ],
+  
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'IR',
+    },
+  };
+
+  const websiteLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${absoluteUrl(locale, '')}#website`,
     name: tBrand('name'),
     url: absoluteUrl(locale, ''),
     description: tSeo('homeDescription'),
     inLanguage: locale,
+    publisher: {
+      '@id': `${absoluteUrl(locale, '')}#organization`,
+    },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${absoluteUrl(locale, 'products')}?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
   };
 
   return (
     <>
-      <JsonLd data={organizationLd} />
+      <JsonLd data={[organizationLd, websiteLd]} />
       <Header />
       <main className="flex flex-col gap-2 pt-20 sm:pt-24 min-h-screen">
         <LandingHero />

@@ -10,8 +10,9 @@ export default createMiddleware({
 });
 
 export const config = {
-  // Exclude API proxies and Next route handlers from locale middleware
+  // Exclude SEO files, static assets, and Next/API proxies from locale middleware.
+  // Without this, /robots.txt and /sitemap.xml get rewritten to /fa/... and 404.
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api|auth|health).*)',
+    '/((?!_next/static|_next/image|favicon.ico|robots\\.txt|sitemap\\.xml|manifest\\.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|json)$|api|auth|health).*)',
   ],
 };

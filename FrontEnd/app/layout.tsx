@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    'Online storefront for products, brands, categories, and curated shopping experiences.',
+    'Rooshak Shop — premium authentic crystal dishes, glassware, and serving sets in Persian and English.',
   applicationName: SITE_NAME,
   referrer: 'origin-when-cross-origin',
   formatDetection: {

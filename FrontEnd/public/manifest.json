@@ -1,6 +1,7 @@
 {
   "short_name": "Rooshak",
-  "name": "Rooshak",
+  "name": "Rooshak | Crystal Tableware",
+  "description": "Premium authentic crystal dishes and glassware store",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,9 +19,11 @@
       "type": "image/png"
     }
   ],
-  "start_url": ".",
-  "display": "fullScreen",
+  "start_url": "/fa",
+  "display": "standalone",
   "theme_color": "#1c39bb",
   "orientation": "portrait",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "lang": "fa",
+  "dir": "rtl"
 }

@@ -10,7 +10,7 @@ export const LOCALES = ['fa', 'en'] as const;
 export type AppLocale = (typeof LOCALES)[number];
 
 export const SITE_NAME =
-  process.env.NEXT_PUBLIC_SITE_NAME?.trim() || 'Online Shop';
+  process.env.NEXT_PUBLIC_SITE_NAME?.trim() || 'Rooshak';
 
 /** Path without leading locale. Empty string = home. */
 export function cleanPath(path = ''): string {
