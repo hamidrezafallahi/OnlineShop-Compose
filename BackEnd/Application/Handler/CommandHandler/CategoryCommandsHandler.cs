@@ -39,7 +39,7 @@ public class CategoryCommandHandler(ICategoryRepository _repo, IHttpContextAcces
             var uploadDto = new UploadDTO
             {
                 File = request.CategoryCover,
-                Path = $"uploads/category/{category.Id}"
+                Path = $"uploads/categories/{category.Id}"
             };
 
             var thumbnailUrl = await _uploaderService.UploadAsWebp(uploadDto);
@@ -78,17 +78,20 @@ currentUserId: userId.Value);
         {
             if (!string.IsNullOrWhiteSpace(category.ImageUrl))
             {
-                var fileNameOnly = Path.GetFileName(category.ImageUrl);
+                var normalized = category.ImageUrl.TrimStart('/').Replace('\\', '/');
+                var fileNameOnly = Path.GetFileName(normalized);
+                var directory = Path.GetDirectoryName(normalized)?.Replace('\\', '/')
+                    ?? $"uploads/categories/{category.Id}";
                 await _uploaderService.DeleteFile(new DeleteDTO
                 {
                     FileName = fileNameOnly,
-                    Path = $"uploads/category/{category.Id}"
+                    Path = directory
                 });
             }
             var uploadDto = new UploadDTO
             {
                 File = request.CategoryCover,
-                Path = $"uploads/category/{category.Id}"
+                Path = $"uploads/categories/{category.Id}"
             };
 
             thumbnailUrl = await _uploaderService.UploadAsWebp(uploadDto);
@@ -134,12 +137,18 @@ currentUserId: userId.Value);
         var category = await _repo.GetByIdAsync(request.Id);
         if (category == null)
             return ServiceResult<IdDto>.Failed("این کتگوری موجود نیست");
-        var fileNameOnly = Path.GetFileName(category.ImageUrl);
-        await _uploaderService.DeleteFile(new DeleteDTO
+        if (!string.IsNullOrWhiteSpace(category.ImageUrl))
         {
-            FileName = fileNameOnly,
-            Path = $"uploads/category/{category.Id}"
-        });
+            var normalized = category.ImageUrl.TrimStart('/').Replace('\\', '/');
+            var fileNameOnly = Path.GetFileName(normalized);
+            var directory = Path.GetDirectoryName(normalized)?.Replace('\\', '/')
+                ?? $"uploads/categories/{category.Id}";
+            await _uploaderService.DeleteFile(new DeleteDTO
+            {
+                FileName = fileNameOnly,
+                Path = directory
+            });
+        }
         category.Delete(userId.Value);
 
         await _repo.SaveChangesAsync(cancellationToken);
