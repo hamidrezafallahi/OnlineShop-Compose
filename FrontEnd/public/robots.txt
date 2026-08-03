@@ -14,4 +14,3 @@ Disallow: /fa/order
 Disallow: /en/order
 
 Sitemap: https://rooshakshop.com/sitemap.xml
-Host: rooshakshop.com
