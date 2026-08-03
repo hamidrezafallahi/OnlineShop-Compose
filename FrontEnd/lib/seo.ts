@@ -54,6 +54,8 @@ type BuildPageMetadataInput = {
   type?: 'website' | 'article';
   noIndex?: boolean;
   keywords?: string[];
+  /** Skip slow SEO API so tags stay in the initial <head> (Lighthouse/SEO). */
+  skipSeoOverride?: boolean;
 };
 
 type SeoOverride = {
@@ -74,8 +76,13 @@ async function getSeoOverride(locale: string, path = ''): Promise<SeoOverride | 
     url.searchParams.set('path', normalizedPath);
     url.searchParams.set('locale', locale);
 
+    // Keep metadata in the initial <head> for crawlers/Lighthouse.
+    // A slow backend must not stream SEO tags after </head>.
     const res = await fetch(url.toString(), {
+      // force-dynamic pages still need a warm cache so metadata stays in <head>
+      cache: 'force-cache',
       next: { revalidate: 300, tags: ['seoSettings'] },
+      signal: AbortSignal.timeout(150),
     });
 
     if (!res.ok) {
@@ -121,8 +128,11 @@ export async function buildPageMetadata({
   type = 'website',
   noIndex = false,
   keywords,
+  skipSeoOverride = false,
 }: BuildPageMetadataInput): Promise<Metadata> {
-  const seoOverride = await getSeoOverride(locale, path);
+  const seoOverride = skipSeoOverride
+    ? null
+    : await getSeoOverride(locale, path);
   const resolvedTitle = seoOverride?.title?.trim() || title;
   const resolvedDescription =
     seoOverride?.description?.trim() ||

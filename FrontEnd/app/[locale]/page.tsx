@@ -35,6 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('homeTitle'),
     description: t('homeDescription'),
     keywords: t('homeKeywords').split(',').map((k) => k.trim()),
+    // Avoid streaming metadata after </head> (Lighthouse SEO fails otherwise).
+    skipSeoOverride: true,
   });
 }
 

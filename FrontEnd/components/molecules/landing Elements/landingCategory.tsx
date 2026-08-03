@@ -16,9 +16,12 @@ export default async  function LandingCategory(props: IProps) {
   const locale = await getLocale()
   return (
     <section id="categories" className="flex flex-col gap-4 mx-auto px-4 py-10 w-full max-w-7xl">
-       <Link href={`/${locale}/categories`} className="block text-sm text-end underline">
-                مشاهده همه دسته بندی ها
-              </Link>
+       <div className="flex justify-between items-center gap-3">
+         <h2 className="font-semibold text-2xl sm:text-3xl">دسته‌بندی‌ها</h2>
+         <Link href={`/${locale}/categories`} className="block text-sm text-end underline">
+                  مشاهده همه دسته بندی ها
+         </Link>
+       </div>
         <div className="hidden-show-scrollbar sm:hidden flex gap-4 pb-2 overflow-x-auto">
           {categories?.map((cat) => (
             <Link

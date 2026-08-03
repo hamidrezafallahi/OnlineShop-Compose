@@ -54,7 +54,9 @@ export default function ProductsCarousel({
       <div className="hidden sm:block relative">
         {/* دکمه سمت چپ */}
         <button
+          type="button"
           onClick={scrollLeft}
+          aria-label="اسکرول به قبلی"
           className="top-1/2 left-0 z-20 absolute flex justify-center items-center bg-white/80 hover:bg-white shadow rounded-full w-10 h-10 -translate-y-1/2"
         >
           <ChevronLeftIcon />
@@ -83,7 +85,9 @@ export default function ProductsCarousel({
 
         {/* دکمه سمت راست */}
         <button
+          type="button"
           onClick={scrollRight}
+          aria-label="اسکرول به بعدی"
           className="top-1/2 right-0 z-20 absolute flex justify-center items-center bg-white/80 hover:bg-white shadow rounded-full w-10 h-10 -translate-y-1/2"
         >
           <ChevronRightIcon />
@@ -117,7 +121,6 @@ function ProductCard({ product }: { product: ILandingProduct }) {
   const [addToShoppingCart] = useGetConditionallyMutation();
   const dispatch = useDispatch();
   const handleAddToCart = async (product: ILandingProduct) => {
-     console.log("clicked");
     if (isAuthenticated) {
       const syncCartResponse = await addToShoppingCart({
         url: '/CartItems',
@@ -173,16 +176,18 @@ function ProductCard({ product }: { product: ILandingProduct }) {
         </div>
       </div>
       <div className="p-4">
-        <h4 className="font-medium text-sm line-clamp-2">{product.name}</h4>
-        <p className="text-gray-500 text-xs">{product.brand}</p>
+        <h3 className="font-medium text-sm line-clamp-2">{product.name}</h3>
+        <p className="text-gray-600 text-xs">{product.brand}</p>
 
         <div className="flex justify-between items-end gap-2 mt-3">
           <div>
             <div className="font-semibold text-sm">{product.finalPrice}$</div>
 
-            {product.discountAmount > 0 &&<div className="text-gray-400 text-xs line-through">
-              {product.price}$
-            </div>}
+            {product.discountAmount > 0 && (
+              <div className="text-gray-600 text-xs line-through">
+                {product.price}$
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -193,9 +198,11 @@ function ProductCard({ product }: { product: ILandingProduct }) {
               مشاهده
             </Link>
             <button
+              type="button"
               onClick={() => {
                 handleAddToCart(product);
               }}
+              aria-label={`افزودن ${product.name} به سبد`}
               className="bg-rose-600 hover:bg-rose-700 px-3 py-2 rounded-lg text-white text-xs"
             >
               افزودن

@@ -3,12 +3,10 @@
 import React from 'react';
 
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 
 import { StarIcon } from '@components/atoms/iconComponents';
 
 const ITEM_KEYS = ['1', '2', '3'] as const;
-const AVATARS = [12, 22, 33];
 
 const TestimonialsSection: React.FC = () => {
   const t = useTranslations('testimonials');
@@ -21,23 +19,27 @@ const TestimonialsSection: React.FC = () => {
         </h2>
 
         <div className="gap-8 grid sm:grid-cols-2 lg:grid-cols-3">
-          {ITEM_KEYS.map((id, index) => (
+          {ITEM_KEYS.map((id) => (
             <div
               key={id}
               className="flex flex-col items-center bg-white shadow-sm hover:shadow-md p-6 rounded-2xl text-center transition"
             >
-              <Image
-                src={`https://i.pravatar.cc/100?img=${AVATARS[index]}`}
-                alt={t(`items.${id}.name`)}
-                width={60}
-                height={60}
-                className="mb-4 rounded-full"
-              />
+              <div
+                className="flex justify-center items-center bg-[color-mix(in_srgb,var(--primary-color)_20%,white)] mb-4 rounded-full w-[60px] h-[60px] font-semibold text-[var(--primary-color)] text-lg"
+                aria-hidden
+              >
+                {t(`items.${id}.name`).slice(0, 1)}
+              </div>
               <p className="mb-3 text-gray-600">{t(`items.${id}.comment`)}</p>
 
-              <div className="flex items-center gap-1 mb-2 text-yellow-500">
+              <div
+                className="flex items-center gap-1 mb-2 text-yellow-500"
+                aria-label="۵ از ۵"
+              >
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon key={i} />
+                  <span key={i} aria-hidden>
+                    <StarIcon />
+                  </span>
                 ))}
               </div>
 

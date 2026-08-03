@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
           <h2 className="mb-3 font-bold text-white text-xl sm:text-2xl">
             {tBrand('name')}
           </h2>
-          <p className="max-w-md text-sm leading-relaxed opacity-85">
+          <p className="max-w-md text-sm leading-relaxed text-white/95">
             {t('tagline')}
           </p>
           <div className="flex flex-wrap gap-3 mt-5">
@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="inline-flex justify-center items-center opacity-80 hover:opacity-100 rounded-lg w-9 h-9 transition"
+                className="inline-flex justify-center items-center text-white/95 hover:text-white rounded-lg w-9 h-9 transition"
               >
                 {s.icon}
               </Link>
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
                 <li key={link.href}>
                   <Link
                     href={`/${locale}/${link.href}`}
-                    className="opacity-80 hover:opacity-100 transition"
+                    className="text-white/95 hover:text-white transition"
                   >
                     {t(`links.${link.labelKey}`)}
                   </Link>
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
         ))}
       </div>
 
-      <div className="mx-auto mt-12 pt-6 px-4 max-w-7xl border-white/10 border-t text-sm text-center opacity-70">
+      <div className="mx-auto mt-12 pt-6 px-4 max-w-7xl border-white/10 border-t text-sm text-center text-white/90">
         {t('copyright', { year, brand: tBrand('name') })}
       </div>
     </footer>

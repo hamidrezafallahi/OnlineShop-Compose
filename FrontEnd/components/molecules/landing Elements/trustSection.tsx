@@ -3,7 +3,6 @@
 import React from 'react';
 
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 
 import {
   CreditCardIcon,
@@ -47,24 +46,25 @@ const TrustSection: React.FC = () => {
       </div>
 
       <div className="gap-6 grid sm:grid-cols-3 mb-16">
-        {REVIEW_KEYS.map((id, index) => (
+        {REVIEW_KEYS.map((id) => (
           <div
             key={id}
             className="bg-gray-50 hover:shadow-md p-6 rounded-2xl text-right transition"
           >
             <div className="flex items-center mb-3">
-              <Image
-                src={`https://i.pravatar.cc/100?img=${[47, 55, 32][index]}`}
-                alt={t(`reviews.${id}.name`)}
-                width={50}
-                height={50}
-                className="rounded-full"
-              />
+              <div
+                className="flex justify-center items-center bg-[color-mix(in_srgb,var(--primary-color)_20%,white)] rounded-full w-[50px] h-[50px] font-semibold text-[var(--primary-color)] text-sm"
+                aria-hidden
+              >
+                {t(`reviews.${id}.name`).slice(0, 1)}
+              </div>
               <div className="ms-3">
                 <h3 className="font-semibold">{t(`reviews.${id}.name`)}</h3>
-                <div className="flex text-yellow-500">
+                <div className="flex text-yellow-500" aria-label="۵ از ۵">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <StarIcon key={i} />
+                    <span key={i} aria-hidden>
+                      <StarIcon />
+                    </span>
                   ))}
                 </div>
               </div>

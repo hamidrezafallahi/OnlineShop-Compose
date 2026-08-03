@@ -25,7 +25,7 @@ export default function BrandCard({brand}:{brand:IBrand}) {
               </div>
               <div className="bg-inherit p-4 sm:p-5">
                 <h3 className="font-medium">{brand.name}</h3>
-                <p className="text-gray-500 text-xs">{brand.description}</p>
+                <p className="text-gray-600 text-xs">{brand.description}</p>
                 <span className="inline-block mt-3 font-medium text-primary text-sm">
                   مشاهده برند →
                 </span>

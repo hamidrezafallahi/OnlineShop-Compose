@@ -34,10 +34,17 @@ const internalServerOrigin =
 
 export const serverApiBaseUrl = ensureApiSuffix(internalServerOrigin);
 
-export const siteBaseUrl = trimTrailingSlash(
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  process.env.SITE_URL ??
-  DEFAULT_SITE_URL
+function firstEnvUrl(...values: (string | undefined)[]) {
+  for (const value of values) {
+    const trimmed = value?.trim();
+    if (trimmed) return trimTrailingSlash(trimmed);
+  }
+  return DEFAULT_SITE_URL;
+}
+
+export const siteBaseUrl = firstEnvUrl(
+  process.env.NEXT_PUBLIC_SITE_URL,
+  process.env.SITE_URL,
 );
 
 /** Guard for server-side fetch callers. */
