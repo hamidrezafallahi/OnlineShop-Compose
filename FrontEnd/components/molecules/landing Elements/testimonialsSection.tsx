@@ -41,11 +41,11 @@ const TestimonialsSection: React.FC = () => {
                 ))}
               </div>
 
-              <div className="text-gray-400 text-xs">
+              <div className="text-gray-600 text-xs">
                 <span>{t(`items.${id}.product`)}</span>
               </div>
 
-              <h4 className="mt-3 font-semibold">{t(`items.${id}.name`)}</h4>
+              <h3 className="mt-3 font-semibold">{t(`items.${id}.name`)}</h3>
             </div>
           ))}
         </div>

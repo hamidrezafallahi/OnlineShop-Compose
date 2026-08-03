@@ -48,7 +48,7 @@ export default async function BlogSection() {
           <h2 className="mb-3 font-bold text-2xl sm:text-3xl">
             {t('landingTitle')}
           </h2>
-          <p className="text-gray-500 text-sm sm:text-base">
+          <p className="text-gray-600 text-sm sm:text-base">
             {t('landingSubtitle')}
           </p>
           <Link
@@ -97,7 +97,7 @@ export default async function BlogSection() {
                     </p>
                   ) : null}
 
-                  <div className="flex justify-between items-center gap-3 mt-4 text-gray-400 text-xs">
+                  <div className="flex justify-between items-center gap-3 mt-4 text-gray-600 text-xs">
                     {post.authorName ? (
                       <div className="flex items-center gap-1 min-w-0">
                         <UserIcon />

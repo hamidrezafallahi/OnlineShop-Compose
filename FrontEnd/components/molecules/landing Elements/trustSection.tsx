@@ -39,7 +39,7 @@ const TrustSection: React.FC = () => {
           >
             {badge.icon}
             <h3 className="mt-3 font-semibold">{t(`badges.${badge.id}.title`)}</h3>
-            <p className="mt-1 text-gray-500 text-sm">
+            <p className="mt-1 text-gray-600 text-sm">
               {t(`badges.${badge.id}.description`)}
             </p>
           </div>
@@ -61,7 +61,7 @@ const TrustSection: React.FC = () => {
                 className="rounded-full"
               />
               <div className="ms-3">
-                <h4 className="font-semibold">{t(`reviews.${id}.name`)}</h4>
+                <h3 className="font-semibold">{t(`reviews.${id}.name`)}</h3>
                 <div className="flex text-yellow-500">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <StarIcon key={i} />

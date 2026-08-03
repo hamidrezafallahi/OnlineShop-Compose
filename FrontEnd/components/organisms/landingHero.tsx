@@ -16,7 +16,7 @@ export default async function LandingHero() {
           >
             {t('title')}
           </h1>
-          <p className="max-w-lg text-white/85 text-base sm:text-lg md:text-xl leading-relaxed">
+          <p className="max-w-lg text-white text-base sm:text-lg md:text-xl leading-relaxed">
             {t('subtitle')}
           </p>
           <div className="flex sm:flex-row flex-col gap-3 mt-2 w-full sm:w-auto">
@@ -43,6 +43,7 @@ export default async function LandingHero() {
               fill
               className="object-cover hover:scale-105 transition-transform duration-700"
               priority
+              fetchPriority="high"
               sizes="(max-width: 768px) 280px, 380px"
             />
           </div>

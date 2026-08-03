@@ -21,23 +21,25 @@ export default async  function LandingCategory(props: IProps) {
               </Link>
         <div className="hidden-show-scrollbar sm:hidden flex gap-4 pb-2 overflow-x-auto">
           {categories?.map((cat) => (
-            <button
+            <Link
               key={cat.id}
+              href={`/${locale}/categories/${cat.id}`}
+              aria-label={cat.persianName || cat.englishName}
               className="group relative flex-shrink-0 bg-white shadow-sm hover:shadow-lg rounded-2xl min-w-[70%] sm:min-w-0 overflow-hidden transition-shadow"
             >
               <div className="w-full h-44 overflow-hidden">
                 <img
                   src={toMediaUrl(cat.categoryCover)}
-                  alt={cat.englishName}
+                  alt={cat.persianName || cat.englishName}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform transform"
                   loading="lazy"
                 />
               </div>
               <div className="p-4">
                 <h3 className="font-medium">{cat.persianName}</h3>
-                <p className="text-gray-500 text-xs">{cat.categoryPersianDesc}</p>
+                <p className="text-gray-600 text-xs">{cat.categoryPersianDesc}</p>
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       <div className="gap-6 grid grid-cols-1 sm:grid-cols-3 py-10">

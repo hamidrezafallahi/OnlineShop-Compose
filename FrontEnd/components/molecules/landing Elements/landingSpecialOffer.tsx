@@ -23,7 +23,7 @@ export default async  function LandingSpecialOffer() {
           <h2 className="mb-3 font-extrabold text-3xl sm:text-4xl">
             پیشنهاد ویژه امروز
           </h2>
-          <p className="opacity-90 mb-6 max-w-md text-sm sm:text-base text-center">
+          <p className="mb-6 max-w-md text-sm sm:text-base text-center text-white">
             فقط تا پایان امروز می‌توانید این محصولات را با تخفیف ویژه تهیه کنید.
           </p>
 

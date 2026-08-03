@@ -124,7 +124,10 @@ export async function buildPageMetadata({
 }: BuildPageMetadataInput): Promise<Metadata> {
   const seoOverride = await getSeoOverride(locale, path);
   const resolvedTitle = seoOverride?.title?.trim() || title;
-  const resolvedDescription = seoOverride?.description?.trim() || description;
+  const resolvedDescription =
+    seoOverride?.description?.trim() ||
+    description?.trim() ||
+    `${SITE_NAME} — online crystal store`;
   const resolvedCanonicalPath = seoOverride?.canonicalPath?.trim() || path;
   const resolvedNoIndex = seoOverride?.robotsIndex === false ? true : noIndex;
   const resolvedFollow = seoOverride?.robotsFollow ?? true;

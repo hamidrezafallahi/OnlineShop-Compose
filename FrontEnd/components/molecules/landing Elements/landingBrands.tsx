@@ -23,7 +23,7 @@ export default async function LandingBrands( ) {
       <div className="flex sm:flex-row flex-col flex-wrap sm:justify-between sm:items-center gap-4 mb-8">
         <div>
           <h2 className="font-semibold text-2xl sm:text-3xl">برندها</h2>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-gray-600 text-sm">
            برند های موجود
           </p>
         </div>

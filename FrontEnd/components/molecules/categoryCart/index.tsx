@@ -35,7 +35,7 @@ export default async function CategoryCard({ category }: { category: ICategory})
           <h3 className="font-semibold text-white">
             {locale == "fa" ? persianName : englishName}
           </h3>
-          <p className="text-gray-200 text-xs">
+          <p className="text-white text-xs">
             {locale == "fa" ? categoryPersianDesc : categoryEnglishDesc}
           </p>
         </div>

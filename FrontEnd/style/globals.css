@@ -470,7 +470,7 @@ html {
   --store-surface-solid: #ffffff;
   --store-border: color-mix(in srgb, var(--primary-color) 16%, transparent);
   --store-text: #14221a;
-  --store-text-muted: #5b6b61;
+  --store-text-muted: #4a5a50;
   --store-text-on-dark: #f4f7f5;
   --store-shadow: 0 12px 36px color-mix(in srgb, var(--primary-color) 12%, transparent);
   --store-radius: 1.25rem;
