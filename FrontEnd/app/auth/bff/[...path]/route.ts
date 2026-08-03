@@ -12,6 +12,8 @@ import {
 } from '@lib/auth-cookies';
 
 export const dynamic = 'force-dynamic';
+/** Allow large banner/product image uploads through the BFF. */
+export const maxDuration = 120;
 
 type RouteContext = {
   params: Promise<{ path: string[] }>;

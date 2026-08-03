@@ -1,13 +1,13 @@
 ﻿using Application.Commands;
 using Application.Common;
 using Application.Common.Interfaces;
-using Application.Dtos;
 using Common;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using OnlineShop.Domain.Entities;
 using Services.Services.Uploader.DTO;
+
 public class BlogCommandHandler(
             IBlogRepository _blogRepository,
             IHttpContextAccessor _accessor,
@@ -20,11 +20,9 @@ public class BlogCommandHandler(
     public async Task<ServiceResult<IdDto>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
-        var actor = _accessor.HttpContext.GetRole();
-
         if (userId == null)
-            
             return ServiceResult<IdDto>.Failed("Unauthorized");
+
         var blog = Blog.Create(
              titleFa: request.TitleFa.Trim(),
              introFa: request.IntroFa,
@@ -41,10 +39,11 @@ public class BlogCommandHandler(
              metaDescriptionEn: request.MetaDescriptionEn,
              metaKeywordsEn: request.MetaKeywordsEn,
              slug: request.Slug,
-             thumbnailFile:null,
+             thumbnailFile: null,
              authorId: request.AuthorId ?? userId.Value,
              currentUserId: userId.Value
              );
+
         try
         {
             await _blogRepository.AddAsync(blog);
@@ -60,23 +59,21 @@ public class BlogCommandHandler(
             var uploadDto = new UploadDTO
             {
                 File = request.ThumbnailFile,
-                Path = $"uploads/blogs/{blog.Id}"
+                Path = UploadPaths.Blogs(blog.Id)
             };
 
             var thumbnailUrl = await _uploaderService.UploadAsWebp(uploadDto);
-
-            blog.UpdateFile(currentUserId: userId.Value, thumbnailFile: thumbnailUrl);
-
+            if (UploadPaths.IsStoredPath(thumbnailUrl))
+                blog.UpdateFile(currentUserId: userId.Value, thumbnailFile: thumbnailUrl);
         }
 
         await _blogRepository.SaveChangesAsync(cancellationToken);
         return ServiceResult<IdDto>.Ok(new IdDto { Id = blog.Id });
     }
+
     public async Task<ServiceResult<IdDto>> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
-        var actor = _accessor.HttpContext.GetRole();
-
         if (userId == null)
             return ServiceResult<IdDto>.Failed("Unauthorized");
 
@@ -87,22 +84,20 @@ public class BlogCommandHandler(
         string? thumbnailUrl = null;
         if (request.ThumbnailFile is not null)
         {
+            await _uploaderService.DeleteStoredFile(
+                blog.ThumbnailFile,
+                UploadPaths.Blogs(blog.Id));
+
             var uploadDto = new UploadDTO
             {
                 File = request.ThumbnailFile,
-                Path = $"uploads/blogs/{blog.Id}"
+                Path = UploadPaths.Blogs(blog.Id)
             };
-            var fileNameOnly = Path.GetFileName(blog.ThumbnailFile);
-            await _uploaderService.DeleteFile(new DeleteDTO
-            {
-                FileName = fileNameOnly,
-                Path = $"uploads/blogs/{blog.Id}"
-            });
 
             thumbnailUrl = await _uploaderService.UploadAsWebp(uploadDto);
+            if (!UploadPaths.IsStoredPath(thumbnailUrl))
+                return ServiceResult<IdDto>.Failed("آپلود تصویر بلاگ ناموفق بود");
         }
-
-            
 
         blog.Update(
             currentUserId: userId.Value,
@@ -122,13 +117,13 @@ public class BlogCommandHandler(
             metaKeywordsEn: string.IsNullOrWhiteSpace(request.MetaKeywordsEn) ? null : request.MetaKeywordsEn,
             slug: string.IsNullOrWhiteSpace(request.Slug) ? null : request.Slug,
             thumbnailFile: string.IsNullOrWhiteSpace(thumbnailUrl) ? null : thumbnailUrl,
-            authorId: request.AuthorId ?? null 
+            authorId: request.AuthorId ?? null
             );
 
         await _blogRepository.SaveChangesAsync(cancellationToken);
-
         return ServiceResult<IdDto>.Ok(new IdDto { Id = blog.Id });
     }
+
     public async Task<ServiceResult<IdDto>> Handle(DeleteBlogCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
@@ -138,17 +133,16 @@ public class BlogCommandHandler(
         var blog = await _blogRepository.GetByIdAsync(request.Id);
         if (blog == null)
             return ServiceResult<IdDto>.Failed("بلاگ پیدا نشد");
-        var fileNameOnly = Path.GetFileName(blog.ThumbnailFile);
-        await _uploaderService.DeleteFile(new DeleteDTO
-        {
-            FileName = fileNameOnly,
-            Path = $"uploads/blogs/{blog.Id}"
-        });
+
+        await _uploaderService.DeleteStoredFile(
+            blog.ThumbnailFile,
+            UploadPaths.Blogs(blog.Id));
+
         blog.Delete(userId.Value);
         await _blogRepository.SaveChangesAsync(cancellationToken);
-
         return ServiceResult<IdDto>.Ok(new IdDto { Id = blog.Id });
     }
+
     public async Task<ServiceResult<IdDto>> Handle(ActiveBlogCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
@@ -160,10 +154,7 @@ public class BlogCommandHandler(
             return ServiceResult<IdDto>.Failed("بلاگ پیدا نشد");
 
         blog.SetActive(request.IsActive, userId.Value);
-
         await _blogRepository.SaveChangesAsync(cancellationToken);
-
         return ServiceResult<IdDto>.Ok(new IdDto { Id = blog.Id });
     }
-
 }

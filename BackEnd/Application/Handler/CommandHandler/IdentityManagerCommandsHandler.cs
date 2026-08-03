@@ -1,4 +1,5 @@
-﻿using Application.Common;
+﻿using Application.Commands;
+using Application.Common;
 using Application.Common.Interfaces;
 using Application.Dtos;
 using Common;
@@ -50,15 +51,16 @@ IRequestHandler<DeleteUserCommand, ServiceResult<IdDto>>
         await _repo.AddAsync(user);
         await _repo.SaveChangesAsync(cancellationToken);
 
-        var uploadDto = new UploadDTO
+        if (request.UserImageFile is not null && request.UserImageFile.Length > 0)
         {
-            File = request.UserImageFile,
-            Path = $"uploads/users/{user.Id}"
-        };
-        var imageUrl = await _uploaderService.UploadAsWebp(uploadDto);
-        if (!string.IsNullOrWhiteSpace(imageUrl))
-        {
-            user.SetImage(imageUrl, user.Id);
+            var uploadDto = new UploadDTO
+            {
+                File = request.UserImageFile,
+                Path = UploadPaths.Users(user.Id)
+            };
+            var imageUrl = await _uploaderService.UploadAsWebp(uploadDto);
+            if (UploadPaths.IsStoredPath(imageUrl))
+                user.SetImage(imageUrl!, user.Id);
         }
         var hashedPassword = _passwordHasher.HashPassword(user, request.Password.Trim());
         user.ChangePassword(hashedPassword, user.Id);
@@ -213,12 +215,11 @@ IRequestHandler<DeleteUserCommand, ServiceResult<IdDto>>
         var user = await _repo.GetByIdAsync(request.Id);
         if (user == null)
             return ServiceResult<IdDto>.Failed("کاربری پیدا نشد");
-        var fileNameOnly = Path.GetFileName(user.Image);
-        await _uploaderService.DeleteFile(new DeleteDTO
-        {
-            FileName = fileNameOnly,
-            Path = $"uploads/users/{user.Id}"
-        });
+
+        await _uploaderService.DeleteStoredFile(
+            user.Image,
+            UploadPaths.Users(user.Id));
+
         user.Delete(userId.Value);
         await _repo.SaveChangesAsync(cancellationToken);
 

@@ -55,7 +55,8 @@ export default function FinalizeOrder({
   };
 
   const total =
-    ShoppingCart?.finalTotal + ShoppingCart?.shippingMethod?.price!;
+    (ShoppingCart?.finalTotal ?? 0) +
+    (ShoppingCart?.shippingMethod?.price ?? 0);
 
   return (
     <Card className="bg-zinc-900 px-4 border-none rounded-lg w-full max-w-md">

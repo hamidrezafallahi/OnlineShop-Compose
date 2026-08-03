@@ -1,18 +1,22 @@
 ﻿using Application.Commands;
 using Application.Common;
+using Application.Common.Interfaces;
 using Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 using Services.Services.Uploader.DTO;
-public class CategoryCommandHandler(ICategoryRepository _repo, IHttpContextAccessor _accessor, IUploaderService _uploaderService) :
+
+public class CategoryCommandHandler(
+    ICategoryRepository _repo,
+    IHttpContextAccessor _accessor,
+    IUploaderService _uploaderService) :
     IRequestHandler<CreateCategoryCommand, ServiceResult<IdDto>>,
-            IRequestHandler<UpdateCategoryCommand, ServiceResult<IdDto>>,
+    IRequestHandler<UpdateCategoryCommand, ServiceResult<IdDto>>,
     IRequestHandler<ActiveCategoryCommand, ServiceResult<IdDto>>,
     IRequestHandler<DeleteCategoryCommand, ServiceResult<IdDto>>
 {
-
     public async Task<ServiceResult<IdDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
@@ -33,36 +37,36 @@ public class CategoryCommandHandler(ICategoryRepository _repo, IHttpContextAcces
         await _repo.AddAsync(category);
         await _repo.SaveChangesAsync(cancellationToken);
 
-
         if (request.CategoryCover is not null)
         {
             var uploadDto = new UploadDTO
             {
                 File = request.CategoryCover,
-                Path = $"uploads/categories/{category.Id}"
+                Path = UploadPaths.Categories(category.Id)
             };
 
             var thumbnailUrl = await _uploaderService.UploadAsWebp(uploadDto);
-
-            category.Update(
-persianName: null,
-persianDesc: null,
-englishName: null,
-englishDesc: null,
-imageUrl: thumbnailUrl,
-showInLanding: null,
-parentCategoryId: null,
-currentUserId: userId.Value);
-
-            await _repo.SaveChangesAsync(cancellationToken);
+            if (UploadPaths.IsStoredPath(thumbnailUrl))
+            {
+                category.Update(
+                    persianName: null,
+                    persianDesc: null,
+                    englishName: null,
+                    englishDesc: null,
+                    imageUrl: thumbnailUrl,
+                    showInLanding: null,
+                    parentCategoryId: null,
+                    currentUserId: userId.Value);
+            }
         }
+
         if (request.IsActive.HasValue)
-        {
             category.SetActive(request.IsActive.Value, userId.Value);
-        }
+
         await _repo.SaveChangesAsync(cancellationToken);
         return ServiceResult<IdDto>.Ok(new IdDto { Id = category.Id });
     }
+
     public async Task<ServiceResult<IdDto>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
@@ -76,25 +80,19 @@ currentUserId: userId.Value);
         string? thumbnailUrl = null;
         if (request.CategoryCover is not null)
         {
-            if (!string.IsNullOrWhiteSpace(category.ImageUrl))
-            {
-                var normalized = category.ImageUrl.TrimStart('/').Replace('\\', '/');
-                var fileNameOnly = Path.GetFileName(normalized);
-                var directory = Path.GetDirectoryName(normalized)?.Replace('\\', '/')
-                    ?? $"uploads/categories/{category.Id}";
-                await _uploaderService.DeleteFile(new DeleteDTO
-                {
-                    FileName = fileNameOnly,
-                    Path = directory
-                });
-            }
+            await _uploaderService.DeleteStoredFile(
+                category.ImageUrl,
+                UploadPaths.Categories(category.Id));
+
             var uploadDto = new UploadDTO
             {
                 File = request.CategoryCover,
-                Path = $"uploads/categories/{category.Id}"
+                Path = UploadPaths.Categories(category.Id)
             };
 
             thumbnailUrl = await _uploaderService.UploadAsWebp(uploadDto);
+            if (!UploadPaths.IsStoredPath(thumbnailUrl))
+                return ServiceResult<IdDto>.Failed("آپلود تصویر دسته‌بندی ناموفق بود");
         }
 
         category.Update(
@@ -108,13 +106,13 @@ currentUserId: userId.Value);
             currentUserId: userId.Value
         );
 
-
         if (request.IsActive.HasValue)
             category.SetActive(request.IsActive.Value, userId.Value);
-        await _repo.SaveChangesAsync(cancellationToken);
 
+        await _repo.SaveChangesAsync(cancellationToken);
         return ServiceResult<IdDto>.Ok(new IdDto { Id = category.Id });
     }
+
     public async Task<ServiceResult<IdDto>> Handle(ActiveCategoryCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
@@ -124,37 +122,28 @@ currentUserId: userId.Value);
         var category = await _repo.GetByIdAsync(request.Id);
         if (category == null)
             return ServiceResult<IdDto>.Failed("این کتگوری موجود نیست.");
+
         category.SetActive(request.IsActive, userId.Value);
         await _repo.SaveChangesAsync(cancellationToken);
-
         return ServiceResult<IdDto>.Ok(new IdDto { Id = category.Id });
     }
+
     public async Task<ServiceResult<IdDto>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
         var userId = _accessor.HttpContext.GetUserId();
         if (userId == null)
             return ServiceResult<IdDto>.Failed("Unauthorized");
+
         var category = await _repo.GetByIdAsync(request.Id);
         if (category == null)
             return ServiceResult<IdDto>.Failed("این کتگوری موجود نیست");
-        if (!string.IsNullOrWhiteSpace(category.ImageUrl))
-        {
-            var normalized = category.ImageUrl.TrimStart('/').Replace('\\', '/');
-            var fileNameOnly = Path.GetFileName(normalized);
-            var directory = Path.GetDirectoryName(normalized)?.Replace('\\', '/')
-                ?? $"uploads/categories/{category.Id}";
-            await _uploaderService.DeleteFile(new DeleteDTO
-            {
-                FileName = fileNameOnly,
-                Path = directory
-            });
-        }
-        category.Delete(userId.Value);
 
+        await _uploaderService.DeleteStoredFile(
+            category.ImageUrl,
+            UploadPaths.Categories(category.Id));
+
+        category.Delete(userId.Value);
         await _repo.SaveChangesAsync(cancellationToken);
         return ServiceResult<IdDto>.Ok(new IdDto { Id = category.Id });
-
     }
-
 }
-

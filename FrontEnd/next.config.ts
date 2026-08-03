@@ -68,9 +68,9 @@ const nextConfig: NextConfig = {
     extensionAlias: {
       '.js': ['.js', '.ts', '.tsx'],
     },
-    // Enable server actions (stable in Next.js 15)
+    // Residual server actions (revalidate); uploads go through /auth/bff
     serverActions: {
-      bodySizeLimit: '10mb',
+      bodySizeLimit: '50mb',
     },
   },
 

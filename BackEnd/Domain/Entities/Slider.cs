@@ -48,12 +48,11 @@ namespace OnlineShop.Domain.Entities
             string? bannerDescription
         )
         {
-            if (!string.IsNullOrWhiteSpace(bannerUrl))  BannerUrl = bannerUrl;
-            if (!string.IsNullOrWhiteSpace(firstUrl)) firstUrl = firstUrl;
-            if (!string.IsNullOrWhiteSpace(secondUrl)) secondUrl = secondUrl;
-            if (!string.IsNullOrWhiteSpace(bannerTitle)) bannerTitle = bannerTitle;
-            if (!string.IsNullOrWhiteSpace(bannerDescription)) bannerDescription = bannerDescription;
-
+            if (!string.IsNullOrWhiteSpace(bannerUrl)) BannerUrl = bannerUrl;
+            if (!string.IsNullOrWhiteSpace(firstUrl)) FirstUrl = firstUrl;
+            if (!string.IsNullOrWhiteSpace(secondUrl)) SecondUrl = secondUrl;
+            if (!string.IsNullOrWhiteSpace(bannerTitle)) BannerTitle = bannerTitle;
+            if (!string.IsNullOrWhiteSpace(bannerDescription)) BannerDescrioption = bannerDescription;
 
             MarkUpdated(currentUserId);
         }

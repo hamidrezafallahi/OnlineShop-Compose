@@ -4,6 +4,7 @@ import {
   serverApiBaseUrl,
   siteBaseUrl,
 } from '@lib/api';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 export const DEFAULT_LOCALE = 'fa' as const;
 export const LOCALES = ['fa', 'en'] as const;
@@ -114,9 +115,16 @@ function splitKeywords(keywords?: string[] | string | null): string[] | undefine
 }
 
 function toAbsoluteAssetUrl(url: string): string {
-  return url.startsWith('http')
-    ? url
-    : `${siteBaseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  const mediaPath = toMediaUrl(url);
+  if (!mediaPath) {
+    return siteBaseUrl;
+  }
+
+  return `${siteBaseUrl}${mediaPath}`;
 }
 
 export async function buildPageMetadata({

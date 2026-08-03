@@ -1,11 +1,12 @@
 ﻿using Application.Common;
+using Application.Common.Interfaces;
 using Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.Interfaces;
 using Services.Services.Uploader.DTO;
- 
+
 
 namespace Application.Handler.CommandHandler
 {
@@ -32,25 +33,19 @@ namespace Application.Handler.CommandHandler
                 return ServiceResult<IdDto>.Failed("Unauthorized");
             if (request.UserImageFile != null)
             {
-                var fileNameOnly = Path.GetFileName(user.Image);
-                await _uploaderService.DeleteFile(new DeleteDTO
-                {
-                    FileName = fileNameOnly,
-                    Path = $"uploads/users/{user.Id}"
-                });
-
+                await _uploaderService.DeleteStoredFile(
+                    user.Image,
+                    UploadPaths.Users(user.Id));
 
                 user.UpdateProfile(request.FullName, request.PhoneNumber, request.UserDescription, user.Id);
                 var uploadDto = new UploadDTO
                 {
                     File = request.UserImageFile,
-                    Path = $"uploads/users/{user.Id}"
+                    Path = UploadPaths.Users(user.Id)
                 };
                 var imageUrl = await _uploaderService.UploadAsWebp(uploadDto);
-                if (!string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    user.SetImage(imageUrl, user.Id);
-                }
+                if (UploadPaths.IsStoredPath(imageUrl))
+                    user.SetImage(imageUrl!, user.Id);
             }
             await _userRepo.SaveChangesAsync(cancellationToken);
 

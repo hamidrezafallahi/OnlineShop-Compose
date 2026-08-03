@@ -48,12 +48,17 @@ function ShoppingCartHeaderComponent({ ...props }: IProps) {
   });
   useEffect(() => {
     if (data?.isSuccess) {
-      const method =data.data.records.find((m: IShippingMethod) => m.isDefault) ?? data.data.records[0];
+      const records = data.data?.records ?? [];
+      if (records.length === 0) return;
+      const method =
+        records.find((m: IShippingMethod) => m.isDefault) ?? records[0];
       dispatch(setShippingMethod(method));
     }
-  }, [data]);
-  const kol = ShoppingCart?.finalTotal + ShoppingCart?.shippingMethod?.price!;
-  
+  }, [data, dispatch]);
+  const kol =
+    (ShoppingCart?.finalTotal ?? 0) +
+    (ShoppingCart?.shippingMethod?.price ?? 0);
+
   return (
     <div
       className="top-full z-50 absolute mt-0 end-0"

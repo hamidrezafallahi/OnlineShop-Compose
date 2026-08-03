@@ -86,12 +86,28 @@ export default function FormGenerator({
 
   const getValidationRules = (field: FormField): RegisterOptions => {
     const rules: RegisterOptions = {};
+    if (field.Type === "number" || field.Type === "price") {
+      rules.valueAsNumber = true;
+    }
     field.Rules?.forEach((r) => {
       if (r.Rule === "required" && r.Condition) {
         rules.required = r.Message || `${field.Caption} is required`;
       }
     });
     return rules;
+  };
+
+  const coerceFieldValue = (field: FormField, raw: unknown) => {
+    if (field.Type === "checkbox") {
+      return Boolean(raw);
+    }
+    if (field.Type === "number" || field.Type === "price") {
+      if (raw === "" || raw === null || raw === undefined) return undefined;
+      const n = typeof raw === "number" ? raw : Number(raw);
+      return Number.isFinite(n) ? n : undefined;
+    }
+    if (typeof raw === "string" && raw.length === 0) return undefined;
+    return raw;
   };
 
   const handleAddOrUpdateRecord: SubmitHandler<any> = async (data) => {
@@ -102,10 +118,7 @@ export default function FormGenerator({
       if (field.Type === "json" && data[field.Name]) {
         cleanedData[field.Name] = JSON.stringify(data[field.Name]);
       } else {
-        cleanedData[field.Name] =
-          typeof data[field.Name] === "string" && data[field.Name].length === 0
-            ? undefined
-            : data[field.Name];
+        cleanedData[field.Name] = coerceFieldValue(field, data[field.Name]);
       }
     });
     const hasFileArray = formFields.some((field) => field.Type === "fileArray");
@@ -148,19 +161,36 @@ export default function FormGenerator({
         bodyToSend = formData;
       }
     }
-    startTransition(async () => {
-      const res = await saveEntity({
-        endPoint: entityFormConfig.endPoint,
-        body: bodyToSend,
-        method: defaultValues?.id ? "PUT" : "POST",
-      });
-      if (res?.isSuccess) {
-        Object.entries(formFields).forEach(([, v]) => {
-          resetField(v.Name, undefined);
-          setValue(v.Name, undefined);
-        });
-        route.push(`/${locale}/admin/${entityFormConfig.endPoint}`);
-      }
+    startTransition(() => {
+      void (async () => {
+        try {
+          const res = await saveEntity({
+            endPoint: entityFormConfig.endPoint,
+            body: bodyToSend,
+            method: defaultValues?.id ? "PUT" : "POST",
+          });
+          if (res?.isSuccess) {
+            Object.entries(formFields).forEach(([, v]) => {
+              resetField(v.Name, undefined);
+              setValue(v.Name, undefined);
+            });
+            route.push(`/${locale}/admin/${entityFormConfig.endPoint}`);
+            route.refresh();
+          } else {
+            const { showErrorToast } = await import('@utils/core');
+            showErrorToast(
+              res?.error || 'ذخیره انجام نشد. لطفاً دوباره تلاش کنید.',
+              '',
+              5000,
+            );
+          }
+        } catch (err) {
+          const { showErrorToast } = await import('@utils/core');
+          const message =
+            err instanceof Error ? err.message : 'ذخیره انجام نشد. لطفاً دوباره تلاش کنید.';
+          showErrorToast(message, '', 5000);
+        }
+      })();
     });
   };
 
@@ -179,11 +209,19 @@ export default function FormGenerator({
 
   useEffect(() => {
     if (defaultValues === undefined) {
+      const emptyDefaults: Record<string, unknown> = {};
       formFields.forEach((field) => {
-        resetField(field.Name as any, { defaultValue: "" });
-        setValue(field.Name as any, "");
+        const emptyValue =
+          field.Type === "checkbox"
+            ? false
+            : field.Type === "number" || field.Type === "price"
+              ? undefined
+              : "";
+        emptyDefaults[field.Name] = emptyValue;
+        resetField(field.Name as any, { defaultValue: emptyValue });
+        setValue(field.Name as any, emptyValue);
       });
-      reset({});
+      reset(emptyDefaults);
     } else {
       reset(defaultValues);
     }

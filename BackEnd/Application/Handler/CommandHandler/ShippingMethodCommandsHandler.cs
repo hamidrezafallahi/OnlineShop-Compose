@@ -24,24 +24,25 @@ namespace Application.Handler.CommandHandler
                 return ServiceResult<IdDto>.Failed("Unauthorized");
             var method = ShippingMethod.Create(
                 request.Title,
-                request.Description,
+                request.Description ?? string.Empty,
                 request.EstimatedDeliveryTime,
                 request.Price,
                 request.IsDefault ?? false,
                 userId.Value
             );
             await _repo.AddAsync(method);
+            await _repo.SaveChangesAsync(cancellationToken);
+
             if (request.IsDefault == true)
             {
                 var activeMethods = await _repo.GetAllAsync();
-
                 foreach (var m in activeMethods)
                 {
-                    m.SetDefault(false, userId.Value);
+                    m.SetDefault(m.Id == method.Id, userId.Value);
                 }
-
+                await _repo.SaveChangesAsync(cancellationToken);
             }
-            await _repo.SaveChangesAsync(cancellationToken);
+
             return ServiceResult<IdDto>.Ok(new IdDto { Id = method.Id });
         }
         public async Task<ServiceResult<IdDto>> Handle(UpdateShippingMethodCommand request, CancellationToken cancellationToken)

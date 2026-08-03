@@ -30,14 +30,14 @@ function ShippingMethod() {
   };
 useEffect(() => {
   if (data?.isSuccess) {
-     setMethods(data?.data?.records??[]);
-     const method =
-      data.data.records.find((m: IShippingMethod) => m.isDefault) ??
-      data.data.records[0];
-
+    const records = data?.data?.records ?? [];
+    setMethods(records);
+    if (records.length === 0) return;
+    const method =
+      records.find((m: IShippingMethod) => m.isDefault) ?? records[0];
     dispatch(setShippingMethod(method));
   }
-}, [data]);
+}, [data, dispatch]);
 
 
   return (

@@ -48,9 +48,11 @@ public class LandingController : BaseController
 
     public async Task<ActionResult<IdDto>> CreateSlide([FromForm] CreateSlideCommand command)
     {
-    var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command);
         if (!result.IsSuccess && result.Error == "Unauthorized")
             return Unauthorized(result);
+        if (!result.IsSuccess)
+            return BadRequest(result);
         return Ok(result);
     }
 
@@ -68,6 +70,8 @@ public class LandingController : BaseController
         var result = await _mediator.Send(command);
         if (!result.IsSuccess && result.Error == "Unauthorized")
             return Unauthorized(result);
+        if (!result.IsSuccess)
+            return BadRequest(result);
         return Ok(result);
     }
     [HttpPut("set-default")]

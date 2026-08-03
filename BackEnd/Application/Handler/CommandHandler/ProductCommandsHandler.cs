@@ -1,5 +1,6 @@
 ﻿using Application.Commands;
 using Application.Common;
+using Application.Common.Interfaces;
 using Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -61,7 +62,7 @@ namespace Application.Handler.CommandHandler
             //        var uploadDto = new UploadDTO
             //        {
             //            File = file,
-            //            Path = $"uploads/products/{product.Id}"
+            //            Path = UploadPaths.Products(product.Id)
             //        };
 
             //        var imageUrl = await _uploaderService.UploadAsWebp(uploadDto);
@@ -103,7 +104,7 @@ namespace Application.Handler.CommandHandler
             //        var uploadDto = new UploadDTO
             //        {
             //            File = imgDto.ProductImageFile,
-            //            Path = $"uploads/products/{product.Id}"
+            //            Path = UploadPaths.Products(product.Id)
             //        };
 
             //        var imageUrl = await _uploaderService.UploadAsWebp(uploadDto);

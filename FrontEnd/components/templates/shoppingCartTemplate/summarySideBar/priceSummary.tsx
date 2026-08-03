@@ -18,7 +18,9 @@ function PriceSummary() {
         }),
         shallowEqual
       );
-    const kol = ShoppingCart?.finalTotal+ShoppingCart?.shippingMethod?.price!
+    const kol =
+      (ShoppingCart?.finalTotal ?? 0) +
+      (ShoppingCart?.shippingMethod?.price ?? 0);
   return (
          <div className="space-y-2 py-2 border-gray-700 border-b">
         <div className="flex justify-between text-sm">
@@ -45,7 +47,10 @@ function PriceSummary() {
         <div className="flex justify-between text-sm">
           <span className="text-gray-400">{t("shoppingCart.shipping")}</span>
           <span className="flex items-center gap-2 font-medium">
-            {ShoppingCart?.products?.length>0?ShoppingCart?.shippingMethod?.price.toFixed():0}<PlusIcon2/>
+            {ShoppingCart?.products?.length > 0
+              ? (ShoppingCart?.shippingMethod?.price ?? 0).toFixed()
+              : 0}
+            <PlusIcon2 />
             <RialIcon />
           </span>
         </div>

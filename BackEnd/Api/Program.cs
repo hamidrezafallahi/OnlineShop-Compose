@@ -86,7 +86,23 @@ namespace Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    // Admin forms historically send numeric inputs as JSON strings.
+                    options.JsonSerializerOptions.NumberHandling =
+                        System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+                });
+            builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 52_428_800; // 50 MB
+                options.ValueLengthLimit = 52_428_800;
+                options.MemoryBufferThreshold = 1024 * 1024;
+            });
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 52_428_800;
+            });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
