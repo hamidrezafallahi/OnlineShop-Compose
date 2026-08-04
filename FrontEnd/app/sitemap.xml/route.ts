@@ -115,8 +115,8 @@ export async function GET() {
         'categories?page=1&pageSize=500&byConfig=false',
       ),
       fetchKeysWithFallback(
-        'productOffer/suppliersIds',
-        'productOffer/suppliers?page=1&pageSize=500',
+        'productOffers/suppliersIds',
+        'productOffers/suppliers?page=1&pageSize=500',
       ),
       fetchKeysWithFallback(
         'tags/getids',

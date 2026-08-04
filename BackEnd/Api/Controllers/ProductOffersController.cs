@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductOfferController : BaseController
+public class ProductOffersController : BaseController
 {
     private readonly IMediator _mediator;
 
-    public ProductOfferController(IMediator mediator)
+    public ProductOffersController(IMediator mediator)
     {
         _mediator = mediator;
     }

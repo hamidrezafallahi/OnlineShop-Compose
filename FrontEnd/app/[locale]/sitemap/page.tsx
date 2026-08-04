@@ -67,7 +67,7 @@ export default async function HtmlSitemapPage({ params }: Props) {
       fetchKeys('blogs/getslugs'),
       fetchKeys('brands/getids'),
       fetchKeys('categories/getids'),
-      fetchKeys('productOffer/suppliersIds'),
+      fetchKeys('productOffers/suppliersIds'),
       fetchKeys('tags/getids'),
     ]);
 

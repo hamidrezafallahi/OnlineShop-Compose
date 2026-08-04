@@ -18,9 +18,25 @@ export async function getAll<T>(
   if (filter !== undefined) params.append("q", String(filter));
   if (onlyActives !== undefined) params.append("onlyActives", String(onlyActives));
   const url = `${serverApiBaseUrl}/${entity}?${params.toString()}`;
-   try {
+  try {
     const res = await fetch(url, { cache: "no-store", next: { tags: [entity] } });
     const text = await res.text();
+    if (!res.ok) {
+      console.error(`getAll failed: ${res.status} ${url}`, text.slice(0, 300));
+      return {
+        isSuccess: false,
+        error: `HTTP ${res.status} from ${url}`,
+        data: {
+          records: [],
+          columnsJson: '',
+          actionsJson: '',
+          totalCount: 0,
+          pageNumber: 0,
+          pageSize: 0,
+          totalPages: 0,
+        },
+      };
+    }
     return JSON.parse(text) as PagedResponse<T>;
   } catch (e) {
     console.error(`Invalid JSON response from ${url}`, e);

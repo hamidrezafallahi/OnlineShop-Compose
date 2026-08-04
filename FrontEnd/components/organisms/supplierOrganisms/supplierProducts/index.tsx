@@ -12,7 +12,7 @@ export async function SupplierProducts(props: {
 
   try {
     const response = await fetch(
-      `${serverApiBaseUrl}/productOffer/by-seller/${id}`,
+      `${serverApiBaseUrl}/productOffers/by-seller/${id}`,
       {
         next: { revalidate: 36 },
       },

@@ -28,23 +28,40 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
         {
             if (!request.OnlyActives.HasValue || request.OnlyActives == false)
             {
-                query = _offerRepo.Query().Include(po => po.Product).Include(po => po.Supplier).Where(po => po.Product.Name.Contains(request.Q));
+                query = _offerRepo.Query()
+                    .Include(po => po.Product)
+                    .Include(po => po.Supplier)
+                    .Include(po => po.ProductOfferTags).ThenInclude(pt => pt.Tag)
+                    .Include(po => po.Discounts).ThenInclude(d => d.Discount)
+                    .Where(po => po.Product.Name.Contains(request.Q));
             }
             else
             {
-                query = _offerRepo.Query(po => po.IsActive).Include(po => po.Product).Include(po => po.Supplier).Where(po => po.Product.Name.Contains(request.Q)); ;
+                query = _offerRepo.Query(po => po.IsActive)
+                    .Include(po => po.Product)
+                    .Include(po => po.Supplier)
+                    .Include(po => po.ProductOfferTags).ThenInclude(pt => pt.Tag)
+                    .Include(po => po.Discounts).ThenInclude(d => d.Discount)
+                    .Where(po => po.Product.Name.Contains(request.Q));
             }
         }
         else
         {
             if (!request.OnlyActives.HasValue || request.OnlyActives == false)
             {
-
-                query = _offerRepo.Query().Include(po => po.Product).Include(po => po.Supplier); ;
+                query = _offerRepo.Query()
+                    .Include(po => po.Product)
+                    .Include(po => po.Supplier)
+                    .Include(po => po.ProductOfferTags).ThenInclude(pt => pt.Tag)
+                    .Include(po => po.Discounts).ThenInclude(d => d.Discount);
             }
             else
             {
-                query = _offerRepo.Query(b => b.IsActive).Include(po => po.Product).Include(po => po.Supplier); ;
+                query = _offerRepo.Query(b => b.IsActive)
+                    .Include(po => po.Product)
+                    .Include(po => po.Supplier)
+                    .Include(po => po.ProductOfferTags).ThenInclude(pt => pt.Tag)
+                    .Include(po => po.Discounts).ThenInclude(d => d.Discount);
             }
         }
         int totalCount = await query.CountAsync(cancellationToken);
@@ -58,29 +75,18 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             ProductName = offer.Product.Name,
             SupplierId = offer.SupplierId,
             SupplierName = offer.Supplier.FullName,
-            SupplierImage =offer.Supplier.Image.TrimStart('/'),
+            SupplierImage = string.IsNullOrEmpty(offer.Supplier.Image)
+                ? string.Empty
+                : offer.Supplier.Image.TrimStart('/'),
             BasePrice = offer.BasePrice,
             FinalPrice = offer.GetFinalPrice(now),
             Inventory = offer.Inventory,
             IsActive = offer.IsActive,
             CreatedAt = offer.CreatedAt,
-            Tags = offer.ProductOfferTags.Select(pot => new TagDto { Name = pot.Tag.Name, Id = pot.Tag.Id }).Where(tag => tag.IsActive).ToList()
-            //ActiveDiscounts = offer.Discounts
-            //        .Where(pd => !pd.IsDeleted &&
-            //                    !pd.Discount.IsDeleted &&
-            //                    pd.Discount.StartDate <= now &&
-            //                    pd.Discount.EndDate >= now)
-            //        .Select(pd => new DiscountDto
-            //        {
-            //            Id = pd.Discount.Id,
-            //            Title = pd.Discount.Title,
-            //            Amount = pd.Discount.Amount,
-            //            IsPercent = pd.Discount.IsPercent,
-            //            StartDate = pd.Discount.StartDate,
-            //            EndDate = pd.Discount.EndDate,
-            //            IsActive = pd.Discount.IsActive
-            //        })
-            //        .ToList()
+            Tags = offer.ProductOfferTags
+                .Where(pot => pot.Tag != null && pot.Tag.IsActive)
+                .Select(pot => new TagDto { Name = pot.Tag.Name, Id = pot.Tag.Id, IsActive = pot.Tag.IsActive })
+                .ToList()
         }).ToList();
 
         dynamic? config = null;

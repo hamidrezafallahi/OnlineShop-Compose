@@ -13,7 +13,7 @@ export async function CategorySupplierExtended({ id }: { id: number }) {
 
   try {
     const response = await fetch(
-      `${serverApiBaseUrl}/productOffer/getSuppliersByCategoryId?CategoryId=${id}`,
+      `${serverApiBaseUrl}/productOffers/getSuppliersByCategoryId?CategoryId=${id}`,
       {
         cache: 'no-store',
       },
