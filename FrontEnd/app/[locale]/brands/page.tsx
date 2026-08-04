@@ -18,8 +18,9 @@ type Props = {
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const resolvedSearch = searchParams ? await searchParams : {};
   const t = await getTranslations({ locale, namespace: 'brandsPage' });
 
   return buildPageMetadata({
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: 'brands',
     title: t('title'),
     description: t('description'),
+    listingSearchParams: resolvedSearch,
   });
 }
 
@@ -61,7 +63,7 @@ export default async function Page({ searchParams, params }: Props) {
         <EntityGrid cols="dense">
           {brands.map((brand, index) => (
             <Link
-              href={`/${locale}/brands/${brand.id}`}
+              href={`/${locale}/brands/${brand.slug || brand.id}`}
               key={brand.id}
               className="store-card group"
             >

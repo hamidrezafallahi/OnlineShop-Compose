@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using MediatR;
 
@@ -13,11 +13,14 @@ namespace Application.Queries
 
     public class GetCategoryByIdQuery : IRequest<ServiceResult<CategoryDto>>
     {
-        public int Id { get; set; }
+        public string IdOrSlug { get; set; } = string.Empty;
     }
     public class GetAllCategoriesIdQuery : IRequest<ServiceResult<IEnumerable<IdDto?>>>
     {
         public GetAllCategoriesIdQuery() { }
+    }
+    public class GetAllCategoriesSlugsQuery : IRequest<ServiceResult<IEnumerable<SlugDto>>>
+    {
     }
     public class GetParent4selectOptionQuery : BaseListDto, IRequest<ServiceResult<ListDto<SelectOptionDto>>>
     {

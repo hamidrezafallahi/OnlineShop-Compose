@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Entities;
 
@@ -17,6 +17,19 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
             builder.Property(b => b.Name)
                    .IsRequired()
                    .HasMaxLength(100);
+
+            builder.Property(b => b.Slug)
+                   .IsRequired()
+                   .HasMaxLength(220);
+
+            builder.HasIndex(b => b.Slug)
+                   .IsUnique()
+                   .HasFilter("\"IsDeleted\" = false");
+
+            builder.Property(b => b.SeoTitleFa).HasMaxLength(160);
+            builder.Property(b => b.SeoTitleEn).HasMaxLength(160);
+            builder.Property(b => b.MetaDescriptionFa).HasMaxLength(320);
+            builder.Property(b => b.MetaDescriptionEn).HasMaxLength(320);
 
             // تنظیمات ویژگی LogoUrl
             builder.Property(b => b.LogoUrl)

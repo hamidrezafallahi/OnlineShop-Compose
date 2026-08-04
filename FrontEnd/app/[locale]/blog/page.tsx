@@ -16,8 +16,9 @@ type Props = {
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const resolvedSearch = searchParams ? await searchParams : {};
   const t = await getTranslations({ locale, namespace: 'blog' });
 
   return buildPageMetadata({
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: 'blog',
     title: t('title'),
     description: t('subtitle'),
+    listingSearchParams: resolvedSearch,
   });
 }
 

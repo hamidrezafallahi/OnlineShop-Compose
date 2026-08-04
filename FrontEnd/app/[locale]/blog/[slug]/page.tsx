@@ -7,6 +7,7 @@ import {
   RelatedArticles,
 } from '@components/templates/blogTemplate';
 import JsonLd from '@components/molecules/storefront/JsonLd';
+import StoreBreadcrumbs from '@components/molecules/storefront/StoreBreadcrumbs';
 import { getBlogBySlug } from '@lib/blog';
 import { serverApiBaseUrl } from '@lib/api';
 import { absoluteUrl, buildPageMetadata } from '@lib/seo';
@@ -101,6 +102,14 @@ export default async function Page({ params }: Props) {
   return (
     <article className="store-page !pt-6">
       <JsonLd data={articleLd} />
+      <StoreBreadcrumbs
+        locale={locale}
+        items={[
+          { name: locale === 'fa' ? 'خانه' : 'Home', path: '' },
+          { name: locale === 'fa' ? 'بلاگ' : 'Blog', path: 'blog' },
+          { name: title },
+        ]}
+      />
       <HeroSection blog={blog} locale={locale} />
       <BlogContent blog={blog} locale={locale} />
       <RelatedArticles />

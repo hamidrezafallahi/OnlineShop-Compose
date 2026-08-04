@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using MediatR;
 namespace Application.Queries
@@ -9,8 +9,11 @@ namespace Application.Queries
     }
     public class GetUserByIdQuery : IRequest<ServiceResult<UserDto?>>
     {
-        public int Id { get; set; }
+        public string IdOrSlug { get; set; } = string.Empty;
 
+    }
+    public class GetAllUsersSlugsQuery : IRequest<ServiceResult<IEnumerable<SlugDto>>>
+    {
     }
     public class GetUsers4selectOptionQuery : BaseListDto, IRequest<ServiceResult<ListDto<SelectOptionDto>>>
     {

@@ -1,4 +1,4 @@
-﻿using OnlineShop.Domain.Entities;
+using OnlineShop.Domain.Entities;
 
 namespace Application.Dtos
 {
@@ -28,6 +28,7 @@ namespace Application.Dtos
         public string ProductDescription { get; set; } = default!;
 
         public int SupplierId { get; set; }
+        public string? SupplierSlug { get; set; }
         public string SupplierName { get; set; } = default!;
         public string SupplierImage { get; set; } = default!;
         public string SupplierDesc { get; set; } = default!;
@@ -52,6 +53,7 @@ namespace Application.Dtos
     public class SupplierDto
     {
         public int Id { get; set; }
+        public string Slug { get; set; } = string.Empty;
         public string FullName { get;  set; } = string.Empty;
         public string Email { get;  set; } = string.Empty;
         public string PhoneNumber { get;  set; } = string.Empty;

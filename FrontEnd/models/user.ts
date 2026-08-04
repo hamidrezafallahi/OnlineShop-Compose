@@ -1,5 +1,6 @@
 export type IUser = {
   id: number
+  slug?: string | null
   addresses: IUserAddress[]
   email: string
   fullName: string

@@ -1,4 +1,4 @@
-﻿using Api.Controllers;
+using Api.Controllers;
 using Application.Commands;
 using Application.Dtos;
 using Application.Queries;
@@ -33,11 +33,12 @@ public class BrandsController : BaseController
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<BrandDto>> GetById(int id)
+    [HttpGet("{idOrSlug}")]
+    public async Task<ActionResult<BrandDto>> GetByIdOrSlug(string idOrSlug)
     {
-        var result = await _mediator.Send(new GetBrandByIdQuery { Id = id });
+        var result = await _mediator.Send(new GetBrandByIdQuery { IdOrSlug = idOrSlug });
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
+        if (!result.IsSuccess || result.Data is null) return NotFound(result);
 
         return Ok(result);
     }
@@ -47,6 +48,13 @@ public class BrandsController : BaseController
         var result = await _mediator.Send(new GetAllBrandsIdQuery());
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
 
+        return Ok(result);
+    }
+    [HttpGet("getslugs")]
+    public async Task<ActionResult<IEnumerable<SlugDto>>> GetAllBrandsSlugs()
+    {
+        var result = await _mediator.Send(new GetAllBrandsSlugsQuery());
+        if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
         return Ok(result);
     }
     [HttpGet("getproductbybrandid/{brandId}")]

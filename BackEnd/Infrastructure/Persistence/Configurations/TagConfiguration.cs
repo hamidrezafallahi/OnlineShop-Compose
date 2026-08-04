@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Entities;
 
@@ -16,6 +16,15 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
             builder.Property(t => t.Name)
                    .IsRequired()
                    .HasMaxLength(100);
+
+            builder.Property(t => t.Slug)
+                   .IsRequired()
+                   .HasMaxLength(220);
+
+            builder.HasIndex(t => t.Slug)
+                   .IsUnique()
+                   .HasFilter("\"IsDeleted\" = false");
+
             builder.ToTable("Tags");
         }
     }

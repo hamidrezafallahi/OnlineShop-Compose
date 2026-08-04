@@ -57,7 +57,36 @@ type BuildPageMetadataInput = {
   keywords?: string[];
   /** Skip slow SEO API so tags stay in the initial <head> (Lighthouse/SEO). */
   skipSeoOverride?: boolean;
+  /**
+   * For listing pages with ?page= / ?q= etc.
+   * Canonical always points to clean `path` (no query).
+   * Filtered/search views are noindex by default.
+   */
+  listingSearchParams?: Record<string, string | string[] | undefined>;
 };
+
+export function hasListingFilters(
+  searchParams?: Record<string, string | string[] | undefined>,
+) {
+  if (!searchParams) return false;
+  return Object.entries(searchParams).some(([key, value]) => {
+    if (key === 'page') return false;
+    if (value == null) return false;
+    const raw = Array.isArray(value) ? value[0] : value;
+    return Boolean(raw && String(raw).trim());
+  });
+}
+
+export function getListingPage(
+  searchParams?: Record<string, string | string[] | undefined>,
+) {
+  if (!searchParams?.page) return 1;
+  const raw = Array.isArray(searchParams.page)
+    ? searchParams.page[0]
+    : searchParams.page;
+  const page = parseInt(raw ?? '1', 10);
+  return Number.isFinite(page) && page > 0 ? page : 1;
+}
 
 type SeoOverride = {
   title?: string | null;
@@ -137,7 +166,10 @@ export async function buildPageMetadata({
   noIndex = false,
   keywords,
   skipSeoOverride = false,
+  listingSearchParams,
 }: BuildPageMetadataInput): Promise<Metadata> {
+  const filtered = hasListingFilters(listingSearchParams);
+  const resolvedNoIndexInput = noIndex || filtered;
   const seoOverride = skipSeoOverride
     ? null
     : await getSeoOverride(locale, path);
@@ -147,7 +179,7 @@ export async function buildPageMetadata({
     description?.trim() ||
     `${SITE_NAME} — online crystal store`;
   const resolvedCanonicalPath = seoOverride?.canonicalPath?.trim() || path;
-  const resolvedNoIndex = seoOverride?.robotsIndex === false ? true : noIndex;
+  const resolvedNoIndex = seoOverride?.robotsIndex === false ? true : resolvedNoIndexInput;
   const resolvedFollow = seoOverride?.robotsFollow ?? true;
   const resolvedKeywords = splitKeywords(seoOverride?.keywords ?? keywords);
   const resolvedImages = seoOverride?.ogImageUrl

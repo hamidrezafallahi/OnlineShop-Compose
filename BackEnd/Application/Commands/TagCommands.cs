@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using MediatR;
 using OnlineShop.Domain.Entities;
@@ -9,6 +9,7 @@ namespace Application.Commands
     public class CreateTagCommand : IRequest<ServiceResult<IdDto>>
     {
         public string Name { get; set; }
+        public string? Slug { get; set; }
 
     }
     public class UpdateTagCommand : IRequest<ServiceResult<IdDto>>
@@ -16,6 +17,7 @@ namespace Application.Commands
         public int Id { get; set; }
 
         public string Name { get; set; }
+        public string? Slug { get; set; }
 
     }
     public class ActiveTagCommand : ActiveCommand, IRequest<ServiceResult<IdDto>> { }

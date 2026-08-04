@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Queries;
 using Common;
 using Domain.Interfaces;
@@ -266,11 +266,16 @@ public class BlogQueryHandler(
     }
     public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllBlogsSlugsQuery request, CancellationToken cancellationToken)
     {
-        var blogsSlugs = _repo.Query(b => b.IsActive && !b.IsDeleted)
+        var blogsSlugs = await _repo.Query(b => b.IsActive && !b.IsDeleted)
          .Select(p => new SlugDto
          {
-             Slug = p.Slug
-         }).ToList();
+             Id = p.Id,
+             Slug = p.Slug,
+             UpdatedAt = p.UpdatedAt ?? p.CreatedAt,
+             ImageUrls = string.IsNullOrWhiteSpace(p.ThumbnailFile)
+                ? new List<string>()
+                : new List<string> { p.ThumbnailFile.TrimStart('/') },
+         }).ToListAsync(cancellationToken);
 
         return ServiceResult<IEnumerable<SlugDto>>.Ok(blogsSlugs);
     }

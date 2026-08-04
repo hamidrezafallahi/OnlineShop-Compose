@@ -4,14 +4,31 @@ import { SimpleResponse } from '@models/base';
 import { EnumTargetType } from '@models/comment';
 import { IRate } from '@models/rate';
 
-export default async function ProductRate({ id }: {id:number}) {
-  const response = await fetch(`${serverApiBaseUrl}/Rates/average?targetType=${EnumTargetType.Product}&targetId=${id}`,{next: { revalidate: 36 }});
-  const rate: SimpleResponse<IRate> = await response.json();
+type Props = {
+  id: number;
+  average?: number;
+  count?: number;
+};
+
+export default async function ProductRate({ id, average, count }: Props) {
+  let resolvedAverage = average;
+  let resolvedCount = count;
+
+  if (resolvedAverage == null || resolvedCount == null) {
+    const response = await fetch(
+      `${serverApiBaseUrl}/Rates/average?targetType=${EnumTargetType.Product}&targetId=${id}`,
+      { next: { revalidate: 36 } },
+    );
+    const rate: SimpleResponse<IRate> = await response.json();
+    resolvedAverage = rate.data?.average ?? 0;
+    resolvedCount = rate.data?.count ?? 0;
+  }
+
   return (
     <div className="flex items-center gap-2">
-      <Rate value={rate.data?.average ?? 0} />
+      <Rate value={resolvedAverage ?? 0} />
       <span className="text-gray-200 text-sm">
-        ({rate.data?.count ?? 0} نظر)
+        ({resolvedCount ?? 0} نظر)
       </span>
     </div>
   );

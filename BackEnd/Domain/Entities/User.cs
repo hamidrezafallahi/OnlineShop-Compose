@@ -1,4 +1,4 @@
-﻿
+
 
 using static System.Net.Mime.MediaTypeNames;
 
@@ -9,6 +9,7 @@ namespace OnlineShop.Domain.Entities
         private User() { } 
 
         public string FullName { get; private set; } = string.Empty;
+        public string Slug { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
         public string PhoneNumber { get; private set; } = string.Empty;
         public string Password { get; private set; } = string.Empty;
@@ -46,6 +47,7 @@ namespace OnlineShop.Domain.Entities
             var user = new User
             {
                 FullName = fullName,
+                Slug = OnlineShop.Domain.Common.SlugHelper.Generate(fullName),
                 Email = email,
                 PhoneNumber = phoneNumber,
                 UserDescription= userDescription,
@@ -79,6 +81,7 @@ namespace OnlineShop.Domain.Entities
             var user = new User
             {
                 FullName = fullName,
+                Slug = OnlineShop.Domain.Common.SlugHelper.Generate(fullName),
                 Email = email,
                 PhoneNumber = phoneNumber,
                 Image="",
@@ -95,13 +98,32 @@ namespace OnlineShop.Domain.Entities
         public void UpdateProfile(string fullName, string phoneNumber, string userDescription,int currentUserId)
         {
             if (!string.IsNullOrWhiteSpace(fullName))
+            {
                 FullName = fullName;
+                if (string.IsNullOrWhiteSpace(Slug))
+                    Slug = OnlineShop.Domain.Common.SlugHelper.Generate(fullName);
+            }
 
             if (!string.IsNullOrWhiteSpace(phoneNumber))
                 PhoneNumber = phoneNumber;
             if (!string.IsNullOrWhiteSpace(userDescription))
                 UserDescription = userDescription;
 
+            MarkUpdated(currentUserId);
+        }
+
+        public void EnsureSlug(int? uniqueSuffix = null)
+        {
+            if (string.IsNullOrWhiteSpace(Slug))
+                Slug = OnlineShop.Domain.Common.SlugHelper.Generate(FullName, uniqueSuffix);
+            else if (uniqueSuffix.HasValue && !Slug.EndsWith($"-{uniqueSuffix.Value}", StringComparison.Ordinal))
+                Slug = OnlineShop.Domain.Common.SlugHelper.Generate(Slug, uniqueSuffix);
+        }
+
+        public void SetSlug(string? slug, int currentUserId)
+        {
+            if (!string.IsNullOrWhiteSpace(slug))
+                Slug = OnlineShop.Domain.Common.SlugHelper.Generate(slug);
             MarkUpdated(currentUserId);
         }
 

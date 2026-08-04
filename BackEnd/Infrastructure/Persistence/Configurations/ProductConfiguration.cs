@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Entities;
 using OnlineShop.Domain.ValueObjects;
@@ -30,6 +30,11 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
 
             builder.Property(p => p.Description)
                    .HasMaxLength(1000);
+
+            builder.Property(p => p.SeoTitleFa).HasMaxLength(160);
+            builder.Property(p => p.SeoTitleEn).HasMaxLength(160);
+            builder.Property(p => p.MetaDescriptionFa).HasMaxLength(320);
+            builder.Property(p => p.MetaDescriptionEn).HasMaxLength(320);
 
 
             // ===== Category =====

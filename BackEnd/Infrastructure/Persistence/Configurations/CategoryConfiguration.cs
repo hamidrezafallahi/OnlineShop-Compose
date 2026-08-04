@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Entities;
 
@@ -21,6 +21,17 @@ namespace OnlineShop.Infrastructure.Persistence.Configurations
             builder.Property(c => c.EnglishName)
 .IsRequired()
 .HasMaxLength(100);
+            builder.Property(c => c.Slug)
+                   .IsRequired()
+                   .HasMaxLength(220);
+            builder.HasIndex(c => c.Slug)
+                   .IsUnique()
+                   .HasFilter("\"IsDeleted\" = false");
+            builder.Property(c => c.SeoTitleFa).HasMaxLength(160);
+            builder.Property(c => c.SeoTitleEn).HasMaxLength(160);
+            builder.Property(c => c.MetaDescriptionFa).HasMaxLength(320);
+            builder.Property(c => c.MetaDescriptionEn).HasMaxLength(320);
+            builder.Property(c => c.FaqJson).HasColumnType("text");
             builder.Property(c => c.CategoryEnglishDesc)
 .IsRequired()
 .HasMaxLength(200);

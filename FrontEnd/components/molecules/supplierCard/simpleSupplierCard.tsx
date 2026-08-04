@@ -19,7 +19,7 @@ export async function SimpleSupplierCard({
   return (
     <Link
       className="group relative flex justify-between items-start bg-white hover:shadow-xl mb-4 p-6 border border-gray-100 hover:border-gray-200 rounded-2xl transition-all duration-300"
-      href={`/${locale}/suppliers/${supplier.id}`}
+      href={`/${locale}/suppliers/${supplier.slug || supplier.id}`}
     >
       <div className="relative w-16 h-16 group-hover:scale-110 transition-transform duration-300">
         <MediaImage

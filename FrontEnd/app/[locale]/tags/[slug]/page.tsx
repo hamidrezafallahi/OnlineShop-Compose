@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 
+import StoreBreadcrumbs from '@components/molecules/storefront/StoreBreadcrumbs';
 import TagTemplate from '@components/templates/tagTemplate';
 import { serverApiBaseUrl } from '@lib/api';
 import { buildPageMetadata } from '@lib/seo';
@@ -41,16 +42,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
   }
 
+  const canonical = res.data.slug || String(res.data.id);
   return buildPageMetadata({
     locale,
-    path: `tags/${slug}`,
+    path: `tags/${canonical}`,
     title: res.data.name,
     description: res.data.name,
   });
 }
 
 export default async function Page({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const response = await fetch(`${serverApiBaseUrl}/Tags/${slug}`, {
     next: { revalidate: 36 },
   });
@@ -60,9 +62,22 @@ export default async function Page({ params }: Props) {
     notFound();
   }
 
+  const tag = tagResponse.data;
+  if (tag.slug && tag.slug !== slug && /^\d+$/.test(slug)) {
+    permanentRedirect(`/${locale}/tags/${tag.slug}`);
+  }
+
   return (
     <div className="store-page !pt-6">
-      <TagTemplate Tag={tagResponse.data} />
+      <StoreBreadcrumbs
+        locale={locale}
+        items={[
+          { name: locale === 'fa' ? 'خانه' : 'Home', path: '' },
+          { name: locale === 'fa' ? 'برچسب‌ها' : 'Tags', path: 'tags' },
+          { name: tag.name },
+        ]}
+      />
+      <TagTemplate Tag={tag} />
     </div>
   );
 }

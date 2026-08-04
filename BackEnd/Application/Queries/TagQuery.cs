@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using MediatR;
 
@@ -17,6 +17,9 @@ namespace Application.Queries
     public class GetAllTagIdsQuery : IRequest<ServiceResult<List<IdDto>>>
     {
         
+    }
+    public class GetAllTagsSlugsQuery : IRequest<ServiceResult<IEnumerable<SlugDto>>>
+    {
     }
 
 

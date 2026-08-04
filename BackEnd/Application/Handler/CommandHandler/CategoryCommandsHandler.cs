@@ -1,4 +1,4 @@
-﻿using Application.Commands;
+using Application.Commands;
 using Application.Common;
 using Application.Common.Interfaces;
 using Common;
@@ -31,10 +31,18 @@ public class CategoryCommandHandler(
              request.IsShowInLanding,
              request.IsActive,
             parentCategoryId: request.ParentCategoryId,
-            currentUserId: userId.Value
+            currentUserId: userId.Value,
+            slug: request.Slug,
+            seoTitleFa: request.SeoTitleFa,
+            seoTitleEn: request.SeoTitleEn,
+            metaDescriptionFa: request.MetaDescriptionFa,
+            metaDescriptionEn: request.MetaDescriptionEn,
+            faqJson: request.FaqJson
         );
 
         await _repo.AddAsync(category);
+        await _repo.SaveChangesAsync(cancellationToken);
+        category.EnsureSlug(category.Id);
         await _repo.SaveChangesAsync(cancellationToken);
 
         if (request.CategoryCover is not null)
@@ -103,8 +111,15 @@ public class CategoryCommandHandler(
             imageUrl: thumbnailUrl,
             showInLanding: request.IsShowInLanding,
             parentCategoryId: request.ParentCategoryId,
-            currentUserId: userId.Value
+            currentUserId: userId.Value,
+            slug: request.Slug,
+            seoTitleFa: request.SeoTitleFa,
+            seoTitleEn: request.SeoTitleEn,
+            metaDescriptionFa: request.MetaDescriptionFa,
+            metaDescriptionEn: request.MetaDescriptionEn,
+            faqJson: request.FaqJson
         );
+        category.EnsureSlug(category.Id);
 
         if (request.IsActive.HasValue)
             category.SetActive(request.IsActive.Value, userId.Value);

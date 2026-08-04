@@ -1,4 +1,4 @@
-﻿using Api.Controllers;
+using Api.Controllers;
 using Application.Commands;
 using Application.Dtos;
 using Application.Queries;
@@ -61,6 +61,14 @@ public class TagsController : BaseController
         var result = await _mediator.Send(new GetAllTagIdsQuery());
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
 
+        return Ok(result);
+    }
+
+    [HttpGet("getslugs")]
+    public async Task<ActionResult<IEnumerable<SlugDto>>> GetAllTagsSlugs()
+    {
+        var result = await _mediator.Send(new GetAllTagsSlugsQuery());
+        if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
         return Ok(result);
     }
 

@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -10,12 +10,18 @@ namespace Application.Commands
     {
  
         public string PersianName { get; set; } 
-        public string EnglishName { get; set; } 
+        public string EnglishName { get; set; }
+        public string? Slug { get; set; }
         public IFormFile CategoryCover { get; set; }  
         public string CategoryPersianDesc { get; set; }
         public string CategoryEnglishDesc { get; set; }
         public bool IsShowInLanding { get; set; }
         public bool? IsActive { get; set; }
+        public string? SeoTitleFa { get; set; }
+        public string? SeoTitleEn { get; set; }
+        public string? MetaDescriptionFa { get; set; }
+        public string? MetaDescriptionEn { get; set; }
+        public string? FaqJson { get; set; }
 
         public int? ParentCategoryId { get; set; }
 
@@ -27,11 +33,17 @@ namespace Application.Commands
         public int Id { get; set; }
         public string PersianName { get; set; }
         public string EnglishName { get; set; }
+        public string? Slug { get; set; }
         public IFormFile? CategoryCover { get; set; }
         public string CategoryPersianDesc { get; set; }
         public string CategoryEnglishDesc { get; set; }
         public bool IsShowInLanding { get; set; }
         public bool? IsActive { get; set; }
+        public string? SeoTitleFa { get; set; }
+        public string? SeoTitleEn { get; set; }
+        public string? MetaDescriptionFa { get; set; }
+        public string? MetaDescriptionEn { get; set; }
+        public string? FaqJson { get; set; }
 
         public int? ParentCategoryId { get; set; }
         public List<CategoryDto>? SubCategories { get; set; }

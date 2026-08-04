@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Domain.Entities;
 using System.Text.Json;
@@ -189,7 +189,12 @@ namespace OnlineShop.Infrastructure.Configurations
                         }
                     },
                     new FormFieldDefinition { Name = "logoFile", Caption = "لوگو", Type = "file", PlaceHolder = "لوگوی برند را انتخاب کنید", Help = "فرمت‌های مجاز: jpg, png, svg" },
-                    new FormFieldDefinition { Name = "description", Caption = "توضیحات", Type = "textarea", PlaceHolder = "توضیح کوتاهی درباره برند بنویسید..." }
+                    new FormFieldDefinition { Name = "description", Caption = "توضیحات", Type = "textarea", PlaceHolder = "توضیح کوتاهی درباره برند بنویسید..." },
+                    new FormFieldDefinition { Name = "slug", Caption = "Slug", Type = "text", PlaceHolder = "brand-slug", Help = "آدرس یکتای برند در URL" },
+                    new FormFieldDefinition { Name = "seoTitleFa", Caption = "عنوان سئو فارسی", Type = "text", PlaceHolder = "عنوان نمایش در گوگل" },
+                    new FormFieldDefinition { Name = "seoTitleEn", Caption = "SEO Title EN", Type = "text", PlaceHolder = "Google title" },
+                    new FormFieldDefinition { Name = "metaDescriptionFa", Caption = "توضیح متا فارسی", Type = "textarea", PlaceHolder = "حداکثر ۱۶۰ کاراکتر" },
+                    new FormFieldDefinition { Name = "metaDescriptionEn", Caption = "Meta Description EN", Type = "textarea", PlaceHolder = "Max 160 chars" },
                     //new FormFieldDefinition { Name = "isActive", Caption = "وضعیت", Type = "checkbox", Help = "در صورت غیرفعال بودن برند در لیست نمایش داده نمی‌شود" }
                 }),
                 IsActive = true,
@@ -293,7 +298,13 @@ namespace OnlineShop.Infrastructure.Configurations
                         Caption = "نمایش در صفحه اصلی",
                         Type = "checkbox",
                         Help = "در صورت غیرفعال بودن، دسته‌بندی در صفحه اصلی نمایش داده نمی‌شود"
-                    }
+                    },
+                    new FormFieldDefinition { Name = "slug", Caption = "Slug", Type = "text", PlaceHolder = "category-slug", Help = "آدرس یکتای دسته در URL" },
+                    new FormFieldDefinition { Name = "seoTitleFa", Caption = "عنوان سئو فارسی", Type = "text", PlaceHolder = "عنوان نمایش در گوگل" },
+                    new FormFieldDefinition { Name = "seoTitleEn", Caption = "SEO Title EN", Type = "text", PlaceHolder = "Google title" },
+                    new FormFieldDefinition { Name = "metaDescriptionFa", Caption = "توضیح متا فارسی", Type = "textarea", PlaceHolder = "حداکثر ۱۶۰ کاراکتر" },
+                    new FormFieldDefinition { Name = "metaDescriptionEn", Caption = "Meta Description EN", Type = "textarea", PlaceHolder = "Max 160 chars" },
+                    new FormFieldDefinition { Name = "faqJson", Caption = "FAQ JSON", Type = "textarea", PlaceHolder = "[{\"question\":\"...\",\"answer\":\"...\"}]", Help = "سوالات متداول دسته برای schema" },
                     //  new FormFieldDefinition
                     //{
                     //    Name = "isActive",
@@ -441,6 +452,42 @@ namespace OnlineShop.Infrastructure.Configurations
                     },
                     new FormFieldDefinition
                     {
+                        Name = "slug",
+                        Caption = "Slug",
+                        Type = "text",
+                        PlaceHolder = "product-slug",
+                        Help = "آدرس یکتای محصول در URL"
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "seoTitleFa",
+                        Caption = "عنوان سئو فارسی",
+                        Type = "text",
+                        PlaceHolder = "عنوان نمایش در گوگل"
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "seoTitleEn",
+                        Caption = "SEO Title EN",
+                        Type = "text",
+                        PlaceHolder = "Google title"
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "metaDescriptionFa",
+                        Caption = "توضیح متا فارسی",
+                        Type = "textarea",
+                        PlaceHolder = "حداکثر ۱۶۰ کاراکتر"
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "metaDescriptionEn",
+                        Caption = "Meta Description EN",
+                        Type = "textarea",
+                        PlaceHolder = "Max 160 chars"
+                    },
+                    new FormFieldDefinition
+                    {
                         Name = "description",
                         Caption = "توضیحات",
                         Type = "textarea",
@@ -543,6 +590,14 @@ namespace OnlineShop.Infrastructure.Configurations
                         {
                             new ValidationRule { Rule = "required", Condition = "true", Message = "نام تگ الزامی است" }
                         }
+                    },
+                    new FormFieldDefinition
+                    {
+                        Name = "slug",
+                        Caption = "Slug",
+                        Type = "text",
+                        PlaceHolder = "tag-slug",
+                        Help = "آدرس یکتای تگ در URL"
                     }
                 }),
                 IsActive = true,

@@ -13,29 +13,35 @@ export interface ISpecificationResponse {
     specifications: Record<string, string>[]
 }
 export interface IDetailedProduct {
-    // activeDiscounts
-    // basePrice
-    // createdAt
-    // finalPrice
-    // isActive
-    // productId
-    // productName
-    // supplierDesc
-    // supplierId
-    // supplierImage
-    // supplierName
-    // tags
-
     name: string;
     description: string;
     id: number;
     slug?: string | null;
-    productOfferId: number;
+    productOfferId?: number;
+    bestOfferId?: number | null;
     mainImage: string;
-    categoryId: number,
-    brandId: number,
-    imageUrls: string[],
-    dimensions: TDimensions
+    categoryId: number;
+    categoryName?: string | null;
+    brandId: number;
+    brandName?: string | null;
+    imageUrls: string[];
+    dimensions: TDimensions;
+    price?: number | null;
+    finalPrice?: number | null;
+    discountIsPercent?: boolean | null;
+    discountAmount?: number | null;
+    inventory?: number;
+    inStock?: boolean;
+    currency?: string;
+    averageRate?: number;
+    rateCount?: number;
+    updatedAt?: string | null;
+    seoTitleFa?: string | null;
+    seoTitleEn?: string | null;
+    metaDescriptionFa?: string | null;
+    metaDescriptionEn?: string | null;
+    brandSlug?: string | null;
+    categorySlug?: string | null;
 }
 export interface IDetailedProductOffer {
     id: number;

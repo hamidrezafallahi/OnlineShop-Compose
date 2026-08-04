@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using Domain.Enums;
 using Domain.Interfaces;
@@ -71,6 +71,10 @@ public class ProductQueryHandler(IProductRepository _repo,
             Name = x.Name,
             Slug = x.Slug,
             Description = x.Description,
+            SeoTitleFa = x.SeoTitleFa,
+            SeoTitleEn = x.SeoTitleEn,
+            MetaDescriptionFa = x.MetaDescriptionFa,
+            MetaDescriptionEn = x.MetaDescriptionEn,
             BrandId = x.BrandId,
             BrandName=x.Brand.Name,
             CategoryId = x.CategoryId,
@@ -199,16 +203,34 @@ public class ProductQueryHandler(IProductRepository _repo,
             query = query.Where(p => p.Slug == key);
 
         var product = await query
+            .Include(p => p.ProductOffers).ThenInclude(po => po.Discounts).ThenInclude(d => d.Discount)
             .Include(p => p.ProductOffers).ThenInclude(pt => pt.ProductOfferTags).ThenInclude(t => t.Tag)
             .Include(p => p.Images)
+            .Include(p => p.Brand)
+            .Include(p => p.Category)
             .FirstOrDefaultAsync(cancellationToken);
         if (product == null) return ServiceResult<ProductByDetailDto?>.Failed("product not found");
 
-        if (product is not null)
-        {
+        var rate = await _rateRepository.GetAverageRateAsync(EnumTargetType.Product, product.Id);
 
-            var rate = await _rateRepository.GetAverageRateAsync(EnumTargetType.Product, product.Id);
-        }
+        var activeOffers = product.ProductOffers
+            .Where(po => po.IsActive && !po.IsDeleted)
+            .ToList();
+
+        var bestOffer = activeOffers
+            .Where(po => po.Inventory > 0)
+            .OrderBy(po => po.GetFinalPrice(now))
+            .FirstOrDefault()
+            ?? activeOffers.OrderBy(po => po.GetFinalPrice(now)).FirstOrDefault();
+
+        var activeDiscount = bestOffer?.Discounts
+            .Where(d => d.Discount != null && !d.IsDeleted && d.IsActive)
+            .Select(d => d.Discount)
+            .Where(d => !d.IsDeleted && d.IsActive && d.StartDate <= now && d.EndDate >= now)
+            .OrderByDescending(d => d.Priority)
+            .FirstOrDefault();
+
+        var totalInventory = activeOffers.Sum(po => po.Inventory);
 
         var dto = new ProductByDetailDto
         {
@@ -217,7 +239,11 @@ public class ProductQueryHandler(IProductRepository _repo,
             Slug = product.Slug,
             Description = product.Description,
             BrandId = product.BrandId,
+            BrandName = product.Brand?.Name,
+            BrandSlug = product.Brand?.Slug,
             CategoryId = product.CategoryId,
+            CategoryName = product.Category?.PersianName,
+            CategorySlug = product.Category?.Slug,
             ImageUrls = product.Images
                 .Where(i => !i.IsDeleted)
                 .Select(i => i.ImageUrl.TrimStart('/'))
@@ -228,11 +254,32 @@ public class ProductQueryHandler(IProductRepository _repo,
                 .Select(i => i.ImageUrl.TrimStart('/'))
                 .FirstOrDefault(),
 
-
-            Width = product.Dimensions.Width,
-            Height = product.Dimensions.Height,
-            Depth = product.Dimensions.Depth,
-            Weight = product.Dimensions.Weight,
+            Width = product.Dimensions?.Width,
+            Height = product.Dimensions?.Height,
+            Depth = product.Dimensions?.Depth,
+            Weight = product.Dimensions?.Weight,
+            Dimensions = product.Dimensions == null ? null : new ProductDimensionsDto
+            {
+                Width = product.Dimensions.Width,
+                Height = product.Dimensions.Height,
+                Depth = product.Dimensions.Depth,
+                Weight = product.Dimensions.Weight,
+            },
+            Price = bestOffer?.BasePrice,
+            FinalPrice = bestOffer?.GetFinalPrice(now),
+            DiscountIsPercent = activeDiscount?.IsPercent,
+            DiscountAmount = activeDiscount?.Amount,
+            BestOfferId = bestOffer?.Id,
+            Inventory = totalInventory,
+            InStock = totalInventory > 0,
+            Currency = "IRR",
+            AverageRate = rate.Average,
+            RateCount = rate.Count,
+            UpdatedAt = product.UpdatedAt ?? product.CreatedAt,
+            SeoTitleFa = product.SeoTitleFa,
+            SeoTitleEn = product.SeoTitleEn,
+            MetaDescriptionFa = product.MetaDescriptionFa,
+            MetaDescriptionEn = product.MetaDescriptionEn,
         };
 
         return ServiceResult<ProductByDetailDto?>.Ok(dto);
@@ -241,7 +288,16 @@ public class ProductQueryHandler(IProductRepository _repo,
     public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllProductsSlugsQuery request, CancellationToken cancellationToken)
     {
         var slugs = await _repo.Query(p => p.IsActive && !p.IsDeleted && !string.IsNullOrWhiteSpace(p.Slug))
-            .Select(p => new SlugDto { Id = p.Id,Slug = p.Slug })
+            .Select(p => new SlugDto
+            {
+                Id = p.Id,
+                Slug = p.Slug,
+                UpdatedAt = p.UpdatedAt ?? p.CreatedAt,
+                ImageUrls = p.Images
+                    .Where(i => !i.IsDeleted)
+                    .Select(i => i.ImageUrl.TrimStart('/'))
+                    .ToList(),
+            })
             .ToListAsync(cancellationToken);
         return ServiceResult<IEnumerable<SlugDto>>.Ok(slugs);
     }

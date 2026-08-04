@@ -1,4 +1,4 @@
-﻿using Application.Commands;
+using Application.Commands;
 using Application.Common;
 using Common;
 using Domain.Interfaces;
@@ -28,9 +28,11 @@ namespace Application.Handler.CommandHandler
             if (existsTag)
                 return ServiceResult<IdDto>.Failed("تگی با همین متن قبلاً ثبت شده است.");
 
-            var tag = Tag.Create(request.Name, userId.Value);
+            var tag = Tag.Create(request.Name, userId.Value, request.Slug);
 
             await _repo.AddAsync(tag);
+            await _repo.SaveChangesAsync(cancellationToken);
+            tag.EnsureSlug(tag.Id);
             await _repo.SaveChangesAsync(cancellationToken);
 
             return ServiceResult<IdDto>.Ok(new IdDto { Id = tag.Id });
@@ -46,7 +48,8 @@ namespace Application.Handler.CommandHandler
             if (tag == null)
                 return ServiceResult<IdDto>.Failed("مورد پیدا نشد");
 
-            tag.Update(request.Name, userId.Value);
+            tag.Update(request.Name, userId.Value, request.Slug);
+            tag.EnsureSlug(tag.Id);
             await _repo.SaveChangesAsync(cancellationToken);
             return ServiceResult<IdDto>.Ok(new IdDto { Id = tag.Id });
 

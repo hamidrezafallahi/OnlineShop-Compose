@@ -10,7 +10,7 @@ import { ITag } from '@models/tag';
 export default function TagCard({ tag }: { tag: ITag }) {
   const locale = useLocale();
   return (
-    <Link href={`/${locale}/tags/${tag.id}`}>
+    <Link href={`/${locale}/tags/${tag.slug || tag.id}`}>
       <Badge variant="secondary" className="rounded-lg">
         <TagIcon /> {tag.name}
       </Badge>

@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Queries;
 using Common;
 using MediatR;
@@ -74,6 +74,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             ProductId = offer.ProductId,
             ProductName = offer.Product.Name,
             SupplierId = offer.SupplierId,
+            SupplierSlug = offer.Supplier?.Slug,
             SupplierName = offer.Supplier.FullName,
             SupplierImage = string.IsNullOrEmpty(offer.Supplier.Image)
                 ? string.Empty
@@ -85,7 +86,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             CreatedAt = offer.CreatedAt,
             Tags = offer.ProductOfferTags
                 .Where(pot => pot.Tag != null && pot.Tag.IsActive)
-                .Select(pot => new TagDto { Name = pot.Tag.Name, Id = pot.Tag.Id, IsActive = pot.Tag.IsActive })
+                .Select(pot => new TagDto { Name = pot.Tag.Name, Id = pot.Tag.Id, Slug = pot.Tag.Slug, IsActive = pot.Tag.IsActive })
                 .ToList()
         }).ToList();
 
@@ -162,6 +163,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             ProductId = offer.ProductId,
             ProductName = offer.Product?.Name ?? "",
             SupplierId = offer.SupplierId,
+            SupplierSlug = offer.Supplier?.Slug,
             SupplierName = offer.Supplier?.FullName ?? "",
             BasePrice = offer.BasePrice,
             FinalPrice = offer.GetFinalPrice(now),
@@ -215,6 +217,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             ProductSlug = offer.Product?.Slug,
             ProductName = offer.Product?.Name ?? "",
             SupplierId = offer.SupplierId,
+            SupplierSlug = offer.Supplier?.Slug,
             SupplierName = offer.Supplier?.FullName ?? "",
             SupplierImage = offer.Supplier.Image.TrimStart('/'),
             SupplierDesc = offer.Supplier.UserDescription,
@@ -256,6 +259,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             ProductDescription=offer.Product.Description,
             ProductImage =offer.Supplier.Image.TrimStart('/'),
             SupplierId = offer.SupplierId,
+            SupplierSlug = offer.Supplier?.Slug,
             SupplierName = offer.Supplier?.FullName ?? "",
             SupplierImage = offer.Supplier.Image.TrimStart('/'),
             SupplierDesc = offer.Supplier.UserDescription,
@@ -294,6 +298,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             .Select(g => new SupplierDto
             {
                 Id = g.Key,
+                Slug = g.First().Supplier.Slug,
                 FullName = g.First().Supplier.FullName,
                 Email = g.First().Supplier.Email,
                 Image = g.First().Supplier.Image,
@@ -341,6 +346,7 @@ public class ProductOfferQueryHandler(IProductOfferRepository _offerRepo,IEntity
             .Select(g => new SupplierDto
             {
                 Id = g.Key,
+                Slug = g.First().Supplier.Slug,
                 FullName = g.First().Supplier.FullName,
                 Email = g.First().Supplier.Email,
                 Image = g.First().Supplier.Image,

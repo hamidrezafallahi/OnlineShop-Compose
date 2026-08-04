@@ -1,4 +1,4 @@
-﻿using Api.Controllers;
+using Api.Controllers;
 using Application.Commands;
 using Application.Dtos;
 using Application.Queries;
@@ -26,11 +26,12 @@ public class CategoriesController : BaseController
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CategoryDto>> GetById(int id)
+    [HttpGet("{idOrSlug}")]
+    public async Task<ActionResult<CategoryDto>> GetByIdOrSlug(string idOrSlug)
     {
-        var result = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
+        var result = await _mediator.Send(new GetCategoryByIdQuery { IdOrSlug = idOrSlug });
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
+        if (!result.IsSuccess || result.Data is null) return NotFound(result);
 
         return Ok(result);
     }
@@ -40,6 +41,13 @@ public class CategoriesController : BaseController
         var result = await _mediator.Send(new GetAllCategoriesIdQuery());
         if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
 
+        return Ok(result);
+    }
+    [HttpGet("getslugs")]
+    public async Task<ActionResult<IEnumerable<SlugDto>>> GetAllCategoriesSlugs()
+    {
+        var result = await _mediator.Send(new GetAllCategoriesSlugsQuery());
+        if (!result.IsSuccess && result.Error == "Unauthorized") return Unauthorized(result);
         return Ok(result);
     }
     [HttpGet("selectOption")]

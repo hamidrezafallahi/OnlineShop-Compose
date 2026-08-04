@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Queries;
 using Common;
 using Domain.Interfaces;
@@ -13,7 +13,8 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
     IRequestHandler<GetTags4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
     IRequestHandler<GetTagBySlugQuery, ServiceResult<TagDto?>>,
     IRequestHandler<GetTagsByProductOfferIdQuery, ServiceResult<IEnumerable<TagDto>>>,
-    IRequestHandler<GetAllTagIdsQuery, ServiceResult<List<IdDto>>>
+    IRequestHandler<GetAllTagIdsQuery, ServiceResult<List<IdDto>>>,
+    IRequestHandler<GetAllTagsSlugsQuery, ServiceResult<IEnumerable<SlugDto>>>
 {
      
     public async Task<ServiceResult<ListDto<TagDto>>> Handle(GetTagsQuery request,CancellationToken cancellationToken)
@@ -53,6 +54,7 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
         {
             Id = x.Id,
             Name = x.Name,
+            Slug = x.Slug,
             IsActive=x.IsActive
           
         }).ToList();
@@ -120,7 +122,8 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
         }
         else
         {
-            tag = await _repo.Query(t => t.Name == request.Slug && !t.IsDeleted)
+            tag = await _repo.Query(t =>
+                    (t.Slug == request.Slug || t.Name == request.Slug) && !t.IsDeleted)
                              .FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -130,7 +133,9 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
         var dto = new TagDto
         {
             Id = tag.Id,
-            Name = tag.Name
+            Name = tag.Name,
+            Slug = tag.Slug,
+            IsActive = tag.IsActive,
         };
 
         return ServiceResult<TagDto?>.Ok(dto);
@@ -147,7 +152,8 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
             .Select(pt => new TagDto
             {
                 Id = pt.Tag.Id,
-                Name = pt.Tag.Name
+                Name = pt.Tag.Name,
+                Slug = pt.Tag.Slug,
             }).ToList();
 
         return ServiceResult<IEnumerable<TagDto>>.Ok(dtos);
@@ -164,6 +170,19 @@ public class TagQueryHandler(ITagRepository _repo, IProductOfferTagRepository _p
         }).ToList();
 
         return ServiceResult<List<IdDto>>.Ok(dtos);
+    }
+
+    public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllTagsSlugsQuery request, CancellationToken cancellationToken)
+    {
+        var slugs = await _repo.Query(t => t.IsActive && !t.IsDeleted && !string.IsNullOrWhiteSpace(t.Slug))
+            .Select(t => new SlugDto
+            {
+                Id = t.Id,
+                Slug = t.Slug,
+                UpdatedAt = t.UpdatedAt ?? t.CreatedAt,
+            })
+            .ToListAsync(cancellationToken);
+        return ServiceResult<IEnumerable<SlugDto>>.Ok(slugs);
     }
 
 }

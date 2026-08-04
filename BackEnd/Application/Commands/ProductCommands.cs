@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Common;
 using MediatR;
 
@@ -10,6 +10,10 @@ namespace Application.Commands
         public string Name { get; set; } = default!;
         public string? Slug { get; set; }
         public string Description { get; set; } = default!;
+        public string? SeoTitleFa { get; set; }
+        public string? SeoTitleEn { get; set; }
+        public string? MetaDescriptionFa { get; set; }
+        public string? MetaDescriptionEn { get; set; }
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
      }
@@ -30,6 +34,10 @@ namespace Application.Commands
         public string? Name { get; set; } = default!;
         public string? Slug { get; set; }
         public string? Description { get; set; } = default!;
+        public string? SeoTitleFa { get; set; }
+        public string? SeoTitleEn { get; set; }
+        public string? MetaDescriptionFa { get; set; }
+        public string? MetaDescriptionEn { get; set; }
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         //public int? DiscountId { get; set; }

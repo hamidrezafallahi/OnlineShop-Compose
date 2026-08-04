@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Queries;
 using MediatR;
 using OnlineShop.Domain.Interfaces;
@@ -11,7 +11,8 @@ using OnlineShop.Domain.Entities;
     public class GetCategorieQueryHandler(ICategoryRepository _repo, IEntityConfigRepository _configRepo) : 
         IRequestHandler<GetAllCategoriesQuery, ServiceResult<ListDto<CategoryDto>>>,
         IRequestHandler<GetCategoryByIdQuery, ServiceResult<CategoryDto>>,
-        IRequestHandler<GetAllCategoriesIdQuery, ServiceResult<IEnumerable<IdDto>>>
+        IRequestHandler<GetAllCategoriesIdQuery, ServiceResult<IEnumerable<IdDto>>>,
+        IRequestHandler<GetAllCategoriesSlugsQuery, ServiceResult<IEnumerable<SlugDto>>>
     {
                 public async Task<ServiceResult<ListDto<CategoryDto>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
@@ -51,10 +52,16 @@ using OnlineShop.Domain.Entities;
                 CategoryPersianDesc=c.CategoryPersianDesc,
                 EnglishName=c.EnglishName,
                 CategoryEnglishDesc=c.CategoryEnglishDesc,
+                Slug = c.Slug,
                 CategoryCover = c.ImageUrl,
                 IsShowInLanding=c.IsShowInLanding,
                 IsActive=c.IsActive,
-                ParentCategoryId = c.ParentCategoryId
+                ParentCategoryId = c.ParentCategoryId,
+                SeoTitleFa = c.SeoTitleFa,
+                SeoTitleEn = c.SeoTitleEn,
+                MetaDescriptionFa = c.MetaDescriptionFa,
+                MetaDescriptionEn = c.MetaDescriptionEn,
+                FaqJson = c.FaqJson,
             }).ToList();
 
 
@@ -81,6 +88,10 @@ using OnlineShop.Domain.Entities;
         }
                 public async Task<ServiceResult<CategoryDto>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
+            var key = (request.IdOrSlug ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(key))
+                return ServiceResult<CategoryDto>.Failed("Category not found");
+
             var allCategories = await _repo.Query()
                  .Where(c => !c.IsDeleted)
                  .Select(cat => new CategoryDto
@@ -89,15 +100,26 @@ using OnlineShop.Domain.Entities;
                      CategoryPersianDesc = cat.CategoryPersianDesc,
                      EnglishName = cat.EnglishName,
                      Id = cat.Id,
+                     Slug = cat.Slug,
                      CategoryCover = cat.ImageUrl,
                      IsShowInLanding = cat.IsShowInLanding,
                      ParentCategoryId = cat.ParentCategoryId,
                      PersianName = cat.PersianName,
+                     SeoTitleFa = cat.SeoTitleFa,
+                     SeoTitleEn = cat.SeoTitleEn,
+                     MetaDescriptionFa = cat.MetaDescriptionFa,
+                     MetaDescriptionEn = cat.MetaDescriptionEn,
+                     FaqJson = cat.FaqJson,
                  })
 
                  .ToListAsync(cancellationToken);
 
-            var category = allCategories.FirstOrDefault(c => c.Id == request.Id);
+            CategoryDto? category = null;
+            if (int.TryParse(key, out var id))
+                category = allCategories.FirstOrDefault(c => c.Id == id);
+            else
+                category = allCategories.FirstOrDefault(c => c.Slug == key);
+
             if (category == null)
                 return ServiceResult<CategoryDto>.Failed("Category not found");
             category.SubCategories = CategoryTreeBuilder.BuildTree(allCategories, category.Id);
@@ -112,6 +134,22 @@ using OnlineShop.Domain.Entities;
             }).ToList();
 
             return ServiceResult<IEnumerable<IdDto>>.Ok(idDtos);
+        }
+
+        public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllCategoriesSlugsQuery request, CancellationToken cancellationToken)
+        {
+            var slugs = await _repo.Query(c => c.IsActive && !c.IsDeleted && !string.IsNullOrWhiteSpace(c.Slug))
+                .Select(c => new SlugDto
+                {
+                    Id = c.Id,
+                    Slug = c.Slug,
+                    UpdatedAt = c.UpdatedAt ?? c.CreatedAt,
+                    ImageUrls = string.IsNullOrWhiteSpace(c.ImageUrl)
+                        ? new List<string>()
+                        : new List<string> { c.ImageUrl.TrimStart('/') },
+                })
+                .ToListAsync(cancellationToken);
+            return ServiceResult<IEnumerable<SlugDto>>.Ok(slugs);
         }
     }
     public class GetParent4selectOptionQueryHandler(ICategoryRepository _repo, IEntityConfigRepository _configRepo) : IRequestHandler<GetParent4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>

@@ -9,6 +9,7 @@ export interface ISupplier {
   productId: number;
   productName: string;
   supplierId: number;
+  supplierSlug?: string | null;
   supplierName: string;
   supplierImage: string;
   supplierDesc: null | string;
@@ -32,7 +33,7 @@ export function SupplierCardGrid({
     <div className="group relative bg-white hover:shadow-xl p-6 border border-gray-100 hover:border-gray-200 rounded-2xl transition-all duration-300">
       {/* بخش بالای کارت - هدر */}
       <div className="flex justify-between items-start mb-4">
-        <Link href={`/${locale}/suppliers/${supplier.id}`} className="relative">
+        <Link href={`/${locale}/suppliers/${supplier.supplierSlug || supplier.supplierId}`} className="relative">
           <div className="relative w-16 h-16 group-hover:scale-110 transition-transform duration-300">
             <MediaImage
               alt={supplier.supplierName}
@@ -58,7 +59,7 @@ export function SupplierCardGrid({
 
       {/* اطلاعات تأمین‌کننده */}
       <Link
-        href={`/${locale}/suppliers/${supplier.id}`}
+        href={`/${locale}/suppliers/${supplier.supplierSlug || supplier.supplierId}`}
         className="block mb-3 group-hover:text-primary transition-colors"
       >
         <h4 className="font-bold text-gray-800 text-lg line-clamp-1">

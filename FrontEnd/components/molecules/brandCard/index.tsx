@@ -10,7 +10,7 @@ export default function BrandCard({brand}:{brand:IBrand}) {
     const locale = useLocale()
   return (
               <Link
-            href={`/${locale}/brands/${brand.id}`}
+            href={`/${locale}/brands/${brand.slug || brand.id}`}
               className="group relative bg-white shadow-sm hover:shadow-lg p-0 !rounded-2xl overflow-hidden text-left transition-shadow"
             >
           <div className="relative flex justify-center items-center bg-inherit w-full h-48 overflow-hidden">

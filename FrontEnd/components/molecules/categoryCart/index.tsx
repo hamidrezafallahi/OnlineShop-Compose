@@ -18,7 +18,7 @@ export default async function CategoryCard({ category }: { category: ICategory})
   const locale = await getLocale()
    return (
     <Link
-      href={`/${locale}/categories/${id}`}
+      href={`/${locale}/categories/${category.slug || id}`}
       className="group relative shadow-sm rounded-2xl h-44 md:h-52 overflow-hidden"
     >
       <MediaImage

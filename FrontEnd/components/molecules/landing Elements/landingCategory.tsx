@@ -26,7 +26,7 @@ export default async  function LandingCategory(props: IProps) {
           {categories?.map((cat) => (
             <Link
               key={cat.id}
-              href={`/${locale}/categories/${cat.id}`}
+              href={`/${locale}/categories/${cat.slug || cat.id}`}
               aria-label={cat.persianName || cat.englishName}
               className="group relative flex-shrink-0 bg-white shadow-sm hover:shadow-lg rounded-2xl min-w-[70%] sm:min-w-0 overflow-hidden transition-shadow"
             >

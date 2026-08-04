@@ -1,4 +1,4 @@
-﻿using Application.Commands;
+using Application.Commands;
 using Application.Common;
 using Application.Common.Interfaces;
 using Common;
@@ -36,7 +36,11 @@ namespace Application.Handler.CommandHandler
                 brandId: request.BrandId,
                 dimensions: dim,
                 currentUserId: userId.Value,
-                slug: request.Slug
+                slug: request.Slug,
+                seoTitleFa: request.SeoTitleFa,
+                seoTitleEn: request.SeoTitleEn,
+                metaDescriptionFa: request.MetaDescriptionFa,
+                metaDescriptionEn: request.MetaDescriptionEn
             );
             
             await _repository.AddAsync(product);
@@ -136,7 +140,11 @@ namespace Application.Handler.CommandHandler
                 categoryId: request.CategoryId,
                 brandId: request.BrandId,
                 dimensions: dim,
-                slug: request.Slug
+                slug: request.Slug,
+                seoTitleFa: request.SeoTitleFa,
+                seoTitleEn: request.SeoTitleEn,
+                metaDescriptionFa: request.MetaDescriptionFa,
+                metaDescriptionEn: request.MetaDescriptionEn
                 );
 
             if (!string.IsNullOrWhiteSpace(product.Slug)

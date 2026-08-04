@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { permanentRedirect } from 'next/navigation';
 
+import StoreBreadcrumbs from '@components/molecules/storefront/StoreBreadcrumbs';
 import SupplierTemplate from '@components/templates/supplierTemplate';
 import { serverApiBaseUrl } from '@lib/api';
 import { buildPageMetadata } from '@lib/seo';
@@ -41,9 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       });
     }
 
+    const canonical = result.data.slug || String(result.data.id);
     return buildPageMetadata({
       locale,
-      path: `suppliers/${slug}`,
+      path: `suppliers/${canonical}`,
       title: result.data.fullName,
       description: result.data.userDescription,
       images: [result.data.userImage],
@@ -60,7 +63,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
 
   const response = await fetch(`${serverApiBaseUrl}/Users/${slug}`, {
     next: { revalidate: 36 },
@@ -68,8 +71,23 @@ export default async function Page({ params }: Props) {
 
   const { data }: { data: IUser } = await response.json();
 
+  if (data?.slug && data.slug !== slug && /^\d+$/.test(slug)) {
+    permanentRedirect(`/${locale}/suppliers/${data.slug}`);
+  }
+
   return (
     <div className="store-page !pt-6">
+      <StoreBreadcrumbs
+        locale={locale}
+        items={[
+          { name: locale === 'fa' ? 'خانه' : 'Home', path: '' },
+          {
+            name: locale === 'fa' ? 'تأمین‌کنندگان' : 'Suppliers',
+            path: 'suppliers',
+          },
+          { name: data?.fullName || slug },
+        ]}
+      />
       <SupplierTemplate supplier={data} />
     </div>
   );

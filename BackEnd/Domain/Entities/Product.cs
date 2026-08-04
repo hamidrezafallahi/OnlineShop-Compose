@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using OnlineShop.Domain.Common;
 using OnlineShop.Domain.ValueObjects;
 
@@ -12,6 +12,10 @@ namespace OnlineShop.Domain.Entities
         public string Name { get; private set; } = string.Empty;
         public string Slug { get; private set; } = string.Empty;
         public string? Description { get; private set; }
+        public string? SeoTitleFa { get; private set; }
+        public string? SeoTitleEn { get; private set; }
+        public string? MetaDescriptionFa { get; private set; }
+        public string? MetaDescriptionEn { get; private set; }
 
         // ==== Category ====
         public int CategoryId { get; private set; }
@@ -44,7 +48,11 @@ namespace OnlineShop.Domain.Entities
             int brandId,
             ProductDimensions dimensions,
             int currentUserId,
-            string? slug = null) 
+            string? slug = null,
+            string? seoTitleFa = null,
+            string? seoTitleEn = null,
+            string? metaDescriptionFa = null,
+            string? metaDescriptionEn = null)
 
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -57,7 +65,11 @@ namespace OnlineShop.Domain.Entities
                 CategoryId = categoryId,
                 BrandId = brandId,
                 Description = description,
-                Dimensions = dimensions
+                Dimensions = dimensions,
+                SeoTitleFa = NullIfWhiteSpace(seoTitleFa),
+                SeoTitleEn = NullIfWhiteSpace(seoTitleEn),
+                MetaDescriptionFa = NullIfWhiteSpace(metaDescriptionFa),
+                MetaDescriptionEn = NullIfWhiteSpace(metaDescriptionEn),
             };
 
             product.MarkCreated(currentUserId);
@@ -73,7 +85,11 @@ namespace OnlineShop.Domain.Entities
             int? categoryId,
             int? brandId,
             ProductDimensions? dimensions,
-            string? slug = null
+            string? slug = null,
+            string? seoTitleFa = null,
+            string? seoTitleEn = null,
+            string? metaDescriptionFa = null,
+            string? metaDescriptionEn = null
             )
         {
             if (!string.IsNullOrWhiteSpace(name))
@@ -94,6 +110,11 @@ namespace OnlineShop.Domain.Entities
                 Slug = SlugHelper.Generate(slug);
             else if (!string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(Slug))
                 Slug = SlugHelper.Generate(name);
+
+            if (seoTitleFa != null) SeoTitleFa = NullIfWhiteSpace(seoTitleFa);
+            if (seoTitleEn != null) SeoTitleEn = NullIfWhiteSpace(seoTitleEn);
+            if (metaDescriptionFa != null) MetaDescriptionFa = NullIfWhiteSpace(metaDescriptionFa);
+            if (metaDescriptionEn != null) MetaDescriptionEn = NullIfWhiteSpace(metaDescriptionEn);
 
             MarkUpdated(currentUserId);
         }
@@ -152,6 +173,9 @@ namespace OnlineShop.Domain.Entities
                 MarkUpdated(userId);
             }
         }
+
+        private static string? NullIfWhiteSpace(string? value)
+            => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     }
 }

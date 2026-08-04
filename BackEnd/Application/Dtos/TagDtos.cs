@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,7 @@ namespace Application.Dtos
         public int Id { get; set; }
 
         public string Name{ get; set; }
+        public string Slug { get; set; } = string.Empty;
         public bool IsActive { get; set; }
 
 

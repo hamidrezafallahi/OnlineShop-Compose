@@ -5,6 +5,7 @@ import {
 
 import { IDetailedProduct } from '@models/product';
 
+import ProductPrice from './productPrice';
 import ProductRate from './productRate';
 
 export default async function ProductInfo({ product }: { product: IDetailedProduct }) {
@@ -27,29 +28,56 @@ export default async function ProductInfo({ product }: { product: IDetailedProdu
     <div className="flex flex-col gap-4 max-w-xl">
       <h1 className="font-semibold text-2xl md:text-3xl">{product.name}</h1>
 
-      {product.description && (
-        <p className="text-gray-700 line-clamp-3">{product.description}</p>
-      )}
-
-      {product.dimensions && (
-        <div className="flex flex-wrap gap-4">
-          {product.dimensions.width && (
-            <p>{t('product.width')}: {formatLength(product.dimensions.width)}</p>
+      {(product.brandName || product.categoryName) && (
+        <div className="flex flex-wrap gap-2">
+          {product.brandName && (
+            <span className="rounded-full bg-sky-500/15 px-3 py-1 text-xs text-sky-200">
+              {product.brandName}
+            </span>
           )}
-          {product.dimensions.height && (
-            <p>{t('product.height')}: {formatLength(product.dimensions.height)}</p>
-          )}
-          {product.dimensions.depth && (
-            <p>{t('product.depth')}: {formatLength(product.dimensions.depth)}</p>
-          )}
-          {product.dimensions.weight && (
-            <p>{t('product.weight')}: {formatWeight(product.dimensions.weight)}</p>
+          {product.categoryName && (
+            <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-white/80">
+              {product.categoryName}
+            </span>
           )}
         </div>
       )}
 
-      <ProductRate id={product.id} />
-      {/* <ProductPrice product={product} /> */}
+      {product.description && (
+        <p className="text-gray-300 line-clamp-3">{product.description}</p>
+      )}
+
+      <ProductPrice
+        price={product.price}
+        finalPrice={product.finalPrice}
+        currency={product.currency}
+        inStock={product.inStock}
+        inventory={product.inventory}
+        locale={locale}
+      />
+
+      <ProductRate
+        id={product.id}
+        average={product.averageRate}
+        count={product.rateCount}
+      />
+
+      {product.dimensions && (
+        <div className="flex flex-wrap gap-4 text-sm text-white/75">
+          {product.dimensions.width ? (
+            <p>{t('product.width')}: {formatLength(product.dimensions.width)}</p>
+          ) : null}
+          {product.dimensions.height ? (
+            <p>{t('product.height')}: {formatLength(product.dimensions.height)}</p>
+          ) : null}
+          {product.dimensions.depth ? (
+            <p>{t('product.depth')}: {formatLength(product.dimensions.depth)}</p>
+          ) : null}
+          {product.dimensions.weight ? (
+            <p>{t('product.weight')}: {formatWeight(product.dimensions.weight)}</p>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 }

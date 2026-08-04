@@ -1,4 +1,4 @@
-﻿using Application.Commands;
+using Application.Commands;
 using Application.Common;
 using Application.Common.Interfaces;
 using Common;
@@ -28,9 +28,18 @@ namespace Application.Handler.CommandHandler
             var brand = Brand.Create(
                 name: request.Name,
                 description: request.Description,
-                currentUserId: userId.Value
+                currentUserId: userId.Value,
+                slug: request.Slug
             );
+            brand.SetSeo(
+                request.SeoTitleFa,
+                request.SeoTitleEn,
+                request.MetaDescriptionFa,
+                request.MetaDescriptionEn,
+                userId.Value);
             await _repo.AddAsync(brand);
+            await _repo.SaveChangesAsync(cancellationToken);
+            brand.EnsureSlug(brand.Id);
             await _repo.SaveChangesAsync(cancellationToken);
 
             if (request.LogoFile is not null)
@@ -81,8 +90,14 @@ namespace Application.Handler.CommandHandler
                 name: request.Name ?? brand.Name,
                 logoUrl: logoUrl ?? brand.LogoUrl,
                 description: request.Description ?? brand.Description,
-                isActive: request.IsActive ?? brand.IsActive
+                isActive: request.IsActive ?? brand.IsActive,
+                slug: request.Slug,
+                seoTitleFa: request.SeoTitleFa,
+                seoTitleEn: request.SeoTitleEn,
+                metaDescriptionFa: request.MetaDescriptionFa,
+                metaDescriptionEn: request.MetaDescriptionEn
             );
+            brand.EnsureSlug(brand.Id);
             await _repo.SaveChangesAsync(cancellationToken);
             return ServiceResult<IdDto>.Ok(new IdDto { Id = brand.Id });
         }

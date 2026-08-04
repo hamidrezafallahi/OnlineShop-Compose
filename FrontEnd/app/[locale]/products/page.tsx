@@ -39,6 +39,7 @@ export async function generateMetadata({
     path: 'products',
     title: `${t('title')}${pageSuffix}`,
     description: t('description'),
+    listingSearchParams: resolvedSearch,
   });
 }
 

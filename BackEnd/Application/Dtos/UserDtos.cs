@@ -1,4 +1,4 @@
-﻿namespace Application.Dtos
+namespace Application.Dtos
 {
     public class CreateUserDto
     {
@@ -17,6 +17,7 @@
     {
         public int Id { get; set; }
         public string FullName { get; set; } = default!;
+        public string Slug { get; set; } = default!;
         public string Email { get; set; } = default!;
         public string PhoneNumber { get; set; } = default!;
         public string UserImage { get; set; } = default!;

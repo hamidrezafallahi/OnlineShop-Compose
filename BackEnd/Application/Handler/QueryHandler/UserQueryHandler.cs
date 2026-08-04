@@ -1,4 +1,4 @@
-﻿using Application.Common;
+using Application.Common;
 using Application.Dtos;
 using Application.Queries;
 using Common;
@@ -20,7 +20,8 @@ namespace Application.Handler.QueryHandler
         IRequestHandler<GetUserAddressByUserQuery, ServiceResult<List<UserAddressDto>>>,
         IRequestHandler<GetUserAddressByUserIdQuery, ServiceResult<List<UserAddressDto>>>,
         IRequestHandler<GetDefaultUserAddressByUserIdQuery, ServiceResult<UserAddressDto?>>,
-        IRequestHandler<GetUsers4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>
+        IRequestHandler<GetUsers4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
+        IRequestHandler<GetAllUsersSlugsQuery, ServiceResult<IEnumerable<SlugDto>>>
     {
 
         public async Task<ServiceResult<ListDto<UserDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
@@ -64,6 +65,7 @@ namespace Application.Handler.QueryHandler
                 Id = u.Id,
                 Email = u.Email,
                 FullName = u.FullName,
+                Slug = u.Slug,
                 PhoneNumber = u.PhoneNumber,
                 UserDescription = u.UserDescription,
                 IsActive=u.IsActive,
@@ -92,12 +94,23 @@ namespace Application.Handler.QueryHandler
         }
         public async Task<ServiceResult<UserDto?>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            var userDto = await _repo.Query(u => u.Id == request.Id)
+            var key = (request.IdOrSlug ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(key))
+                return ServiceResult<UserDto?>.Failed("User not found");
+
+            IQueryable<User> query = _repo.Query(u => !u.IsDeleted);
+            if (int.TryParse(key, out var id))
+                query = query.Where(u => u.Id == id);
+            else
+                query = query.Where(u => u.Slug == key);
+
+            var userDto = await query
             .Select(us => new UserDto
             {
                 Id = us.Id,
                 Email = us.Email,
                 FullName = us.FullName,
+                Slug = us.Slug,
                 PhoneNumber = us.PhoneNumber,
                 UserImage = us.Image.TrimStart('/'),
                 UserDescription = us.UserDescription,
@@ -113,6 +126,22 @@ namespace Application.Handler.QueryHandler
                 }
             }
             return ServiceResult<UserDto?>.Ok(userDto);
+        }
+
+        public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllUsersSlugsQuery request, CancellationToken cancellationToken)
+        {
+            var slugs = await _repo.Query(u => u.IsActive && !u.IsDeleted && !string.IsNullOrWhiteSpace(u.Slug))
+                .Select(u => new SlugDto
+                {
+                    Id = u.Id,
+                    Slug = u.Slug,
+                    UpdatedAt = u.UpdatedAt ?? u.CreatedAt,
+                    ImageUrls = string.IsNullOrWhiteSpace(u.Image)
+                        ? new List<string>()
+                        : new List<string> { u.Image.TrimStart('/') },
+                })
+                .ToListAsync(cancellationToken);
+            return ServiceResult<IEnumerable<SlugDto>>.Ok(slugs);
         }
         public async Task<ServiceResult<ListDto<UserAddressDto>>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
         {

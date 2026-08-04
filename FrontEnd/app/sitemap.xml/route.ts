@@ -1,5 +1,6 @@
-import { serverApiBaseUrl } from '@lib/api';
+import { serverApiBaseUrl, siteBaseUrl } from '@lib/api';
 import { absoluteUrl, DEFAULT_LOCALE, LOCALES } from '@lib/seo';
+import { toMediaUrl } from '@utils/toMediaUrl';
 
 export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
@@ -12,6 +13,12 @@ type ChangeFreq =
   | 'monthly'
   | 'yearly'
   | 'never';
+
+type SitemapRecord = {
+  key: string;
+  lastmod?: string;
+  images?: string[];
+};
 
 type SitemapEntry = {
   path: string;
@@ -30,7 +37,14 @@ function xmlEscape(value: string): string {
     .replace(/'/g, '&apos;');
 }
 
-function extractKeys(payload: unknown): string[] {
+function toAbsoluteImage(url?: string | null) {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const mediaPath = toMediaUrl(url);
+  return mediaPath ? `${siteBaseUrl}${mediaPath}` : '';
+}
+
+function extractRecords(payload: unknown): SitemapRecord[] {
   if (!payload) return [];
 
   const list = Array.isArray(payload)
@@ -44,21 +58,31 @@ function extractKeys(payload: unknown): string[] {
   return list
     .map((item) => {
       if (typeof item === 'string' || typeof item === 'number') {
-        return String(item);
+        return { key: String(item) };
       }
-      if (!item || typeof item !== 'object') return '';
+      if (!item || typeof item !== 'object') return { key: '' };
       const record = item as {
         slug?: string | number | null;
         id?: string | number | null;
         name?: string | null;
+        updatedAt?: string | null;
+        imageUrls?: string[] | null;
+        ImageUrls?: string[] | null;
       };
-      return String(record.slug ?? record.id ?? record.name ?? '');
+      const key = String(record.slug ?? record.id ?? record.name ?? '').trim();
+      const images = (record.imageUrls || record.ImageUrls || [])
+        .map((img) => toAbsoluteImage(img))
+        .filter(Boolean);
+      return {
+        key,
+        lastmod: record.updatedAt || undefined,
+        images,
+      };
     })
-    .map((value) => value.trim())
-    .filter(Boolean);
+    .filter((item) => Boolean(item.key));
 }
 
-async function fetchKeys(endpoint: string): Promise<string[]> {
+async function fetchRecords(endpoint: string): Promise<SitemapRecord[]> {
   try {
     const res = await fetch(`${serverApiBaseUrl}/${endpoint}`, {
       next: { revalidate },
@@ -68,23 +92,38 @@ async function fetchKeys(endpoint: string): Promise<string[]> {
     if (!res.ok) return [];
 
     const json = await res.json();
-    return extractKeys(json?.data ?? json);
+    return extractRecords(json?.data ?? json);
   } catch {
     return [];
   }
 }
 
-async function fetchKeysWithFallback(primary: string, fallback: string) {
-  const primaryKeys = await fetchKeys(primary);
+async function fetchRecordsWithFallback(primary: string, fallback: string) {
+  const primaryKeys = await fetchRecords(primary);
   if (primaryKeys.length > 0) return primaryKeys;
-  return fetchKeys(fallback);
+  return fetchRecords(fallback);
 }
 
-function buildUrlXml(path: string, priority: number, changeFrequency: ChangeFreq, lastmod: string) {
+function buildUrlXml(
+  path: string,
+  priority: number,
+  changeFrequency: ChangeFreq,
+  lastmod: string,
+  images: string[] = [],
+) {
   const links = LOCALES.map(
     (locale) =>
       `    <xhtml:link rel="alternate" hreflang="${locale}" href="${xmlEscape(absoluteUrl(locale, path))}" />`,
   ).join('\n');
+
+  const imageXml = images
+    .slice(0, 10)
+    .map(
+      (img) => `  <image:image>
+    <image:loc>${xmlEscape(img)}</image:loc>
+  </image:image>`,
+    )
+    .join('\n');
 
   return LOCALES.map((locale) => {
     const loc = absoluteUrl(locale, path);
@@ -92,37 +131,26 @@ function buildUrlXml(path: string, priority: number, changeFrequency: ChangeFreq
   <loc>${xmlEscape(loc)}</loc>
 ${links}
     <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(absoluteUrl(DEFAULT_LOCALE, path))}" />
-  <lastmod>${lastmod}</lastmod>
+  <lastmod>${xmlEscape(lastmod)}</lastmod>
   <changefreq>${changeFrequency}</changefreq>
   <priority>${priority.toFixed(1)}</priority>
+${imageXml}
 </url>`;
   }).join('\n');
 }
 
 export async function GET() {
-  const lastmod = new Date().toISOString();
+  const fallbackLastmod = new Date().toISOString();
 
   const [products, blogs, brands, categories, suppliers, tags, discounts] =
     await Promise.all([
-      fetchKeys('products/getslugs'),
-      fetchKeys('blogs/getslugs'),
-      fetchKeysWithFallback(
-        'brands/getids',
-        'brands?page=1&pageSize=500&byConfig=false',
-      ),
-      fetchKeysWithFallback(
-        'categories/getids',
-        'categories?page=1&pageSize=500&byConfig=false',
-      ),
-      fetchKeysWithFallback(
-        'productOffers/suppliersIds',
-        'productOffers/suppliers?page=1&pageSize=500',
-      ),
-      fetchKeysWithFallback(
-        'tags/getids',
-        'tags?page=1&pageSize=500&byConfig=false',
-      ),
-      fetchKeys('discounts/active'),
+      fetchRecords('products/getslugs'),
+      fetchRecords('blogs/getslugs'),
+      fetchRecordsWithFallback('brands/getslugs', 'brands/getids'),
+      fetchRecordsWithFallback('categories/getslugs', 'categories/getids'),
+      fetchRecordsWithFallback('users/getslugs', 'productOffers/suppliersIds'),
+      fetchRecordsWithFallback('tags/getslugs', 'tags/getids'),
+      fetchRecords('discounts/active'),
     ]);
 
   const staticPaths: SitemapEntry[] = [
@@ -138,28 +166,73 @@ export async function GET() {
 
   const chunks = [
     ...staticPaths.map((item) =>
-      buildUrlXml(item.path, item.priority, item.changeFrequency, lastmod),
+      buildUrlXml(item.path, item.priority, item.changeFrequency, fallbackLastmod),
     ),
-    ...products.map((slug) =>
-      buildUrlXml(`products/${slug}`, 0.7, 'weekly', lastmod),
+    ...products.map((item) =>
+      buildUrlXml(
+        `products/${item.key}`,
+        0.7,
+        'weekly',
+        item.lastmod || fallbackLastmod,
+        item.images,
+      ),
     ),
-    ...blogs.map((slug) => buildUrlXml(`blog/${slug}`, 0.6, 'monthly', lastmod)),
-    ...brands.map((id) => buildUrlXml(`brands/${id}`, 0.6, 'monthly', lastmod)),
-    ...categories.map((id) =>
-      buildUrlXml(`categories/${id}`, 0.6, 'monthly', lastmod),
+    ...blogs.map((item) =>
+      buildUrlXml(
+        `blog/${item.key}`,
+        0.6,
+        'monthly',
+        item.lastmod || fallbackLastmod,
+        item.images,
+      ),
     ),
-    ...suppliers.map((id) =>
-      buildUrlXml(`suppliers/${id}`, 0.6, 'monthly', lastmod),
+    ...brands.map((item) =>
+      buildUrlXml(
+        `brands/${item.key}`,
+        0.6,
+        'monthly',
+        item.lastmod || fallbackLastmod,
+        item.images,
+      ),
     ),
-    ...tags.map((id) => buildUrlXml(`tags/${id}`, 0.5, 'monthly', lastmod)),
-    ...discounts.map((id) =>
-      buildUrlXml(`discounts/${id}`, 0.6, 'weekly', lastmod),
+    ...categories.map((item) =>
+      buildUrlXml(
+        `categories/${item.key}`,
+        0.6,
+        'monthly',
+        item.lastmod || fallbackLastmod,
+        item.images,
+      ),
+    ),
+    ...suppliers.map((item) =>
+      buildUrlXml(
+        `suppliers/${item.key}`,
+        0.6,
+        'monthly',
+        item.lastmod || fallbackLastmod,
+        item.images,
+      ),
+    ),
+    ...tags.map((item) =>
+      buildUrlXml(
+        `tags/${item.key}`,
+        0.5,
+        'monthly',
+        item.lastmod || fallbackLastmod,
+      ),
+    ),
+    ...discounts.map((item) =>
+      buildUrlXml(
+        `discounts/${item.key}`,
+        0.6,
+        'weekly',
+        item.lastmod || fallbackLastmod,
+      ),
     ),
   ];
 
-  // Google expects the classic http:// namespaces (not https://).
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${chunks.join('\n')}
 </urlset>`;
 

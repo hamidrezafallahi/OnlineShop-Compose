@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 
 public class BaseListDto
 {
@@ -27,6 +27,8 @@ public class SlugDto
 {
     public int? Id { get; set; }
     public string? Slug { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public List<string>? ImageUrls { get; set; }
 }
 public class SelectOptionDto
 {

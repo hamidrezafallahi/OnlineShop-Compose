@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Queries;
 using Common;
 using MediatR;
@@ -14,7 +14,8 @@ namespace Application.Handler.QueryHandler
         IRequestHandler<GetAllBrandsQuery, ServiceResult<ListDto<BrandDto>>>,
         IRequestHandler<GetBrands4selectOptionQuery, ServiceResult<ListDto<SelectOptionDto>>>,
         IRequestHandler<GetBrandByIdQuery, ServiceResult<BrandDto?>>,
-        IRequestHandler<GetAllBrandsIdQuery, ServiceResult<IEnumerable<IdDto>>>
+        IRequestHandler<GetAllBrandsIdQuery, ServiceResult<IEnumerable<IdDto>>>,
+        IRequestHandler<GetAllBrandsSlugsQuery, ServiceResult<IEnumerable<SlugDto>>>
     {
     
         public async Task<ServiceResult<ListDto<BrandDto>>> Handle(GetAllBrandsQuery request, CancellationToken cancellationToken)
@@ -55,8 +56,13 @@ namespace Application.Handler.QueryHandler
                 Id=br.Id,
                 Description=br.Description,
                 Name=br.Name,
+                Slug = br.Slug,
                 logoFile = br.LogoUrl,
                 IsActive=br.IsActive,
+                SeoTitleFa = br.SeoTitleFa,
+                SeoTitleEn = br.SeoTitleEn,
+                MetaDescriptionFa = br.MetaDescriptionFa,
+                MetaDescriptionEn = br.MetaDescriptionEn,
             }).ToList();
 
             dynamic? config = null;
@@ -108,17 +114,31 @@ namespace Application.Handler.QueryHandler
         }
         public async Task<ServiceResult<BrandDto?>> Handle(GetBrandByIdQuery request, CancellationToken cancellationToken)
         {
-            var brand = _repo.Query(b => b.Id == request.Id && !b.IsDeleted)
-                        .FirstOrDefault();
+            var key = (request.IdOrSlug ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(key))
+                return ServiceResult<BrandDto?>.Failed("Brand not found");
+
+            IQueryable<Brand> query = _repo.Query(b => !b.IsDeleted);
+            if (int.TryParse(key, out var id))
+                query = query.Where(b => b.Id == id);
+            else
+                query = query.Where(b => b.Slug == key);
+
+            var brand = await query.FirstOrDefaultAsync(cancellationToken);
             if (brand == null)
                 return ServiceResult<BrandDto?>.Failed("Brand not found");
             var brandDto = new BrandDto
             {
                 Id = brand.Id,
                 Name = brand.Name,
+                Slug = brand.Slug,
                 IsActive = brand.IsActive,
                 Description = brand.Description,
-                logoFile = brand.LogoUrl
+                logoFile = brand.LogoUrl,
+                SeoTitleFa = brand.SeoTitleFa,
+                SeoTitleEn = brand.SeoTitleEn,
+                MetaDescriptionFa = brand.MetaDescriptionFa,
+                MetaDescriptionEn = brand.MetaDescriptionEn,
             };
             return ServiceResult<BrandDto?>.Ok(brandDto);
         }
@@ -131,6 +151,22 @@ namespace Application.Handler.QueryHandler
             }).ToList();
 
             return ServiceResult<IEnumerable<IdDto>>.Ok(idDtos);
+        }
+
+        public async Task<ServiceResult<IEnumerable<SlugDto>>> Handle(GetAllBrandsSlugsQuery request, CancellationToken cancellationToken)
+        {
+            var slugs = await _repo.Query(b => b.IsActive && !b.IsDeleted && !string.IsNullOrWhiteSpace(b.Slug))
+                .Select(b => new SlugDto
+                {
+                    Id = b.Id,
+                    Slug = b.Slug,
+                    UpdatedAt = b.UpdatedAt ?? b.CreatedAt,
+                    ImageUrls = string.IsNullOrWhiteSpace(b.LogoUrl)
+                        ? new List<string>()
+                        : new List<string> { b.LogoUrl.TrimStart('/') },
+                })
+                .ToListAsync(cancellationToken);
+            return ServiceResult<IEnumerable<SlugDto>>.Ok(slugs);
         }
     }
  

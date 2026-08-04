@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     email: false,
     address: false,
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,

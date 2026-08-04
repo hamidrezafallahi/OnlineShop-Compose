@@ -15,7 +15,7 @@ export default function SupplierCard({
 
   return (
     <Link
-      href={`/${locale}/suppliers/${supplier.id}`}
+      href={`/${locale}/suppliers/${supplier.slug || supplier.id}`}
       className="group relative bg-white shadow-sm hover:shadow-lg rounded-2xl overflow-hidden transition-all duration-300"
     >
       {/* Image Section */}

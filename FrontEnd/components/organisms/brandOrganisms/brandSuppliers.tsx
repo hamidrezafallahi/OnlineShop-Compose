@@ -26,7 +26,7 @@ export async function BrandSuppliers({ id }: { id: number }) {
         {suppliers.map((s) => (
           <Link
             key={s.id}
-            href={`/${locale}/suppliers/${s.id}`}
+            href={`/${locale}/suppliers/${s.slug || s.id}`}
             className="flex flex-col items-center bg-white shadow-sm hover:shadow-lg p-4 rounded-2xl transition"
           >
             <div className="relative flex justify-center items-center bg-gray-50 mb-3 rounded-full w-24 h-24 overflow-hidden">

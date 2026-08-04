@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using OnlineShop.Domain.Entities;
 
@@ -10,6 +10,10 @@ namespace Application.Dtos
         public string Name { get; set; } = default!;
         public string Slug { get; set; } = default!;
         public string Description { get; set; } = default!;
+        public string? SeoTitleFa { get; set; }
+        public string? SeoTitleEn { get; set; }
+        public string? MetaDescriptionFa { get; set; }
+        public string? MetaDescriptionEn { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; } 
 
@@ -31,7 +35,9 @@ namespace Application.Dtos
         public string Slug { get; set; } = default!;
         public string Description { get; set; } = default!;
         public int CategoryId { get; set; }
+        public string? CategoryName { get; set; }
         public int? BrandId { get; set; }
+        public string? BrandName { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();
         public string? MainImage { get; set; }
         public ProductDimensionsDto? Dimensions { get; set; }
@@ -39,6 +45,26 @@ namespace Application.Dtos
         public decimal? Height { get; set; } = 0;
         public decimal? Depth { get; set; } = 0;
         public decimal? Weight { get; set; } = 0;
+
+        /// <summary>Best (lowest) active offer base price.</summary>
+        public decimal? Price { get; set; }
+        /// <summary>Best offer price after discounts.</summary>
+        public decimal? FinalPrice { get; set; }
+        public bool? DiscountIsPercent { get; set; }
+        public decimal? DiscountAmount { get; set; }
+        public int? BestOfferId { get; set; }
+        public int Inventory { get; set; }
+        public bool InStock { get; set; }
+        public string Currency { get; set; } = "IRR";
+        public double AverageRate { get; set; }
+        public int RateCount { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string? SeoTitleFa { get; set; }
+        public string? SeoTitleEn { get; set; }
+        public string? MetaDescriptionFa { get; set; }
+        public string? MetaDescriptionEn { get; set; }
+        public string? BrandSlug { get; set; }
+        public string? CategorySlug { get; set; }
     }
 
     public class ProductCardDto
