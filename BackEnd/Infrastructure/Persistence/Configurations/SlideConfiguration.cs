@@ -16,12 +16,12 @@ namespace OnlineShop.Infrastructure.Configurations
                    .HasMaxLength(200);
             builder.Property(b => b.BannerTitle)
                    .HasMaxLength(200);
-            builder.Property(b => b.BannerDescrioption)
-       .HasMaxLength(400);
+            builder.Property(b => b.BannerDescription)
+                   .HasMaxLength(400);
             builder.Property(b => b.FirstUrl)
-.HasMaxLength(200);
+                   .HasMaxLength(200);
             builder.Property(b => b.SecondUrl)
-.HasMaxLength(200);
+                   .HasMaxLength(200);
             builder.Property(ua => ua.IsHero)
                     .IsRequired()
                     .HasDefaultValue(false);

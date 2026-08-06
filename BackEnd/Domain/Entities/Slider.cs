@@ -1,5 +1,4 @@
 ﻿
-
 namespace OnlineShop.Domain.Entities
 {
     public class Slide : BaseEntity
@@ -9,7 +8,7 @@ namespace OnlineShop.Domain.Entities
         // ===== محتوای فارسی =====
         public string BannerUrl { get; private set; } = string.Empty;
         public string BannerTitle { get; private set; } = string.Empty;
-        public string BannerDescrioption { get; private set; } = string.Empty;
+        public string BannerDescription { get; private set; } = string.Empty;
         public string FirstUrl { get; private set; } = string.Empty;
         public string SecondUrl { get; private set; } = string.Empty;
         public bool IsHero { get; private set; } 
@@ -19,7 +18,7 @@ namespace OnlineShop.Domain.Entities
         public static Slide Create(
             int currentUserId,
             string firstUrl,
-            string secondUrl,
+            string? secondUrl,
             string bannerTitle,
             string bannerDescription
         )
@@ -31,7 +30,7 @@ namespace OnlineShop.Domain.Entities
                 FirstUrl = firstUrl ?? string.Empty,
                 SecondUrl = secondUrl ?? string.Empty,
                 BannerTitle = bannerTitle ?? string.Empty,
-                BannerDescrioption = bannerDescription ?? string.Empty,
+                BannerDescription = bannerDescription ?? string.Empty,
             };
             slide.MarkCreated(currentUserId);
             return slide;
@@ -50,9 +49,10 @@ namespace OnlineShop.Domain.Entities
         {
             if (!string.IsNullOrWhiteSpace(bannerUrl)) BannerUrl = bannerUrl;
             if (!string.IsNullOrWhiteSpace(firstUrl)) FirstUrl = firstUrl;
-            if (!string.IsNullOrWhiteSpace(secondUrl)) SecondUrl = secondUrl;
+            // Empty string is allowed to clear an optional second URL
+            if (secondUrl is not null) SecondUrl = secondUrl;
             if (!string.IsNullOrWhiteSpace(bannerTitle)) BannerTitle = bannerTitle;
-            if (!string.IsNullOrWhiteSpace(bannerDescription)) BannerDescrioption = bannerDescription;
+            if (!string.IsNullOrWhiteSpace(bannerDescription)) BannerDescription = bannerDescription;
 
             MarkUpdated(currentUserId);
         }

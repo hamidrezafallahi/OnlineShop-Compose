@@ -38,7 +38,7 @@ public class GetLandingSlideQueryHandler(ISlideRepository _repo,IEntityConfigRep
                 FirstUrl = entity.FirstUrl,
                 SecondUrl = entity.SecondUrl,
                 BannerTitle = entity.BannerTitle,
-                BannerDescription = entity.BannerDescrioption,
+                BannerDescription = entity.BannerDescription,
                 IsActive= entity.IsActive,
                 IsHero = entity.IsHero
 
@@ -74,7 +74,7 @@ public class GetLandingSlideQueryHandler(ISlideRepository _repo,IEntityConfigRep
             FirstUrl = entity.FirstUrl,
             SecondUrl = entity.SecondUrl,
             BannerTitle = entity.BannerTitle,
-            BannerDescription = entity.BannerDescrioption,
+            BannerDescription = entity.BannerDescription,
             IsActive = entity.IsActive,
             IsHero = entity.IsHero
         };
@@ -106,7 +106,7 @@ public class GetLandingSlideQueryHandler(ISlideRepository _repo,IEntityConfigRep
             FirstUrl = entity.FirstUrl,
             SecondUrl = entity.SecondUrl,
             BannerTitle = entity.BannerTitle,
-            BannerDescription = entity.BannerDescrioption,
+            BannerDescription = entity.BannerDescription,
             IsActive = entity.IsActive,
             IsHero = entity.IsHero
         }).ToList();

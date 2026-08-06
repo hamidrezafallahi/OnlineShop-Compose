@@ -1779,12 +1779,8 @@ namespace OnlineShop.Infrastructure.Configurations
                         Caption ="آدرس دوم",
                         Type = "text",
                         PlaceHolder ="آدرس صفحه دوم",
-                        Help = "با کلیک بر روی عکس به چه آدرسی برود ؟",
-                        Rules = new List<ValidationRule>
-                        {
-                            new ValidationRule { Rule = "required", Condition = "true", Message = "آدرس صفحه دوم الزامی است" }
-
-                        }
+                        Help = "با کلیک بر روی دکمه دوم به چه آدرسی برود ؟ (اختیاری)",
+                        Rules = new List<ValidationRule>()
                     }
                    
                 }),

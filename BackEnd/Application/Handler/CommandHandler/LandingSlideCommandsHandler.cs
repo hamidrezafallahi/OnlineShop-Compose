@@ -38,7 +38,7 @@ public class SlideCommandHandler(
                 request.FirstUrl,
                 request.SecondUrl,
                 request.BannerTitle,
-                request.ResolvedDescription
+                request.BannerDescription
             );
 
             await _slideRepository.AddAsync(slide);
@@ -99,7 +99,7 @@ public class SlideCommandHandler(
          request.FirstUrl,
          request.SecondUrl,
          request.BannerTitle,
-         request.ResolvedDescription
+         request.BannerDescription
         );
         await _slideRepository.SaveChangesAsync(cancellationToken);
 
