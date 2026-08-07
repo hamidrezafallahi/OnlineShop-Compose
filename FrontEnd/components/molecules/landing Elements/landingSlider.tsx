@@ -14,42 +14,58 @@ import {
   LinkIcon,
 } from '@components/atoms/iconComponents';
 
+export type LandingSlideImage = {
+  bannerUrl: string;
+  firstUrl: string;
+};
+
 interface IProps {
- images:{banner:string, pageUrl: string}[]
+  images: LandingSlideImage[];
 }
 
 function LandingSlider({ ...props }: IProps) {
   const { images } = props;
-const locale = useLocale()
+  const locale = useLocale();
   const [current, setCurrent] = useState(0);
   const length = images.length;
   useEffect(() => {
+    if (length <= 1) return;
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % length);
     }, 5000);
     return () => clearInterval(interval);
   }, [length]);
 
+  if (length === 0) {
+    return null;
+  }
+
   const goToSlide = (index: number) => setCurrent(index);
   const prevSlide = () =>
     setCurrent((prev) => (prev === 0 ? length - 1 : prev - 1));
   const nextSlide = () => setCurrent((prev) => (prev + 1) % length);
-   return (
+  return (
     <div className="relative w-full overflow-hidden">
       <div className="relative shadow-lg h-56 md:h-96 overflow-hidden">
-        {images.map((item, index) => (
+        {images.map((item, index) => {
+          const href = item.firstUrl?.trim()
+            ? `/${locale}/${item.firstUrl.replace(/^\/+/, '')}`
+            : `/${locale}`;
+
+          return (
           <div
-            key={index}
+            key={`${item.bannerUrl}-${index}`}
             className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
               index === current ? "opacity-100 z-10" : "opacity-0 z-0"
             }`}
           >
             <MediaImage
-              src={item.banner}
+              src={item.bannerUrl}
               alt={`Slide ${index + 1}`}
               fill
               className="object-cover"
               priority={index === 0}
+              sizes="100vw"
             />
 
             {/* لایه‌ی تیره برای خواناتر شدن متن و دکمه */}
@@ -58,7 +74,7 @@ const locale = useLocale()
             {/* متن و دکمه */}
             <div className="rtl:md:right-16 rtl:right-8 bottom-8 left-8 md:left-16 absolute bg-white hover:bg-gray-200 rounded-full w-10 h-10">
               <Link
-                href={`/${locale}/${item.pageUrl}`}
+                href={href}
                 aria-label={`مشاهده جزئیات اسلاید ${index + 1}`}
                 className="flex justify-center items-center shadow-md w-full h-full transition-all duration-200"
               >
@@ -66,7 +82,8 @@ const locale = useLocale()
               </Link>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="bottom-5 left-1/2 z-40 absolute flex rtl:flex-row-reverse gap-3 -translate-x-1/2 transform">

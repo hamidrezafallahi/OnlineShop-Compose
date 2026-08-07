@@ -46,8 +46,8 @@ export default async function Home({ params }: Props) {
   const tSeo = await getTranslations({ locale, namespace: 'seo' });
 
   const images = await getSlides<{
-    pageUrl: string;
-    banner: string;
+    bannerUrl: string;
+    firstUrl: string;
   }>();
   const categories = await getCategories({
     queries: { IsShowInLanding: true },
