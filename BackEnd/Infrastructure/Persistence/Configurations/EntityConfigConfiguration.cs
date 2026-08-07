@@ -114,7 +114,7 @@ namespace OnlineShop.Infrastructure.Configurations
                     //new JsonDefinition { Header = "نویسنده", Accessor = "authorName", Type = "text", Sortable = true, Filterable = true },
                     //new JsonDefinition { Header = "تاریخ انتشار", Accessor = "publishedDate", Type = "date", Sortable = true, Filterable = false },
                     new JsonDefinition { Header = "تصویر شاخص", Accessor = "thumbnailFile", Type = "image", Sortable = false, Filterable = false },
-                    //new JsonDefinition { Header = "خلاصه فارسی", Accessor = "excerptFa", Type = "textarea", Sortable = false, Filterable = false },
+                    new JsonDefinition { Header = "وضعیت فعال", Accessor = "isActive", Type = "bool", Sortable = false, Filterable = false },
                     //new JsonDefinition { Header = "توضیحات متا فارسی", Accessor = "metaDescriptionFa", Type = "text", Sortable = false, Filterable = false },
                     //new JsonDefinition { Header = "کلمات کلیدی متا فارسی", Accessor = "metaKeywordsFa", Type = "text", Sortable = false, Filterable = false },
                     //new JsonDefinition { Header = "عنوان انگلیسی", Accessor = "titleEn", Type = "text", Sortable = true, Filterable = true },

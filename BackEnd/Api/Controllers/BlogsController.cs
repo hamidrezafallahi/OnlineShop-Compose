@@ -60,6 +60,17 @@ public class BlogsController : BaseController
         return Ok(result);
     }
 
+    [HttpPost("validate-content")]
+    [Authorize(Roles = "SuperAdmin,Admin,ContentEditor")]
+    public async Task<ActionResult<BlogContentQualityResultDto>> ValidateContent(
+        [FromBody] BlogContentQualityRequestDto payload)
+    {
+        var result = await _mediator.Send(new ValidateBlogContentCommand { Payload = payload });
+        if (!result.IsSuccess && result.Error == "Unauthorized")
+            return Unauthorized(result);
+        return Ok(result);
+    }
+
     [HttpPost]
     [Authorize(Roles = "SuperAdmin,Admin,ContentEditor")]
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   EditIcon,
@@ -82,22 +82,44 @@ const ActiveCategory = ({
   endpoint: string;
   active: boolean;
 }) => {
-  const [isActive] = useState(active);
-  const [ActiveApi] = useCUDDataMutation();
-  const activeHandler = async (e:boolean) => {
-    const res = await ActiveApi({
-      url: `/${endpoint + "/active"}`,
-      body: {
-        id,
-        isActive: e,
-      },
-      method: "PUT",
-    }).unwrap();
-    if (!res.isSuccess) {
-       showErrorToast(res.error)
+  const [isActive, setIsActive] = useState(Boolean(active));
+  const [ActiveApi, { isLoading }] = useCUDDataMutation();
+
+  useEffect(() => {
+    setIsActive(Boolean(active));
+  }, [active]);
+
+  const activeHandler = async (next: boolean) => {
+    const previous = isActive;
+    const target = next === previous ? !previous : next;
+    setIsActive(target);
+
+    try {
+      const res = await ActiveApi({
+        url: `/${endpoint}/active`,
+        body: {
+          id: Number(id),
+          isActive: target,
+        },
+        method: 'PUT',
+      }).unwrap();
+
+      if (!res.isSuccess) {
+        setIsActive(previous);
+        showErrorToast(res.error);
+      }
+    } catch {
+      setIsActive(previous);
     }
   };
-  return <Switch onChange={activeHandler} checked={isActive}  />;
+
+  return (
+    <Switch
+      onChange={activeHandler}
+      checked={isActive}
+      disabled={isLoading}
+    />
+  );
 };
 
 const AddSubCategory = ({ onClick }: { onClick: () => void }) => {

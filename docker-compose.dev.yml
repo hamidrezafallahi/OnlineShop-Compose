@@ -2,7 +2,10 @@
 # Development Environment
 # =============================================================================
 # Run: docker compose -f docker-compose.dev.yml up -d
-# This will start all services with hot-reload support.
+# All shared config lives in root `.env` (see `.env.example`).
+# Each service loads it via env_file. Only Docker-network-specific overrides
+# that must differ from host names stay under environment (kept minimal).
+# Backend code is baked into the image (rebuild after C# changes).
 # =============================================================================
 
 services:
@@ -10,10 +13,8 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: shop-postgres-dev
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-OnlineShopDb}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
@@ -21,7 +22,7 @@ services:
     networks:
       - shop-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-OnlineShopDb}"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
 
   backend:
     build:
@@ -30,32 +31,12 @@ services:
     container_name: shop-backend-dev
     ports:
       - "${BACKEND_PORT:-8080}:8080"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: >
-        Host=postgres;
-        Port=5432;
-        Database=${POSTGRES_DB:-OnlineShopDb};
-        Username=${POSTGRES_USER:-postgres};
-        Password=${POSTGRES_PASSWORD:-postgres}
-      Jwt__Key: ${JWT_KEY:-dev-only-change-me-32chars-minimum!!}
-      Jwt__Issuer: OnlineShop
-      Jwt__Audience: OnlineShopUsers
-      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-Admin@123}
-      Hangfire__DashboardEnabled: "true"
-      Backup__Directory: /src/Api/backups
-      Backup__PgDumpPath: pg_dump
+    env_file:
+      - .env
     volumes:
-      # Mount source code for hot-reload
-      - ./BackEnd:/src
-      # Named volume for uploads
+      # Persist uploaded files and DB backups only (no source bind-mount)
       - uploads:/src/Api/wwwroot/uploads
-      # Named volume for database backups
       - backups:/src/Api/backups
-      # Exclude build artifacts from the mounted source
-      - /src/**/bin
-      - /src/**/obj
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,12 +57,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./FrontEnd/.env
-    environment:
-      # Absolute URL required for RSC/server fetch inside Docker network
-      INTERNAL_SERVER_SIDE_API_URL: ${INTERNAL_SERVER_SIDE_API_URL:-http://backend:8080}
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost}
-      NODE_ENV: development
+      - .env
     volumes:
       - ./FrontEnd:/app
       - /app/node_modules
@@ -95,7 +71,7 @@ services:
     image: nginx:1.27-alpine
     container_name: shop-nginx-dev
     ports:
-      - "80:80"
+      - "${NGINX_PORT:-80}:80"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -107,14 +83,30 @@ services:
         condition: service_started
     networks:
       - shop-network
-    # ─── pgAdmin ──────────────────────────────────────────────────────────────
+
+  # ─── n8n (AI blog SEO automation UI) ─────────────────────────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: shop-n8n-dev
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    env_file:
+      - .env
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./automation/n8n:/workflows:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - shop-network
+
+  # ─── pgAdmin ──────────────────────────────────────────────────────────────
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: shop-pgadmin-dev
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: "False"
+    env_file:
+      - .env
     ports:
       - "5050:80"
     volumes:
@@ -124,6 +116,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
 networks:
   shop-network:
 
@@ -132,8 +125,4 @@ volumes:
   uploads:
   backups:
   pgadmin_data:
-
-
-    #  docker compose -f docker-compose.dev.yml down -v
-    # docker compose -f docker-compose.dev.yml build --no-cache
-    # docker compose -f docker-compose.dev.yml up -d
+  n8n_data:

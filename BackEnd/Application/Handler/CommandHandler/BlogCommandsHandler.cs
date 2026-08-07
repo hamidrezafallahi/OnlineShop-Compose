@@ -1,15 +1,18 @@
 ﻿using Application.Commands;
 using Application.Common;
 using Application.Common.Interfaces;
+using Application.Dtos;
 using Common;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Domain.Entities;
 using Services.Services.Uploader.DTO;
 
 public class BlogCommandHandler(
             IBlogRepository _blogRepository,
+            IBlogContentQualityService _qualityService,
             IHttpContextAccessor _accessor,
             IUploaderService _uploaderService) :
         IRequestHandler<CreateBlogCommand, ServiceResult<IdDto>>,
@@ -23,6 +26,45 @@ public class BlogCommandHandler(
         if (userId == null)
             return ServiceResult<IdDto>.Failed("Unauthorized");
 
+        var isAiPipeline = string.Equals(request.Source, "ai-pipeline", StringComparison.OrdinalIgnoreCase)
+            || request.IsDraft;
+
+        if (isAiPipeline)
+        {
+            var quality = await _qualityService.ValidateAsync(new BlogContentQualityRequestDto
+            {
+                TitleFa = request.TitleFa,
+                IntroFa = request.IntroFa,
+                ContentFa = request.ContentFa,
+                ConclusionFa = request.ConclusionFa,
+                ExcerptFa = request.ExcerptFa,
+                MetaDescriptionFa = request.MetaDescriptionFa,
+                MetaKeywordsFa = request.MetaKeywordsFa,
+                TitleEn = request.TitleEn,
+                IntroEn = request.IntroEn,
+                ContentEn = request.ContentEn,
+                ConclusionEn = request.ConclusionEn,
+                ExcerptEn = request.ExcerptEn,
+                MetaDescriptionEn = request.MetaDescriptionEn,
+                MetaKeywordsEn = request.MetaKeywordsEn,
+                Slug = request.Slug,
+            }, cancellationToken);
+
+            if (!quality.IsValid)
+                return ServiceResult<IdDto>.Failed(string.Join(" | ", quality.Errors));
+        }
+        else
+        {
+            var slug = (request.Slug ?? string.Empty).Trim().ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(slug))
+            {
+                var exists = await _blogRepository.Query(b => !b.IsDeleted && b.Slug == slug)
+                    .AnyAsync(cancellationToken);
+                if (exists)
+                    return ServiceResult<IdDto>.Failed($"Slug '{slug}' already exists.");
+            }
+        }
+
         var blog = Blog.Create(
              titleFa: request.TitleFa.Trim(),
              introFa: request.IntroFa,
@@ -31,10 +73,10 @@ public class BlogCommandHandler(
              excerptFa: request.ExcerptFa,
              metaDescriptionFa: request.MetaDescriptionFa,
              metaKeywordsFa: request.MetaKeywordsFa,
-             titleEn: request.TitleFa.Trim(),
-             introEn: request.ContentFa,
-             contentEn: request.ContentFa,
-             conclusionEn: request.ContentFa,
+             titleEn: string.IsNullOrWhiteSpace(request.TitleEn) ? request.TitleFa.Trim() : request.TitleEn.Trim(),
+             introEn: string.IsNullOrWhiteSpace(request.IntroEn) ? request.IntroFa : request.IntroEn,
+             contentEn: string.IsNullOrWhiteSpace(request.ContentEn) ? request.ContentFa : request.ContentEn,
+             conclusionEn: string.IsNullOrWhiteSpace(request.ConclusionEn) ? request.ConclusionFa : request.ConclusionEn,
              excerptEn: request.ExcerptEn,
              metaDescriptionEn: request.MetaDescriptionEn,
              metaKeywordsEn: request.MetaKeywordsEn,
@@ -43,6 +85,9 @@ public class BlogCommandHandler(
              authorId: request.AuthorId ?? userId.Value,
              currentUserId: userId.Value
              );
+
+        if (request.IsDraft || isAiPipeline)
+            blog.SetActive(false, userId.Value);
 
         try
         {

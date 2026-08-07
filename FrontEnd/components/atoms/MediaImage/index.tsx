@@ -13,10 +13,9 @@ type MediaImageProps = Omit<ImageProps, 'src'> & {
 /**
  * next/image for backend media.
  *
- * Uploads live on the nginx volume, not inside the frontend container.
- * Passing them through `/_next/image` makes the optimizer fail with
- * "The requested resource isn't a valid image."
- * Backend already stores WebP, so we serve `/uploads/...` directly via nginx.
+ * Uploads live on the nginx/backend volume, not inside the frontend container.
+ * Always use a root-absolute `/uploads/...` path (see toMediaUrl) so locale
+ * routes like `/fa/blog/...` do not resolve media as `/fa/uploads/...`.
  */
 export default function MediaImage({
   src,
@@ -26,12 +25,14 @@ export default function MediaImage({
   ...props
 }: MediaImageProps) {
   const resolved = toMediaUrl(src) || fallbackSrc;
+  const isUpload = isUploadMediaPath(resolved);
 
   return (
     <Image
       src={resolved}
       alt={alt}
-      unoptimized={unoptimized ?? isUploadMediaPath(resolved)}
+      // Uploads are already WebP from the API; skip the Next optimizer.
+      unoptimized={unoptimized ?? isUpload}
       {...props}
     />
   );

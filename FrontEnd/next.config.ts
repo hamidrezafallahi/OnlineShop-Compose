@@ -121,6 +121,25 @@ const nextConfig: NextConfig = {
 
   // ─── Powered By Header ──────────────────────────────────────────────────
   poweredByHeader: false,
+
+  // Uploads live on the shared Docker volume / ASP.NET wwwroot — not in Next public/.
+  // When the browser hits the frontend container (or locale middleware rewrites),
+  // proxy /uploads/* to the backend so MediaImage src="/uploads/..." always works.
+  async rewrites() {
+    const uploadsOrigin = (
+      process.env.INTERNAL_UPLOADS_ORIGIN?.trim() ||
+      process.env.INTERNAL_SERVER_SIDE_API_URL?.trim() ||
+      process.env.NEXT_PUBLIC_INTERNAL_API_URL?.trim() ||
+      'http://backend:8080'
+    ).replace(/\/+$/, '');
+
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${uploadsOrigin}/uploads/:path*`,
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

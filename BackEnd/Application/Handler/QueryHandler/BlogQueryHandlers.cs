@@ -25,10 +25,13 @@ public class BlogQueryHandler(
         int pageSize = request.pageSize ?? 10;
  
         IQueryable<Blog> query;
+        var includeInactive = request.ByConfig == true
+            || !request.OnlyActives.HasValue
+            || request.OnlyActives == false;
 
         if (request.Q is not null && request.Q.Length > 0)
         {
-            if (!request.OnlyActives.HasValue || request.OnlyActives == false)
+            if (includeInactive)
             {
                 query = _repo.Query(b => b.Slug.Contains(request.Q) || b.ContentFa.Contains(request.Q) ||
                                         b.ContentEn.Contains(request.Q) || b.TitleFa.Contains(request.Q) ||
@@ -43,9 +46,8 @@ public class BlogQueryHandler(
         }
         else
         {
-            if (!request.OnlyActives.HasValue || request.OnlyActives == false)
+            if (includeInactive)
             {
-
                 query = _repo.Query().Include(x=>x.Author);
             }
             else
@@ -192,7 +194,7 @@ public class BlogQueryHandler(
     }
     public async Task<ServiceResult<BlogDto?>> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
     {
-        var x =  _repo.Query(b => b.Id == request.Id && b.IsActive).Include(x => x.Author)
+        var x =  _repo.Query(b => b.Id == request.Id).Include(x => x.Author)
                    .FirstOrDefault();
 
         if (x == null)

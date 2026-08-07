@@ -75,11 +75,10 @@ export const apiService = createApi({
       IBaseQueryResponse<any>,
       { url: string; body?: IBaseRequest<any>; id?: number | string; method?: "GET"|"POST"|"DELETE"|"PUT" }
     >({
-      query: ({ url, body,method="POST", id }) => ({
+      query: ({ url, body, method = "POST" }) => ({
         url,
         method,
         body,
-        id: id ? id : "All",
       }),
     }),
 

@@ -9,6 +9,7 @@ import {
 import JsonLd from '@components/molecules/storefront/JsonLd';
 import StoreBreadcrumbs from '@components/molecules/storefront/StoreBreadcrumbs';
 import { getBlogBySlug } from '@lib/blog';
+import { extractFaqFromHtml } from '@lib/blogFaq';
 import { serverApiBaseUrl } from '@lib/api';
 import { absoluteUrl, buildPageMetadata } from '@lib/seo';
 import { SimpleResponse } from '@models/base';
@@ -85,6 +86,13 @@ export default async function Page({ params }: Props) {
       ? blog.titleFa || blog.titleEn
       : blog.titleEn || blog.titleFa;
 
+  const contentHtml =
+    locale === 'fa'
+      ? blog.contentFa || blog.contentEn
+      : blog.contentEn || blog.contentFa;
+
+  const faqItems = extractFaqFromHtml(contentHtml);
+
   const articleLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -111,7 +119,7 @@ export default async function Page({ params }: Props) {
         ]}
       />
       <HeroSection blog={blog} locale={locale} />
-      <BlogContent blog={blog} locale={locale} />
+      <BlogContent blog={blog} locale={locale} faqItems={faqItems} />
       <RelatedArticles />
     </article>
   );

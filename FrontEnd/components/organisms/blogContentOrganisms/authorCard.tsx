@@ -20,7 +20,6 @@ export async function AuthorCard({ ...props }: IProps) {
       <div>
         <h3>
           {blog.authorName}
-          {locale}
         </h3>
         <div>{t("blog.createdAt")}</div>
         <time className="text-gray-600 text-sm">

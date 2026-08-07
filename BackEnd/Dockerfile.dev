@@ -1,6 +1,6 @@
 # ─── Backend Development ────────────────────────────────────────────────────
-# Purpose: Fast startup with hot-reload via dotnet watch
-# Source code is mounted as a volume; this image provides SDK + cached NuGet packages.
+# Purpose: SDK image with source baked in at build time.
+# After C# changes: docker compose -f docker-compose.dev.yml build backend && up -d backend
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS base
 
@@ -19,16 +19,13 @@ COPY ["Common/Common.csproj", "Common/"]
 
 RUN dotnet restore "Api/Api.csproj"
 
-
 # Copy source
 COPY . .
-
 
 # Tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl wget postgresql-client \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN dotnet tool install --global dotnet-ef || true
 
@@ -39,7 +36,6 @@ ENV ASPNETCORE_URLS=http://+:8080
 
 EXPOSE 8080
 
-
 HEALTHCHECK \
     --interval=30s \
     --timeout=5s \
@@ -47,5 +43,4 @@ HEALTHCHECK \
     --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
-
-CMD ["dotnet","watch","run","--project","Api/Api.csproj","--urls","http://0.0.0.0:8080","--no-launch-profile"]
+CMD ["dotnet","run","--project","Api/Api.csproj","--urls","http://0.0.0.0:8080","--no-launch-profile"]

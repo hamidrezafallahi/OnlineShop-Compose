@@ -1,6 +1,8 @@
-import React from 'react';
+'use client';
 
-import { useParams } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { useParams, useRouter } from 'next/navigation';
 
 import { useGetConditionallyMutation } from '@services/base';
 
@@ -9,28 +11,74 @@ import {
   SwitchProps,
 } from '../switch';
 
-interface IProps extends Omit<SwitchProps, "id"> {
+interface IProps extends Omit<SwitchProps, 'id' | 'checked' | 'onChange'> {
   id: number;
-  checked:boolean;
+  checked: boolean;
 }
-function ActiveComponent({ ...props }: IProps) {
-  const { id,checked } = props;
+
+function ActiveComponent({ id, checked, ...props }: IProps) {
   const params = useParams();
-  const [active] = useGetConditionallyMutation();
-  const handleSwitchChange = async (e: boolean) => {
-    const res = await active({
-      url: `/${params.field}/active`,
-      body: {
-        Id: id,
-        IsActive: e,
-      },
-      method: "PUT",
-    });
-    if (res.error) {
-      console.log(res);
+  const router = useRouter();
+  const [active, { isLoading }] = useGetConditionallyMutation();
+  const [isActive, setIsActive] = useState(() => Boolean(checked));
+  const pendingRef = useRef(false);
+  const isActiveRef = useRef(isActive);
+
+  useEffect(() => {
+    isActiveRef.current = isActive;
+  }, [isActive]);
+
+  useEffect(() => {
+    if (!pendingRef.current) {
+      setIsActive(Boolean(checked));
+    }
+  }, [checked]);
+
+  const handleSwitchChange = async () => {
+    if (pendingRef.current || isLoading) return;
+
+    const previous = isActiveRef.current;
+    const target = !previous;
+
+    pendingRef.current = true;
+    isActiveRef.current = target;
+    setIsActive(target);
+
+    try {
+      const res = await active({
+        url: `/${params.field}/active`,
+        body: {
+          id: Number(id),
+          isActive: target,
+        },
+        method: 'PUT',
+      });
+
+      if ('error' in res && res.error) {
+        isActiveRef.current = previous;
+        setIsActive(previous);
+        console.error(res.error);
+        return;
+      }
+
+      router.refresh();
+    } catch (error) {
+      isActiveRef.current = previous;
+      setIsActive(previous);
+      console.error(error);
+    } finally {
+      pendingRef.current = false;
     }
   };
-  return <Switch onChange={handleSwitchChange} checked={checked}   />;
+
+  return (
+    <Switch
+      {...props}
+      checked={isActive}
+      disabled={isLoading || props.disabled}
+      onChange={handleSwitchChange}
+    />
+  );
 }
 
 export default ActiveComponent;

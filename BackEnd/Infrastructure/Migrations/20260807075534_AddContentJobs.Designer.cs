@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnlineShop.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using OnlineShop.Infrastructure.Persistence;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260807075534_AddContentJobs")]
+    partial class AddContentJobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -702,6 +705,97 @@ namespace Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("OnlineShop.Domain.Entities.ContentJob", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BlogId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CandidateKeywordsJson")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("NotificationSent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("OutlineJson")
+                        .HasColumnType("text");
+
+                    b.Property<string>("QualityReportJson")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SeedTopicsJson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SelectedKeyword")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("SelectedTopic")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasDefaultValue("ai-pipeline");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("Status");
+
+                    b.ToTable("ContentJobs", (string)null);
+                });
+
             modelBuilder.Entity("OnlineShop.Domain.Entities.Discount", b =>
                 {
                     b.Property<int>("Id")
@@ -842,7 +936,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = 1,
                             ActionsJson = "[\"active\",\"edit\",\"delete\",\"new\"]",
-                            ColumnsJson = "[{\"Header\":\"\\u0634\\u0646\\u0627\\u0633\\u0647\",\"Accessor\":\"id\",\"Type\":\"number\",\"Sortable\":false,\"Filterable\":false,\"Options\":null},{\"Header\":\"Slug\",\"Accessor\":\"slug\",\"Type\":\"text\",\"Sortable\":true,\"Filterable\":true,\"Options\":null},{\"Header\":\"\\u0639\\u0646\\u0648\\u0627\\u0646 \\u0641\\u0627\\u0631\\u0633\\u06CC\",\"Accessor\":\"titleFa\",\"Type\":\"text\",\"Sortable\":true,\"Filterable\":true,\"Options\":null},{\"Header\":\"\\u062A\\u0635\\u0648\\u06CC\\u0631 \\u0634\\u0627\\u062E\\u0635\",\"Accessor\":\"thumbnailFile\",\"Type\":\"image\",\"Sortable\":false,\"Filterable\":false,\"Options\":null},{\"Header\":\"\\u0648\\u0636\\u0639\\u06CC\\u062A \\u0641\\u0639\\u0627\\u0644\",\"Accessor\":\"isActive\",\"Type\":\"bool\",\"Sortable\":false,\"Filterable\":false,\"Options\":null}]",
+                            ColumnsJson = "[{\"Header\":\"\\u0634\\u0646\\u0627\\u0633\\u0647\",\"Accessor\":\"id\",\"Type\":\"number\",\"Sortable\":false,\"Filterable\":false,\"Options\":null},{\"Header\":\"Slug\",\"Accessor\":\"slug\",\"Type\":\"text\",\"Sortable\":true,\"Filterable\":true,\"Options\":null},{\"Header\":\"\\u0639\\u0646\\u0648\\u0627\\u0646 \\u0641\\u0627\\u0631\\u0633\\u06CC\",\"Accessor\":\"titleFa\",\"Type\":\"text\",\"Sortable\":true,\"Filterable\":true,\"Options\":null},{\"Header\":\"\\u062A\\u0635\\u0648\\u06CC\\u0631 \\u0634\\u0627\\u062E\\u0635\",\"Accessor\":\"thumbnailFile\",\"Type\":\"image\",\"Sortable\":false,\"Filterable\":false,\"Options\":null}]",
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             EndPoint = "blogs",
@@ -2665,6 +2759,16 @@ namespace Infrastructure.Migrations
                     b.Navigation("Parent");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OnlineShop.Domain.Entities.ContentJob", b =>
+                {
+                    b.HasOne("OnlineShop.Domain.Entities.Blog", "Blog")
+                        .WithMany()
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Blog");
                 });
 
             modelBuilder.Entity("OnlineShop.Domain.Entities.Order", b =>

@@ -81,9 +81,11 @@ namespace OnlineShop.Infrastructure
             services.AddScoped<IBlogTagRepository, BlogTagRepository>();
             services.AddScoped<IUserTagRepository, UserTagRepository>();
             services.AddScoped<ISeoSettingRepository, SeoSettingRepository>();
+            services.AddScoped<IBlogContentQualityService, BlogContentQualityService>();
             services.AddHttpContextAccessor();
             services.AddScoped<IDataInitializer, EntityConfigApiUrlNormalizer>();
             services.AddScoped<IDataInitializer, AdminUserInitializer>();
+            services.AddScoped<IDataInitializer, ContentEditorUserInitializer>();
             return services;
         }
     }

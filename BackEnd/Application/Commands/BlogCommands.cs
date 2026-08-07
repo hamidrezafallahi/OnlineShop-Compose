@@ -29,7 +29,16 @@ namespace Application.Commands
         public string? Slug { get; set; }
         public IFormFile? ThumbnailFile { get; set; }
         public int? AuthorId { get; set; }
- 
+
+        /// <summary>
+        /// When true, blog is created as inactive draft (for AI pipeline human review).
+        /// </summary>
+        public bool IsDraft { get; set; }
+
+        /// <summary>
+        /// Optional source marker, e.g. "ai-pipeline".
+        /// </summary>
+        public string? Source { get; set; }
     }
 
     public class UpdateBlogCommand : IRequest<ServiceResult<IdDto>>

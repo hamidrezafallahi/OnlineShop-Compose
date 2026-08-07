@@ -52,7 +52,7 @@ export default async function Page({ params, searchParams }: Props) {
       {posts.length === 0 ? (
         <EmptyState title={t('empty')} description={t('emptyHint')} />
       ) : (
-        <section className="gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-7 lg:grid-cols-3 lg:gap-8">
           {posts.map((item) => (
             <BlogCard key={item.slug} blog={item} />
           ))}

@@ -5,26 +5,26 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface SwitchProps
-  extends Omit<React.HTMLAttributes<HTMLButtonElement>, "onChange"> {
-  /** وضعیت روشن یا خاموش (اگر داده شود، کامپوننت controlled می‌شود) */
+  extends Omit<React.HTMLAttributes<HTMLButtonElement>, 'onChange'> {
+  /** وضعیت روشن یا خاموش (controlled) */
   checked?: boolean;
-  /** وقتی وضعیت عوض می‌شود (فقط در حالت controlled استفاده می‌شود) */
+  /** وقتی وضعیت عوض می‌شود */
   onChange?: (checked: boolean) => void;
   /** نوع رنگ */
-  variant?: "default" | "success" | "warning" | "destructive";
+  variant?: 'default' | 'success' | 'warning' | 'destructive';
   /** اندازه سویچ */
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   /** غیرفعال */
   disabled?: boolean;
-  /** مقدار اولیه برای حالت داخلی */
+  /** مقدار اولیه برای حالت uncontrolled */
   defaultChecked?: boolean;
 }
 
 const variantClasses: Record<string, string> = {
-  default: "data-[state=on]:bg-primary bg-gray-300",
-  success: "data-[state=on]:bg-green-500 bg-gray-300",
-  warning: "data-[state=on]:bg-yellow-400 bg-gray-300",
-  destructive: "data-[state=on]:bg-red-500 bg-gray-300",
+  default: 'data-[state=on]:bg-primary bg-gray-300',
+  success: 'data-[state=on]:bg-green-500 bg-gray-300',
+  warning: 'data-[state=on]:bg-yellow-400 bg-gray-300',
+  destructive: 'data-[state=on]:bg-red-500 bg-gray-300',
 };
 
 const sizeConfig = {
@@ -37,35 +37,45 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
   (
     {
       className,
-      checked = false,
+      checked,
       onChange,
-      variant = "default",
-      size = "md",
+      variant = 'default',
+      size = 'md',
       disabled = false,
       defaultChecked = false,
+      onClick,
       ...props
     },
     ref
   ) => {
-    const [internalChecked, setInternalChecked] = React.useState(defaultChecked);
+    const isControlled = checked !== undefined;
+    const [uncontrolledChecked, setUncontrolledChecked] =
+      React.useState(defaultChecked);
 
+    const isOn = isControlled ? Boolean(checked) : uncontrolledChecked;
     const s = sizeConfig[size];
     // Physical left→right travel; absolute left is direction-independent (RTL-safe).
     const knobTranslate = s.width - s.knob - s.padding * 2;
 
-    const handleToggle = () => {
+    const handleToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (disabled) return;
-      onChange?.(!checked);
-      setInternalChecked((prev) => !prev);
+      onClick?.(event);
+      if (event.defaultPrevented) return;
+
+      const next = !isOn;
+      if (!isControlled) {
+        setUncontrolledChecked(next);
+      }
+      onChange?.(next);
     };
-    React.useEffect(() => {
-      setInternalChecked(checked)
-    }, [checked]);
+
     return (
       <button
         ref={ref}
         type="button"
-        data-state={internalChecked ? "on" : "off"}
+        role="switch"
+        aria-checked={isOn}
+        data-state={isOn ? 'on' : 'off'}
         onClick={handleToggle}
         disabled={disabled}
         style={{
@@ -73,10 +83,10 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           height: s.height,
           padding: s.padding,
           opacity: disabled ? 0.5 : 1,
-          cursor: disabled ? "not-allowed" : "pointer",
+          cursor: disabled ? 'not-allowed' : 'pointer',
         }}
         className={cn(
-          "inline-flex relative items-center rounded-full focus:outline-none transition-colors duration-300",
+          'inline-flex relative items-center rounded-full focus:outline-none transition-colors duration-300',
           variantClasses[variant],
           className
         )}
@@ -89,7 +99,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
             height: s.knob,
             left: s.padding,
             transform: `translateY(-50%) translateX(${
-              internalChecked ? knobTranslate : 0
+              isOn ? knobTranslate : 0
             }px)`,
           }}
         />
@@ -98,4 +108,4 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
   }
 );
 
-Switch.displayName = "Switch";
+Switch.displayName = 'Switch';
