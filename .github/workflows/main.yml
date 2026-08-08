@@ -103,8 +103,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            set -e
+            set -euo pipefail
             cd /opt/shop
+
+            # Keep infra (candyRose) current before pulling new app images
+            git fetch --all --prune
+            git pull --ff-only origin master || true
+
             # Guard against Windows CRLF if deploy.sh was edited/copied from Windows
             sed -i 's/\r$//' deploy.sh
             chmod +x deploy.sh
